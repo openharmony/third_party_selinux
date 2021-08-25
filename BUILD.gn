@@ -756,7 +756,6 @@ ohos_executable("checkpolicy"){
     subsystem_name="security"
 }
 
-ROOT_PATH=rebase_path("//")
 ohos_executable("secilc"){
 
     install_enable=true
@@ -790,6 +789,4 @@ ohos_executable("secilc"){
 
     part_name="selinux"
     subsystem_name="security"
-
-    exec_script("demo/build_policy.sh",["${ROOT_PATH}"])
 }

@@ -16,30 +16,28 @@ hdc_std.exe file send demoloop /bin/
 hdc_std.exe file send libpcre2.z.so /system/lib
 hdc_std.exe file send libselinux.z.so /system/lib
 hdc_std.exe file send libsepol.z.so /system/lib
-hdc_std.exe shell mkdir /etc/selinux
+
+hdc_std.exe shell mkdir -pv /etc/selinux/targeted/contexts/files
 hdc_std.exe file send config /etc/selinux/config
-hdc_std.exe shell mkdir /etc/selinux/targeted
-hdc_std.exe shell mkdir /etc/selinux/targeted/policy
-hdc_std.exe shell mkdir /etc/selinux/targeted/contexts
-hdc_std.exe shell mkdir /etc/selinux/targeted/contexts/files
 hdc_std.exe file send precompiled_sepolicy /etc/selinux/targeted/policy/policy.31
 hdc_std.exe file send file_contexts /etc/selinux/targeted/contexts/files/file_contexts
-hdc_std.exe shell chmod 777 /bin/chkcon
-hdc_std.exe shell chmod 777 /bin/getenforce
-hdc_std.exe shell chmod 777 /bin/setenforce
-hdc_std.exe shell chmod 777 /bin/secon
-hdc_std.exe shell chmod 777 /bin/restorecon
-hdc_std.exe shell chmod 777 /bin/load_policy
-hdc_std.exe shell chmod 777 /system/lib/libpcre2.z.so
-hdc_std.exe shell chmod 777 /system/lib/libselinux.z.so
-hdc_std.exe shell chmod 777 /system/lib/libsepol.z.so
-hdc_std.exe shell chmod 777 /etc/selinux/targeted/policy/policy.31
-hdc_std.exe shell chmod 777 /bin/demoloop
 
-hdc_std.exe shell chmod 777 /bin/getfilecon
-hdc_std.exe shell chmod 777 /bin/setfilecon
-hdc_std.exe shell chmod 777 /bin/selinuxexeccon
-hdc_std.exe shell chmod 777 /bin/selinux_check_access
-hdc_std.exe shell chmod 777 /bin/getpidcon
-hdc_std.exe shell chmod 777 /bin/restorecon_xattr
+hdc_std.exe shell chmod -v 777 /bin/chkcon
+hdc_std.exe shell chmod -v 777 /bin/getenforce
+hdc_std.exe shell chmod -v 777 /bin/setenforce
+hdc_std.exe shell chmod -v 777 /bin/secon
+hdc_std.exe shell chmod -v 777 /bin/restorecon
+hdc_std.exe shell chmod -v 777 /bin/load_policy
+hdc_std.exe shell chmod -v 777 /system/lib/libpcre2.z.so
+hdc_std.exe shell chmod -v 777 /system/lib/libselinux.z.so
+hdc_std.exe shell chmod -v 777 /system/lib/libsepol.z.so
+hdc_std.exe shell chmod -v 777 /etc/selinux/targeted/policy/policy.31
+hdc_std.exe shell chmod -v 777 /bin/demoloop
+
+hdc_std.exe shell chmod -v 777 /bin/getfilecon
+hdc_std.exe shell chmod -v 777 /bin/setfilecon
+hdc_std.exe shell chmod -v 777 /bin/selinuxexeccon
+hdc_std.exe shell chmod -v 777 /bin/selinux_check_access
+hdc_std.exe shell chmod -v 777 /bin/getpidcon
+hdc_std.exe shell chmod -v 777 /bin/restorecon_xattr
 pause
