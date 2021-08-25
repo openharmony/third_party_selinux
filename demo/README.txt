@@ -53,14 +53,11 @@ base/security/permission/ <- https://gitee.com/hu-huifeng/security_permission.gi
 
 6. 运行验证
 
-加载标签：
+1) load_policy      # 加载是否成功
+2) restorecon -R /  # 看是否成功
+3) ls -lZ /         # 看标签是否成功
+4) ps -eZ           # 看标签是否成功
+5) setenforce 1     # 进行各种操作，观察是否被拦截，以及串口是否有 avc denied
 
-1) load_policy      -> 加载是否成功
-2) restorecon -R /  -> 看是否成功
-3) ls -lZ /         -> 看标签是否成功
-4) ps -eZ           -> 看标签是否成功
-
-测试（可能会随着代码提交变得无法通过）：
-
-板子中运行 demoloop 命令，然后双击 push_demo_abcd.bat，然后看串口是否有 avc denied, avc grant 日志。
+demoloop 命令暂时不验证。
 
