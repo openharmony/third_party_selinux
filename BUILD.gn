@@ -664,6 +664,7 @@ ohos_executable("restorecon"){
         "$LIBSEPOL_ROOT_DIR/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
+        "$LIBDEPENDS_ROOT_DIR/fts",
     ]
 
     cflags=[
