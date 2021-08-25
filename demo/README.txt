@@ -31,7 +31,6 @@ base/security/permission/ <- https://gitee.com/hu-huifeng/security_permission.gi
 5) ./third_party/selinux/demo/rmabcd.sh
 6) ./third_party/selinux/demo/push*.sh
 7) ./developtools/hdc_standard/prebuilt/windows/hdc_std.exe
-8) ./third_party/selinux/demo/rmabcd.sh
 
 
 4. Брвы Toybox
