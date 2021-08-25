@@ -2,6 +2,8 @@
 
 https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-standard-package-environment.md
 
+按照步骤同步、编译主线 L2 代码。
+
 
 2. 下载本仓库
 
