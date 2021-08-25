@@ -149,6 +149,7 @@ extern char *CIL_KEY_TARGET;
 extern char *CIL_KEY_LOW;
 extern char *CIL_KEY_HIGH;
 extern char *CIL_KEY_LOW_HIGH;
+extern char *CIL_KEY_GLBLUB;
 extern char *CIL_KEY_HANDLEUNKNOWN;
 extern char *CIL_KEY_HANDLEUNKNOWN_ALLOW;
 extern char *CIL_KEY_HANDLEUNKNOWN_DENY;
@@ -941,6 +942,7 @@ enum cil_default_object_range {
 	CIL_DEFAULT_TARGET_LOW      = DEFAULT_TARGET_LOW,
 	CIL_DEFAULT_TARGET_HIGH     = DEFAULT_TARGET_HIGH,
 	CIL_DEFAULT_TARGET_LOW_HIGH = DEFAULT_TARGET_LOW_HIGH,
+	CIL_DEFAULT_GLBLUB          = DEFAULT_GLBLUB,
 };
 
 /* Default labeling behavior for range */

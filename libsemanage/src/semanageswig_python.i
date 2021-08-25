@@ -30,8 +30,6 @@
 %}
 
 %include "stdint.i"
-%ignore semanage_module_install_pp;
-%ignore semanage_module_install_hll;
 
 %wrapper %{
 
@@ -105,7 +103,7 @@
 %apply int *OUTPUT { uint16_t * };
 
 %include <cstring.i>
-/* This is needed to properly mmaped binary data in SWIG */
+/* This is needed to properly mmap binary data in SWIG */
 %cstring_output_allocate_size(void **mapped_data, size_t *data_len, munmap(*$1, *$2));
 
 %typemap(in, numinputs=0) char **(char *temp=NULL) {

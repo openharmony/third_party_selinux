@@ -67,7 +67,7 @@ done
 }
 
 #
-# Get the default label returned from the kernel for a file with a lable the
+# Get the default label returned from the kernel for a file with a label the
 # kernel does not understand
 #
 get_undefined_type() {
@@ -111,7 +111,8 @@ VERBOSE="-p"
 FORCEFLAG=""
 RPMFILES=""
 PREFC=""
-RESTORE_MODE="DEFAULT"
+RESTORE_MODE=""
+BIND_MOUNT_FILESYSTEMS=""
 SETFILES=/sbin/setfiles
 RESTORECON=/sbin/restorecon
 FILESYSTEMSRW=`get_rw_labeled_mounts`
@@ -213,16 +214,17 @@ restore () {
 OPTION=$1
 shift
 
-case "$RESTORE_MODE" in
-    PREFC)
-	diff_filecontext $*
-	return
-    ;;
-    BOOTTIME)
+# [-B | -N time ]
+if [ -n "$BOOTTIME" ]; then
 	newer $BOOTTIME $*
 	return
-    ;;
-esac
+fi
+
+# -C PREVIOUS_FILECONTEXT
+if [ "$RESTORE_MODE" == PREFC ]; then
+	diff_filecontext $*
+	return
+fi
 
 [ -x /usr/sbin/genhomedircon ] && /usr/sbin/genhomedircon
 
@@ -238,11 +240,27 @@ case "$RESTORE_MODE" in
     FILEPATH)
 	${RESTORECON} ${VERBOSE} ${EXCLUDEDIRS} ${FORCEFLAG} $* -R -- "$FILEPATH"
     ;;
-    DEFAULT)
+    *)
 	if [ -n "${FILESYSTEMSRW}" ]; then
 	    LogReadOnly
 	    echo "${OPTION}ing `echo ${FILESYSTEMSRW}`"
-	    ${SETFILES} ${VERBOSE} ${EXCLUDEDIRS} ${FORCEFLAG} $* -q ${FC} ${FILESYSTEMSRW}
+
+	    if [ -z "$BIND_MOUNT_FILESYSTEMS" ]; then
+	        ${SETFILES} ${VERBOSE} ${EXCLUDEDIRS} ${FORCEFLAG} $* -q ${FC} ${FILESYSTEMSRW}
+	    else
+	        # we bind mount so we can fix the labels of files that have already been
+	        # mounted over
+	        for m in `echo $FILESYSTEMSRW`; do
+	            TMP_MOUNT="$(mktemp -d)"
+	            test -z ${TMP_MOUNT+x} && echo "Unable to find temporary directory!" && exit 1
+
+	            mkdir -p "${TMP_MOUNT}${m}" || exit 1
+	            mount --bind "${m}" "${TMP_MOUNT}${m}" || exit 1
+	            ${SETFILES} ${VERBOSE} ${EXCLUDEDIRS} ${FORCEFLAG} $* -q ${FC} -r "${TMP_MOUNT}" "${TMP_MOUNT}${m}"
+	            umount "${TMP_MOUNT}${m}" || exit 1
+	            rm -rf "${TMP_MOUNT}" || echo "Error cleaning up."
+	        done;
+	    fi
 	else
 	    echo >&2 "fixfiles: No suitable file systems found"
 	fi
@@ -271,7 +289,7 @@ fullrelabel() {
 
 
 relabel() {
-    if [ "$RESTORE_MODE" != DEFAULT ]; then
+    if [ -n "$RESTORE_MODE" -a "$RESTORE_MODE" != DEFAULT ]; then
 	usage
 	exit 1
     fi
@@ -302,18 +320,19 @@ process() {
 case "$1" in
     restore) restore Relabel;;
     check) VERBOSE="-v"; restore Check -n;;
-    verify) restore Verify -n;;
+    verify) VERBOSE="-v"; restore Verify -n;;
     relabel) relabel;;
     onboot)
-	if [ "$RESTORE_MODE" != DEFAULT ]; then
+	if [ -n "$RESTORE_MODE" -a "$RESTORE_MODE" != DEFAULT ]; then
 	    usage
 	    exit 1
 	fi
 	> /.autorelabel || exit $?
 	[ -z "$FORCEFLAG" ] || echo -n "$FORCEFLAG " >> /.autorelabel
 	[ -z "$BOOTTIME" ] || echo -N $BOOTTIME >> /.autorelabel
-	# Force full relabel if / does not have a label on it
-	getfilecon / > /dev/null 2>&1  || echo -F >/.autorelabel
+	[ -z "$BIND_MOUNT_FILESYSTEMS" ] || echo "-M" >> /.autorelabel
+	# Force full relabel if SELinux is not enabled
+	selinuxenabled || echo -F > /.autorelabel
 	echo "System will relabel on next boot"
 	;;
     *)
@@ -323,7 +342,7 @@ esac
 }
 usage() {
 	echo $"""
-Usage: $0 [-v] [-F] [-f] relabel
+Usage: $0 [-v] [-F] [-M] [-f] relabel
 or
 Usage: $0 [-v] [-F] [-B | -N time ] { check | restore | verify }
 or
@@ -333,7 +352,7 @@ Usage: $0 [-v] [-F] -R rpmpackage[,rpmpackage...] { check | restore | verify }
 or
 Usage: $0 [-v] [-F] -C PREVIOUS_FILECONTEXT { check | restore | verify }
 or
-Usage: $0 [-F] [-B] onboot
+Usage: $0 [-F] [-M] [-B] onboot
 """
 }
 
@@ -343,7 +362,7 @@ if [ $# -eq 0 ]; then
 fi
 
 set_restore_mode() {
-	if [ "$RESTORE_MODE" != DEFAULT ]; then
+	if [ -n "$RESTORE_MODE" ]; then
 		# can't specify two different modes
 		usage
 		exit 1
@@ -352,11 +371,11 @@ set_restore_mode() {
 }
 
 # See how we were called.
-while getopts "N:BC:FfR:l:v" i; do
+while getopts "N:BC:FfR:l:vM" i; do
     case "$i" in
 	B)
 		BOOTTIME=`/bin/who -b | awk '{print $3}'`
-		set_restore_mode BOOTTIME
+		set_restore_mode DEFAULT
 		;;
 	N)
 		BOOTTIME=$OPTARG
@@ -377,6 +396,9 @@ while getopts "N:BC:FfR:l:v" i; do
 		# Old scripts use obsolete option `-l logfile`
 		echo "Redirecting output to $OPTARG"
 		exec >>"$OPTARG" 2>&1
+		;;
+	M)
+		BIND_MOUNT_FILESYSTEMS="-M"
 		;;
 	F)
 		FORCEFLAG="-F"

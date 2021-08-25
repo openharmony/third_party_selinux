@@ -62,9 +62,7 @@ static int map_ebitmap(ebitmap_t * src, ebitmap_t * dst, uint32_t * map)
 	ebitmap_node_t *tnode;
 	ebitmap_init(dst);
 
-	ebitmap_for_each_bit(src, tnode, i) {
-		if (!ebitmap_node_get_bit(tnode, i))
-			continue;
+	ebitmap_for_each_positive_bit(src, tnode, i) {
 		if (!map[i])
 			continue;
 		if (ebitmap_set_bit(dst, map[i] - 1, 1))
@@ -771,25 +769,23 @@ static int role_fix_callback(hashtab_key_t key, hashtab_datum_t datum,
 	}
 	ebitmap_destroy(&mapped_roles);
 
-	ebitmap_for_each_bit(&role->roles, rnode, i) {
-		if (ebitmap_node_get_bit(rnode, i)) {
-			/* take advantage of sym_val_to_name[]
-			 * of the base module */
-			base_reg_role_id = state->base->p_role_val_to_name[i];
-			regular_role = (role_datum_t *)hashtab_search(
-						state->out->p_roles.table,
-						base_reg_role_id);
-			assert(regular_role != NULL && 
-			       regular_role->flavor == ROLE_ROLE);
+	ebitmap_for_each_positive_bit(&role->roles, rnode, i) {
+		/* take advantage of sym_val_to_name[]
+		 * of the base module */
+		base_reg_role_id = state->base->p_role_val_to_name[i];
+		regular_role = (role_datum_t *)hashtab_search(
+					state->out->p_roles.table,
+					base_reg_role_id);
+		assert(regular_role != NULL &&
+		       regular_role->flavor == ROLE_ROLE);
 
-			if (ebitmap_union(&regular_role->types.types, 
-					  &new_role->types.types)) {
-				ERR(state->handle, "Out of memory!");
-				return -1;
-			}
+		if (ebitmap_union(&regular_role->types.types,
+				  &new_role->types.types)) {
+			ERR(state->handle, "Out of memory!");
+			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -1244,12 +1240,8 @@ static int copy_role_allows(expand_state_t * state, role_allow_rule_t * rules)
 			return -1;
 		}
 
-		ebitmap_for_each_bit(&roles, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
-			ebitmap_for_each_bit(&new_roles, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
+		ebitmap_for_each_positive_bit(&roles, snode, i) {
+			ebitmap_for_each_positive_bit(&new_roles, tnode, j) {
 				/* check for duplicates */
 				cur_allow = state->out->role_allow;
 				while (cur_allow) {
@@ -1312,16 +1304,9 @@ static int copy_role_trans(expand_state_t * state, role_trans_rule_t * rules)
 			ERR(state->handle, "Out of memory!");
 			return -1;
 		}
-		ebitmap_for_each_bit(&roles, rnode, i) {
-			if (!ebitmap_node_get_bit(rnode, i))
-				continue;
-			ebitmap_for_each_bit(&types, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
-				ebitmap_for_each_bit(&cur->classes, cnode, k) {
-					if (!ebitmap_node_get_bit(cnode, k))
-						continue;
-
+		ebitmap_for_each_positive_bit(&roles, rnode, i) {
+			ebitmap_for_each_positive_bit(&types, tnode, j) {
+				ebitmap_for_each_positive_bit(&cur->classes, cnode, k) {
 					cur_trans = state->out->role_tr;
 					while (cur_trans) {
 						unsigned int mapped_role;
@@ -1386,8 +1371,6 @@ static int copy_role_trans(expand_state_t * state, role_trans_rule_t * rules)
 static int expand_filename_trans(expand_state_t *state, filename_trans_rule_t *rules)
 {
 	unsigned int i, j;
-	filename_trans_t key, *new_trans;
-	filename_trans_datum_t *otype;
 	filename_trans_rule_t *cur_rule;
 	ebitmap_t stypes, ttypes;
 	ebitmap_node_t *snode, *tnode;
@@ -1395,7 +1378,7 @@ static int expand_filename_trans(expand_state_t *state, filename_trans_rule_t *r
 
 	cur_rule = rules;
 	while (cur_rule) {
-		uint32_t mapped_otype;
+		uint32_t mapped_otype, present_otype;
 
 		ebitmap_init(&stypes);
 		ebitmap_init(&ttypes);
@@ -1414,22 +1397,16 @@ static int expand_filename_trans(expand_state_t *state, filename_trans_rule_t *r
 
 		mapped_otype = state->typemap[cur_rule->otype - 1];
 
-		ebitmap_for_each_bit(&stypes, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
-			ebitmap_for_each_bit(&ttypes, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
-
-				key.stype = i + 1;
-				key.ttype = j + 1;
-				key.tclass = cur_rule->tclass;
-				key.name = cur_rule->name;
-				otype = hashtab_search(state->out->filename_trans,
-						       (hashtab_key_t) &key);
-				if (otype) {
+		ebitmap_for_each_positive_bit(&stypes, snode, i) {
+			ebitmap_for_each_positive_bit(&ttypes, tnode, j) {
+				rc = policydb_filetrans_insert(
+					state->out, i + 1, j + 1,
+					cur_rule->tclass, cur_rule->name,
+					NULL, mapped_otype, &present_otype
+				);
+				if (rc == SEPOL_EEXIST) {
 					/* duplicate rule, ignore */
-					if (otype->otype == mapped_otype)
+					if (present_otype == mapped_otype)
 						continue;
 
 					ERR(state->handle, "Conflicting name-based type_transition %s %s:%s \"%s\":  %s vs %s",
@@ -1437,44 +1414,11 @@ static int expand_filename_trans(expand_state_t *state, filename_trans_rule_t *r
 					    state->out->p_type_val_to_name[j],
 					    state->out->p_class_val_to_name[cur_rule->tclass - 1],
 					    cur_rule->name,
-					    state->out->p_type_val_to_name[otype->otype - 1],
+					    state->out->p_type_val_to_name[present_otype - 1],
 					    state->out->p_type_val_to_name[mapped_otype - 1]);
 					return -1;
-				}
-
-				new_trans = calloc(1, sizeof(*new_trans));
-				if (!new_trans) {
+				} else if (rc < 0) {
 					ERR(state->handle, "Out of memory!");
-					return -1;
-				}
-
-				new_trans->name = strdup(cur_rule->name);
-				if (!new_trans->name) {
-					ERR(state->handle, "Out of memory!");
-					free(new_trans);
-					return -1;
-				}
-				new_trans->stype = i + 1;
-				new_trans->ttype = j + 1;
-				new_trans->tclass = cur_rule->tclass;
-
-				otype = calloc(1, sizeof(*otype));
-				if (!otype) {
-					ERR(state->handle, "Out of memory!");
-					free(new_trans->name);
-					free(new_trans);
-					return -1;
-				}
-				otype->otype = mapped_otype;
-
-				rc = hashtab_insert(state->out->filename_trans,
-						    (hashtab_key_t)new_trans,
-						    otype);
-				if (rc) {
-					ERR(state->handle, "Out of memory!");
-					free(otype);
-					free(new_trans->name);
-					free(new_trans);
 					return -1;
 				}
 			}
@@ -1585,18 +1529,11 @@ static int expand_range_trans(expand_state_t * state,
 		}
 
 		/* loop on source type */
-		ebitmap_for_each_bit(&stypes, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
+		ebitmap_for_each_positive_bit(&stypes, snode, i) {
 			/* loop on target type */
-			ebitmap_for_each_bit(&ttypes, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
+			ebitmap_for_each_positive_bit(&ttypes, tnode, j) {
 				/* loop on target class */
-				ebitmap_for_each_bit(&rule->tclasses, cnode, k) {
-					if (!ebitmap_node_get_bit(cnode, k))
-						continue;
-
+				ebitmap_for_each_positive_bit(&rule->tclasses, cnode, k) {
 					if (exp_rangetr_helper(i + 1,
 							       j + 1,
 							       k + 1,
@@ -1633,17 +1570,22 @@ static avtab_ptr_t find_avtab_node(sepol_handle_t * handle,
 
 	/* AVTAB_XPERMS entries are not necessarily unique */
 	if (key->specified & AVTAB_XPERMS) {
-		node = avtab_search_node(avtab, key);
-		while (node) {
-			if ((node->datum.xperms->specified == xperms->specified) &&
-				(node->datum.xperms->driver == xperms->driver)) {
-				match = 1;
-				break;
-			}
-			node = avtab_search_node_next(node, key->specified);
-		}
-		if (!match)
+		if (xperms == NULL) {
+			ERR(handle, "searching xperms NULL");
 			node = NULL;
+		} else {
+			node = avtab_search_node(avtab, key);
+			while (node) {
+				if ((node->datum.xperms->specified == xperms->specified) &&
+					(node->datum.xperms->driver == xperms->driver)) {
+					match = 1;
+					break;
+				}
+				node = avtab_search_node_next(node, key->specified);
+			}
+			if (!match)
+				node = NULL;
+		}
 	} else {
 		node = avtab_search_node(avtab, key);
 	}
@@ -1912,9 +1854,7 @@ static int expand_rule_helper(sepol_handle_t * handle,
 	int retval;
 	ebitmap_node_t *snode, *tnode;
 
-	ebitmap_for_each_bit(stypes, snode, i) {
-		if (!ebitmap_node_get_bit(snode, i))
-			continue;
+	ebitmap_for_each_positive_bit(stypes, snode, i) {
 		if (source_rule->flags & RULE_SELF) {
 			if (source_rule->specified & (AVRULE_AV | AVRULE_XPERMS)) {
 				retval = expand_avrule_helper(handle, source_rule->specified,
@@ -1931,9 +1871,7 @@ static int expand_rule_helper(sepol_handle_t * handle,
 					return retval;
 			}
 		}
-		ebitmap_for_each_bit(ttypes, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+		ebitmap_for_each_positive_bit(ttypes, tnode, j) {
 			if (source_rule->specified & (AVRULE_AV | AVRULE_XPERMS)) {
 				retval = expand_avrule_helper(handle, source_rule->specified,
 							      cond, i, j, source_rule->perms,
@@ -2124,6 +2062,12 @@ static int ocontext_copy_xen(expand_state_t *state)
 	for (i = 0; i < OCON_NUM; i++) {
 		l = NULL;
 		for (c = state->base->ocontexts[i]; c; c = c->next) {
+			if (i == OCON_XEN_ISID && !c->context[0].user) {
+				INFO(state->handle,
+				     "No context assigned to SID %s, omitting from policy",
+				     c->u.name);
+				continue;
+			}
 			n = malloc(sizeof(ocontext_t));
 			if (!n) {
 				ERR(state->handle, "Out of memory!");
@@ -2137,12 +2081,6 @@ static int ocontext_copy_xen(expand_state_t *state)
 			l = n;
 			switch (i) {
 			case OCON_XEN_ISID:
-				if (c->context[0].user == 0) {
-					ERR(state->handle,
-					    "Missing context for %s initial sid",
-					    c->u.name);
-					return -1;
-				}
 				n->sid[0] = c->sid[0];
 				break;
 			case OCON_XEN_PIRQ:
@@ -2190,6 +2128,12 @@ static int ocontext_copy_selinux(expand_state_t *state)
 	for (i = 0; i < OCON_NUM; i++) {
 		l = NULL;
 		for (c = state->base->ocontexts[i]; c; c = c->next) {
+			if (i == OCON_ISID && !c->context[0].user) {
+				INFO(state->handle,
+				     "No context assigned to SID %s, omitting from policy",
+				     c->u.name);
+				continue;
+			}
 			n = malloc(sizeof(ocontext_t));
 			if (!n) {
 				ERR(state->handle, "Out of memory!");
@@ -2203,12 +2147,6 @@ static int ocontext_copy_selinux(expand_state_t *state)
 			l = n;
 			switch (i) {
 			case OCON_ISID:
-				if (c->context[0].user == 0) {
-					ERR(state->handle,
-					    "Missing context for %s initial sid",
-					    c->u.name);
-					return -1;
-				}
 				n->sid[0] = c->sid[0];
 				break;
 			case OCON_FS:	/* FALLTHROUGH */
@@ -2362,9 +2300,7 @@ static int type_attr_map(hashtab_key_t key
 			if (ebitmap_cpy(&p->attr_type_map[value - 1], &type->types)) {
 				goto oom;
 			}
-			ebitmap_for_each_bit(&type->types, tnode, i) {
-				if (!ebitmap_node_get_bit(tnode, i))
-					continue;
+			ebitmap_for_each_positive_bit(&type->types, tnode, i) {
 				if (ebitmap_set_bit(&p->type_attr_map[i], value - 1, 1)) {
 					goto oom;
 				}
@@ -2475,20 +2411,18 @@ int role_set_expand(role_set_t * x, ebitmap_t * r, policydb_t * out, policydb_t 
 	
 	if (rolemap) {
 		assert(base != NULL);
-		ebitmap_for_each_bit(&x->roles, rnode, i) {
-			if (ebitmap_node_get_bit(rnode, i)) {
-				/* take advantage of p_role_val_to_struct[]
-				 * of the base module */
-				role = base->role_val_to_struct[i];
-				assert(role != NULL);
-				if (role->flavor == ROLE_ATTRIB) {
-					if (ebitmap_union(&roles,
-							  &role->roles))
-						goto bad;
-				} else {
-					if (ebitmap_set_bit(&roles, i, 1))
-						goto bad;
-				}
+		ebitmap_for_each_positive_bit(&x->roles, rnode, i) {
+			/* take advantage of p_role_val_to_struct[]
+			 * of the base module */
+			role = base->role_val_to_struct[i];
+			assert(role != NULL);
+			if (role->flavor == ROLE_ATTRIB) {
+				if (ebitmap_union(&roles,
+						  &role->roles))
+					goto bad;
+			} else {
+				if (ebitmap_set_bit(&roles, i, 1))
+					goto bad;
 			}
 		}
 		if (map_ebitmap(&roles, &mapped_roles, rolemap))
@@ -2498,11 +2432,9 @@ int role_set_expand(role_set_t * x, ebitmap_t * r, policydb_t * out, policydb_t 
 			goto bad;
 	}
 
-	ebitmap_for_each_bit(&mapped_roles, rnode, i) {
-		if (ebitmap_node_get_bit(rnode, i)) {
-			if (ebitmap_set_bit(r, i, 1))
-				goto bad;
-		}
+	ebitmap_for_each_positive_bit(&mapped_roles, rnode, i) {
+		if (ebitmap_set_bit(r, i, 1))
+			goto bad;
 	}
 
 	ebitmap_destroy(&mapped_roles);
@@ -2541,7 +2473,7 @@ int type_set_expand(type_set_t * set, ebitmap_t * t, policydb_t * p,
 	unsigned int i;
 	ebitmap_t types, neg_types;
 	ebitmap_node_t *tnode;
-	unsigned char expand = alwaysexpand || ebitmap_length(&set->negset) || set->flags;
+	unsigned char expand = alwaysexpand || !ebitmap_is_empty(&set->negset) || set->flags;
 	type_datum_t *type;
 	int rc =-1;
 
@@ -2549,10 +2481,7 @@ int type_set_expand(type_set_t * set, ebitmap_t * t, policydb_t * p,
 	ebitmap_init(t);
 
 	/* First go through the types and OR all the attributes to types */
-	ebitmap_for_each_bit(&set->types, tnode, i) {
-		if (!ebitmap_node_get_bit(tnode, i))
-			continue;
-
+	ebitmap_for_each_positive_bit(&set->types, tnode, i) {
 		/*
 		 * invalid policies might have more types set in the ebitmap than
 		 * what's available in the type_val_to_struct mapping
@@ -2580,19 +2509,17 @@ int type_set_expand(type_set_t * set, ebitmap_t * t, policydb_t * p,
 
 	/* Now do the same thing for negset */
 	ebitmap_init(&neg_types);
-	ebitmap_for_each_bit(&set->negset, tnode, i) {
-		if (ebitmap_node_get_bit(tnode, i)) {
-			if (p->type_val_to_struct[i] &&
-			    p->type_val_to_struct[i]->flavor == TYPE_ATTRIB) {
-				if (ebitmap_union
-				    (&neg_types,
-				     &p->type_val_to_struct[i]->types)) {
-					goto err_neg;
-				}
-			} else {
-				if (ebitmap_set_bit(&neg_types, i, 1)) {
-					goto err_neg;
-				}
+	ebitmap_for_each_positive_bit(&set->negset, tnode, i) {
+		if (p->type_val_to_struct[i] &&
+		    p->type_val_to_struct[i]->flavor == TYPE_ATTRIB) {
+			if (ebitmap_union
+			    (&neg_types,
+			     &p->type_val_to_struct[i]->types)) {
+				goto err_neg;
+			}
+		} else {
+			if (ebitmap_set_bit(&neg_types, i, 1)) {
+				goto err_neg;
 			}
 		}
 	}
@@ -2611,9 +2538,8 @@ int type_set_expand(type_set_t * set, ebitmap_t * t, policydb_t * p,
 		goto out;
 	}
 
-	ebitmap_for_each_bit(&types, tnode, i) {
-		if (ebitmap_node_get_bit(tnode, i)
-		    && (!ebitmap_get_bit(&neg_types, i)))
+	ebitmap_for_each_positive_bit(&types, tnode, i) {
+		if (!ebitmap_get_bit(&neg_types, i))
 			if (ebitmap_set_bit(t, i, 1))
 				goto err_neg;
 	}
@@ -3316,9 +3242,7 @@ static int expand_avtab_node(avtab_key_t * k, avtab_datum_t * d, void *args)
 	if (stype && stype->flavor != TYPE_ATTRIB) {
 		/* Source is an individual type, target is an attribute. */
 		newkey.source_type = k->source_type;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			newkey.target_type = j + 1;
 			rc = expand_avtab_insert(expa, &newkey, d);
 			if (rc)
@@ -3330,9 +3254,7 @@ static int expand_avtab_node(avtab_key_t * k, avtab_datum_t * d, void *args)
 	if (ttype && ttype->flavor != TYPE_ATTRIB) {
 		/* Target is an individual type, source is an attribute. */
 		newkey.target_type = k->target_type;
-		ebitmap_for_each_bit(sattr, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
+		ebitmap_for_each_positive_bit(sattr, snode, i) {
 			newkey.source_type = i + 1;
 			rc = expand_avtab_insert(expa, &newkey, d);
 			if (rc)
@@ -3342,12 +3264,8 @@ static int expand_avtab_node(avtab_key_t * k, avtab_datum_t * d, void *args)
 	}
 
 	/* Both source and target type are attributes. */
-	ebitmap_for_each_bit(sattr, snode, i) {
-		if (!ebitmap_node_get_bit(snode, i))
-			continue;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+	ebitmap_for_each_positive_bit(sattr, snode, i) {
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			newkey.source_type = i + 1;
 			newkey.target_type = j + 1;
 			rc = expand_avtab_insert(expa, &newkey, d);
@@ -3446,9 +3364,7 @@ int expand_cond_av_node(policydb_t * p,
 	if (stype && stype->flavor != TYPE_ATTRIB) {
 		/* Source is an individual type, target is an attribute. */
 		newkey.source_type = k->source_type;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			newkey.target_type = j + 1;
 			rc = expand_cond_insert(newl, expa, &newkey, d);
 			if (rc)
@@ -3460,9 +3376,7 @@ int expand_cond_av_node(policydb_t * p,
 	if (ttype && ttype->flavor != TYPE_ATTRIB) {
 		/* Target is an individual type, source is an attribute. */
 		newkey.target_type = k->target_type;
-		ebitmap_for_each_bit(sattr, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
+		ebitmap_for_each_positive_bit(sattr, snode, i) {
 			newkey.source_type = i + 1;
 			rc = expand_cond_insert(newl, expa, &newkey, d);
 			if (rc)
@@ -3472,12 +3386,8 @@ int expand_cond_av_node(policydb_t * p,
 	}
 
 	/* Both source and target type are attributes. */
-	ebitmap_for_each_bit(sattr, snode, i) {
-		if (!ebitmap_node_get_bit(snode, i))
-			continue;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+	ebitmap_for_each_positive_bit(sattr, snode, i) {
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			newkey.source_type = i + 1;
 			newkey.target_type = j + 1;
 			rc = expand_cond_insert(newl, expa, &newkey, d);

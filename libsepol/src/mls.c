@@ -27,9 +27,9 @@
  * Implementation of the multi-level security (MLS) policy.
  */
 
+#include <sepol/context.h>
 #include <sepol/policydb/policydb.h>
 #include <sepol/policydb/services.h>
-#include <sepol/policydb/flask.h>
 #include <sepol/policydb/context.h>
 
 #include <stdlib.h>
@@ -289,17 +289,15 @@ int mls_context_isvalid(const policydb_t * p, const context_struct_t * c)
 		if (!levdatum)
 			return 0;
 
-		ebitmap_for_each_bit(&c->range.level[l].cat, cnode, i) {
-			if (ebitmap_node_get_bit(cnode, i)) {
-				if (i > p->p_cats.nprim)
-					return 0;
-				if (!ebitmap_get_bit(&levdatum->level->cat, i))
-					/*
-					 * Category may not be associated with
-					 * sensitivity in low level.
-					 */
-					return 0;
-			}
+		ebitmap_for_each_positive_bit(&c->range.level[l].cat, cnode, i) {
+			if (i > p->p_cats.nprim)
+				return 0;
+			if (!ebitmap_get_bit(&levdatum->level->cat, i))
+				/*
+				 * Category may not be associated with
+				 * sensitivity in low level.
+				 */
+				return 0;
 		}
 	}
 
@@ -579,23 +577,21 @@ int mls_convert_context(policydb_t * oldp,
 		c->range.level[l].sens = levdatum->level->sens;
 
 		ebitmap_init(&bitmap);
-		ebitmap_for_each_bit(&c->range.level[l].cat, cnode, i) {
-			if (ebitmap_node_get_bit(cnode, i)) {
-				int rc;
+		ebitmap_for_each_positive_bit(&c->range.level[l].cat, cnode, i) {
+			int rc;
 
-				catdatum =
-				    (cat_datum_t *) hashtab_search(newp->p_cats.
-								   table,
-								   oldp->
-								   p_cat_val_to_name
-								   [i]);
-				if (!catdatum)
-					return -EINVAL;
-				rc = ebitmap_set_bit(&bitmap,
-						     catdatum->s.value - 1, 1);
-				if (rc)
-					return rc;
-			}
+			catdatum =
+			    (cat_datum_t *) hashtab_search(newp->p_cats.
+							   table,
+							   oldp->
+							   p_cat_val_to_name
+							   [i]);
+			if (!catdatum)
+				return -EINVAL;
+			rc = ebitmap_set_bit(&bitmap,
+					     catdatum->s.value - 1, 1);
+			if (rc)
+				return rc;
 		}
 		ebitmap_destroy(&c->range.level[l].cat);
 		c->range.level[l].cat = bitmap;
@@ -647,11 +643,13 @@ int mls_compute_sid(policydb_t * policydb,
 			return mls_context_cpy_high(newcontext, tcontext);
 		case DEFAULT_TARGET_LOW_HIGH:
 			return mls_context_cpy(newcontext, tcontext);
+		case DEFAULT_GLBLUB:
+			return mls_context_glblub(newcontext, scontext, tcontext);
 		}
 
 		/* Fallthrough */
 	case AVTAB_CHANGE:
-		if (tclass == SECCLASS_PROCESS)
+		if (tclass == policydb->process_class)
 			/* Use the process MLS attributes. */
 			return mls_copy_context(newcontext, scontext);
 		else
@@ -667,7 +665,7 @@ int mls_compute_sid(policydb_t * policydb,
 }
 
 int sepol_mls_contains(sepol_handle_t * handle,
-		       sepol_policydb_t * policydb,
+		       const sepol_policydb_t * policydb,
 		       const char *mls1, const char *mls2, int *response)
 {
 
@@ -706,7 +704,7 @@ int sepol_mls_contains(sepol_handle_t * handle,
 }
 
 int sepol_mls_check(sepol_handle_t * handle,
-		    sepol_policydb_t * policydb, const char *mls)
+		    const sepol_policydb_t * policydb, const char *mls)
 {
 
 	int ret;

@@ -653,7 +653,6 @@ int cil_copy_expandtypeattribute(__attribute__((unused)) struct cil_db *db, void
 	struct cil_expandtypeattribute *orig = data;
 	struct cil_expandtypeattribute *new = NULL;
 
-	fprintf(stderr, "%s %u\n", __func__, __LINE__);
 	cil_expandtypeattribute_init(&new);
 
 	if (orig->attr_strs != NULL) {
@@ -827,7 +826,7 @@ int cil_copy_avrule(struct cil_db *db, void *data, void **copy, __attribute__((u
 	if (!new->is_extended) {
 		cil_copy_classperms_list(orig->perms.classperms, &new->perms.classperms);
 	} else {
-		if (new->perms.x.permx_str != NULL) {
+		if (orig->perms.x.permx_str != NULL) {
 			new->perms.x.permx_str = orig->perms.x.permx_str;
 		} else {
 			cil_permissionx_init(&new->perms.x.permx);

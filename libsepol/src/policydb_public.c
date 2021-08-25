@@ -68,12 +68,12 @@ int sepol_policydb_create(sepol_policydb_t ** sp)
 	p = &(*sp)->p;
 	if (policydb_init(p)) {
 		free(*sp);
+		*sp = NULL;
 		return -1;
 	}
 	return 0;
 }
 
-hidden_def(sepol_policydb_create)
 
 void sepol_policydb_free(sepol_policydb_t * p)
 {
@@ -83,7 +83,6 @@ void sepol_policydb_free(sepol_policydb_t * p)
 	free(p);
 }
 
-hidden_def(sepol_policydb_free)
 
 int sepol_policy_kern_vers_min(void)
 {
@@ -167,6 +166,11 @@ int sepol_policydb_set_target_platform(sepol_policydb_t * sp,
 
 	p->target_platform = target_platform;		
 	return 0;
+}
+
+int sepol_policydb_optimize(sepol_policydb_t * p)
+{
+	return policydb_optimize(&p->p);
 }
 
 int sepol_policydb_read(sepol_policydb_t * p, sepol_policy_file_t * pf)

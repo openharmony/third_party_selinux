@@ -36,6 +36,8 @@ typedef int (* require_func_t)(void);
 
 static char linebuf[2][255];
 static unsigned int lno = 0;
+int werror = 0;
+int yyerror(const char *msg);
 int yywarn(const char *msg);
 
 void set_source_file(const char *name);
@@ -256,6 +258,8 @@ high |
 HIGH				{ return(HIGH); }
 low |
 LOW				{ return(LOW); }
+glblub |
+GLBLUB				{ return(GLBLUB); }
 "/"[^ \n\r\t\f]*	        { return(PATH); }
 \""/"[^\"\n]*\" 		{ return(QPATH); }
 \"[^"/"\"\n]+\"	{ return(FILENAME); }
@@ -288,7 +292,7 @@ LOW				{ return(LOW); }
 "]" |
 "~" |
 "*"				{ return(yytext[0]); } 
-.                               { yywarn("unrecognized character");}
+.                               { yyerror("unrecognized character");}
 %%
 int yyerror(const char *msg)
 {
@@ -308,6 +312,9 @@ int yyerror(const char *msg)
 
 int yywarn(const char *msg)
 {
+	if (werror)
+		return yyerror(msg);
+
 	if (source_file[0])
 		fprintf(stderr, "%s:%ld:",
 			source_file, source_lineno);

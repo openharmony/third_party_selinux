@@ -124,13 +124,14 @@ int sepol_module_package_create(sepol_module_package_t ** p)
 		return -1;
 
 	rc = module_package_init(*p);
-	if (rc < 0)
+	if (rc < 0) {
 		free(*p);
+		*p = NULL;
+	}
 
 	return rc;
 }
 
-hidden_def(sepol_module_package_create)
 
 /* Deallocates all memory associated with a module package, including
  * the pointer itself.  Does nothing if p is NULL.
@@ -148,7 +149,6 @@ void sepol_module_package_free(sepol_module_package_t * p)
 	free(p);
 }
 
-hidden_def(sepol_module_package_free)
 
 char *sepol_module_package_get_file_contexts(sepol_module_package_t * p)
 {
