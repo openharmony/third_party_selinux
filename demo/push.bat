@@ -17,7 +17,8 @@ hdc_std.exe file send libpcre2.z.so /system/lib
 hdc_std.exe file send libselinux.z.so /system/lib
 hdc_std.exe file send libsepol.z.so /system/lib
 
-hdc_std.exe shell mkdir -pv /etc/selinux/targeted/contexts/files
+hdc_std.exe shell mkdir -pv /etc/selinux/targeted/contexts/files/
+hdc_std.exe shell mkdir -pv /etc/selinux/targeted/policy/
 hdc_std.exe file send config /etc/selinux/config
 hdc_std.exe file send precompiled_sepolicy /etc/selinux/targeted/policy/policy.31
 hdc_std.exe file send file_contexts /etc/selinux/targeted/contexts/files/file_contexts
