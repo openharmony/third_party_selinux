@@ -1301,7 +1301,7 @@ static int __cil_expr_to_bitmap(struct cil_list *expr, ebitmap_t *out, int max, 
 	flavor = expr->flavor;
 
 	if (curr->flavor == CIL_OP) {
-		enum cil_flavor op = (enum cil_flavor)curr->data;
+		enum cil_flavor op = (enum cil_flavor)(uintptr_t)curr->data;
 
 		if (op == CIL_ALL) {
 			ebitmap_init(&b1); /* all zeros */
@@ -1482,7 +1482,7 @@ static void __mark_neverallow_attrs(struct cil_list *expr_list)
 
 	cil_list_for_each(curr, expr_list) {
 		if (curr->flavor == CIL_DATUM) {
-			if (NODE(curr->data)->flavor == CIL_TYPEATTRIBUTE) {
+			if (FLAVOR(curr->data) == CIL_TYPEATTRIBUTE) {
 				struct cil_typeattribute *attr = curr->data;
 				if (strstr(DATUM(attr)->name, TYPEATTR_INFIX)) {
 					__mark_neverallow_attrs(attr->expr_list);
@@ -1654,12 +1654,8 @@ static int __cil_post_db_roletype_helper(struct cil_tree_node *node, uint32_t *f
 			ebitmap_node_t *rnode;
 			unsigned int i;
 	
-			ebitmap_for_each_bit(attr->roles, rnode, i) {
+			ebitmap_for_each_positive_bit(attr->roles, rnode, i) {
 				struct cil_role *role = NULL;
-
-				if (!ebitmap_get_bit(attr->roles, i)) {
-					continue;
-				}
 
 				role = db->val_to_role[i];
 
@@ -1751,11 +1747,7 @@ static int __cil_post_db_userrole_helper(struct cil_tree_node *node, uint32_t *f
 		if (user_node->flavor == CIL_USERATTRIBUTE) {
 			u_attr = userrole->user;
 
-			ebitmap_for_each_bit(u_attr->users, unode, i) {
-				if (!ebitmap_get_bit(u_attr->users, i)) {
-					continue;
-				}
-
+			ebitmap_for_each_positive_bit(u_attr->users, unode, i) {
 				user = db->val_to_user[i];
 
 				rc = __cil_user_assign_roles(user, role_datum);
@@ -2317,7 +2309,7 @@ static int cil_post_db(struct cil_db *db)
 
 	rc = cil_tree_walk(db->ast->root, __cil_post_db_count_helper, NULL, NULL, db);
 	if (rc != SEPOL_OK) {
-		cil_log(CIL_INFO, "Failure during cil databse count helper\n");
+		cil_log(CIL_INFO, "Failure during cil database count helper\n");
 		goto exit;
 	}
 

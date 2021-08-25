@@ -25,7 +25,6 @@
 #include <sepol/policydb/policydb.h>
 #include <sepol/policydb/services.h>
 #include <sepol/policydb/conditional.h>
-#include <sepol/policydb/flask.h>
 #include <sepol/policydb/hierarchy.h>
 #include <sepol/policydb/expand.h>
 #include <sepol/policydb/link.h>
@@ -41,6 +40,7 @@ extern int optind;
 static sidtab_t sidtab;
 
 extern int mlspol;
+extern int werror;
 
 static int handle_unknown = SEPOL_DENY_UNKNOWN;
 static const char *txtfile = "policy.conf";
@@ -126,7 +126,7 @@ static int write_binary_policy(policydb_t * p, FILE *outfp)
 
 static __attribute__((__noreturn__)) void usage(const char *progname)
 {
-	printf("usage:  %s [-h] [-V] [-b] [-C] [-U handle_unknown] [-m] [-M] [-o FILE] [INPUT]\n", progname);
+	printf("usage:  %s [-h] [-V] [-b] [-C] [-E] [-U handle_unknown] [-m] [-M] [-o FILE] [INPUT]\n", progname);
 	printf("Build base and policy modules.\n");
 	printf("Options:\n");
 	printf("  INPUT      build module from INPUT (else read from \"%s\")\n",
@@ -134,6 +134,7 @@ static __attribute__((__noreturn__)) void usage(const char *progname)
 	printf("  -V         show policy versions created by this program\n");
 	printf("  -b         treat input as a binary policy file\n");
 	printf("  -C         output CIL policy instead of binary policy\n");
+	printf("  -E         treat warnings as errors\n");
 	printf("  -h         print usage\n");
 	printf("  -U OPTION  How to handle unknown classes and permissions\n");
 	printf("               deny: Deny unknown kernel checks\n");
@@ -142,6 +143,8 @@ static __attribute__((__noreturn__)) void usage(const char *progname)
 	printf("  -m         build a policy module instead of a base module\n");
 	printf("  -M         enable MLS policy\n");
 	printf("  -o FILE    write module to FILE (else just check syntax)\n");
+	printf("  -c VERSION build a policy module targeting a modular policy version (%d-%d)\n",
+	       MOD_POLICYDB_VERSION_MIN, MOD_POLICYDB_VERSION_MAX);
 	exit(1);
 }
 
@@ -160,10 +163,11 @@ int main(int argc, char **argv)
 		{"handle-unknown", required_argument, NULL, 'U'},
 		{"mls", no_argument, NULL, 'M'},
 		{"cil", no_argument, NULL, 'C'},
+		{"werror", no_argument, NULL, 'E'},
 		{NULL, 0, NULL, 0}
 	};
 
-	while ((ch = getopt_long(argc, argv, "ho:bVU:mMC", long_options, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, "ho:bVEU:mMCc:", long_options, NULL)) != -1) {
 		switch (ch) {
 		case 'h':
 			usage(argv[0]);
@@ -177,6 +181,9 @@ int main(int argc, char **argv)
 			break;
 		case 'V':
 			show_version = 1;
+			break;
+		case 'E':
+			werror = 1;
 			break;
 		case 'U':
 			if (!strcasecmp(optarg, "deny")) {
@@ -194,7 +201,6 @@ int main(int argc, char **argv)
 			usage(argv[0]);
 		case 'm':
 			policy_type = POLICY_MOD;
-			policyvers = MOD_POLICYDB_VERSION_MAX;
 			break;
 		case 'M':
 			mlspol = 1;
@@ -202,6 +208,29 @@ int main(int argc, char **argv)
 		case 'C':
 			cil = 1;
 			break;
+		case 'c': {
+			long int n;
+			errno = 0;
+			n = strtol(optarg, NULL, 10);
+			if (errno) {
+				fprintf(stderr,
+					"Invalid policyvers specified: %s\n",
+					optarg);
+				usage(argv[0]);
+			}
+
+			if (n < MOD_POLICYDB_VERSION_MIN
+			    || n > MOD_POLICYDB_VERSION_MAX) {
+				fprintf(stderr,
+					"policyvers value %ld not in range %d-%d\n",
+					n, MOD_POLICYDB_VERSION_MIN,
+					MOD_POLICYDB_VERSION_MAX);
+				usage(argv[0]);
+			}
+
+			policyvers = n;
+			break;
+		}
 		default:
 			usage(argv[0]);
 		}

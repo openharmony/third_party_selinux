@@ -157,12 +157,8 @@ static int report_assertion_extended_permissions(sepol_handle_t *handle,
 	memcpy(&tmp_key, k, sizeof(avtab_key_t));
 	tmp_key.specified = AVTAB_XPERMS_ALLOWED;
 
-	ebitmap_for_each_bit(sattr, snode, i) {
-		if (!ebitmap_node_get_bit(snode, i))
-			continue;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+	ebitmap_for_each_positive_bit(sattr, snode, i) {
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			tmp_key.source_type = i + 1;
 			tmp_key.target_type = j + 1;
 			for (node = avtab_search_node(avtab, &tmp_key);
@@ -238,7 +234,7 @@ static int report_assertion_avtab_matches(avtab_key_t *k, avtab_datum_t *d, void
 	if (rc)
 		goto oom;
 
-	if (ebitmap_length(&src_matches) == 0)
+	if (ebitmap_is_empty(&src_matches))
 		goto exit;
 
 	rc = ebitmap_and(&tgt_matches, &avrule->ttypes.types, &p->attr_type_map[k->target_type -1]);
@@ -253,14 +249,14 @@ static int report_assertion_avtab_matches(avtab_key_t *k, avtab_datum_t *d, void
 		if (rc)
 			goto oom;
 
-		if (ebitmap_length(&self_matches) > 0) {
+		if (!ebitmap_is_empty(&self_matches)) {
 			rc = ebitmap_union(&tgt_matches, &self_matches);
 			if (rc)
 				goto oom;
 		}
 	}
 
-	if (ebitmap_length(&tgt_matches) == 0)
+	if (ebitmap_is_empty(&tgt_matches))
 		goto exit;
 
 	for (cp = avrule->perms; cp; cp = cp->next) {
@@ -270,13 +266,8 @@ static int report_assertion_avtab_matches(avtab_key_t *k, avtab_datum_t *d, void
 			continue;
 		}
 
-		ebitmap_for_each_bit(&src_matches, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
-			ebitmap_for_each_bit(&tgt_matches, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
-
+		ebitmap_for_each_positive_bit(&src_matches, snode, i) {
+			ebitmap_for_each_positive_bit(&tgt_matches, tnode, j) {
 				if (avrule->specified == AVRULE_XPERMS_NEVERALLOW) {
 					a->errors += report_assertion_extended_permissions(handle,p, avrule,
 											i, j, cp, perms, k, avtab);
@@ -345,12 +336,8 @@ static int check_assertion_extended_permissions_avtab(avrule_t *avrule, avtab_t 
 	memcpy(&tmp_key, k, sizeof(avtab_key_t));
 	tmp_key.specified = AVTAB_XPERMS_ALLOWED;
 
-	ebitmap_for_each_bit(sattr, snode, i) {
-		if (!ebitmap_node_get_bit(snode, i))
-			continue;
-		ebitmap_for_each_bit(tattr, tnode, j) {
-			if (!ebitmap_node_get_bit(tnode, j))
-				continue;
+	ebitmap_for_each_positive_bit(sattr, snode, i) {
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
 			tmp_key.source_type = i + 1;
 			tmp_key.target_type = j + 1;
 			for (node = avtab_search_node(avtab, &tmp_key);
@@ -407,7 +394,7 @@ static int check_assertion_extended_permissions(avrule_t *avrule, avtab_t *avtab
 	if (rc)
 		goto oom;
 
-	if (ebitmap_length(&src_matches) == 0)
+	if (ebitmap_is_empty(&src_matches))
 		goto exit;
 
 	rc = ebitmap_and(&tgt_matches, &avrule->ttypes.types,
@@ -424,26 +411,21 @@ static int check_assertion_extended_permissions(avrule_t *avrule, avtab_t *avtab
 		if (rc)
 			goto oom;
 
-		if (ebitmap_length(&self_matches) > 0) {
+		if (!ebitmap_is_empty(&self_matches)) {
 			rc = ebitmap_union(&tgt_matches, &self_matches);
 			if (rc)
 				goto oom;
 		}
 	}
 
-	if (ebitmap_length(&tgt_matches) == 0)
+	if (ebitmap_is_empty(&tgt_matches))
 		goto exit;
 
 	for (cp = avrule->perms; cp; cp = cp->next) {
 		if (cp->tclass != k->target_class)
 			continue;
-		ebitmap_for_each_bit(&src_matches, snode, i) {
-			if (!ebitmap_node_get_bit(snode, i))
-				continue;
-			ebitmap_for_each_bit(&tgt_matches, tnode, j) {
-				if (!ebitmap_node_get_bit(tnode, j))
-					continue;
-
+		ebitmap_for_each_positive_bit(&src_matches, snode, i) {
+			ebitmap_for_each_positive_bit(&tgt_matches, tnode, j) {
 				ret = check_assertion_extended_permissions_avtab(
 						avrule, avtab, i, j, k, p);
 				if (ret)

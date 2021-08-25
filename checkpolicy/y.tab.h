@@ -152,7 +152,8 @@ extern int yydebug;
     DEFAULT_RANGE = 362,
     LOW_HIGH = 363,
     LOW = 364,
-    HIGH = 365
+    HIGH = 365,
+    GLBLUB = 366
   };
 #endif
 /* Tokens.  */
@@ -264,13 +265,14 @@ extern int yydebug;
 #define LOW_HIGH 363
 #define LOW 364
 #define HIGH 365
+#define GLBLUB 366
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 69 "policy_parse.y" /* yacc.c:1909  */
+#line 68 "policy_parse.y" /* yacc.c:1909  */
 
 	unsigned int val;
 	uint64_t val64;
@@ -278,7 +280,7 @@ union YYSTYPE
 	void *ptr;
         require_func_t require_func;
 
-#line 282 "y.tab.h" /* yacc.c:1909  */
+#line 284 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -1,7 +1,7 @@
 # Copyright (C) 2012 Red Hat
 # see file 'COPYING' for use and warranty information
 #
-# setrans is a tool for analyzing process transistions in SELinux policy
+# setrans is a tool for analyzing process transitions in SELinux policy
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License as
@@ -49,15 +49,15 @@ def get_network_connect(src, protocol, perm, check_bools=False):
                 if "port_t" in tlist:
                     continue
             if i == "port_t":
-                d[(src, protocol, perm)].append((i, ["all ports with out defined types"]))
+                d[(src, protocol, perm)].append((i, ["all ports without defined types"]))
             if i == "port_type":
                 d[(src, protocol, perm)].append((i, ["all ports"]))
             elif i == "unreserved_port_type":
-                d[(src, protocol, perm)].append((i, ["all ports > 1024"]))
+                d[(src, protocol, perm)].append((i, ["all ports >= 1024"]))
             elif i == "reserved_port_type":
                 d[(src, protocol, perm)].append((i, ["all ports < 1024"]))
             elif i == "rpc_port_type":
-                d[(src, protocol, perm)].append((i, ["all ports > 500 and  < 1024"]))
+                d[(src, protocol, perm)].append((i, ["all ports >= 512 and < 1024"]))
             else:
                 try:
                     d[(src, protocol, perm)].append((i, portrecs[(i, protocol)]))

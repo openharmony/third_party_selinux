@@ -53,18 +53,18 @@ ohos_shared_library("libpcre2"){
         "$LIBDEPENDS_ROOT_DIR/pcre/dist2/src/pcre2_xclass.c",
         "$LIBDEPENDS_ROOT_DIR/pcre/dist2/src/pcre2_chartables.c",
     ]
-    
+
     include_dirs=[
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DHAVE_CONFIG_H",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -81,12 +81,12 @@ ohos_shared_library("libpcrecpp"){
         "$LIBDEPENDS_ROOT_DIR/pcre/pcrecpp/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -97,82 +97,85 @@ ohos_shared_library("libsepol"){
 
     output_name="libsepol"
     sources=[
-        "$LIBSEPOL_ROOT_DIR/src/assertion.c",
-        "$LIBSEPOL_ROOT_DIR/src/avrule_block.c",
-        "$LIBSEPOL_ROOT_DIR/src/avtab.c",
-        "$LIBSEPOL_ROOT_DIR/src/boolean_record.c",
-        "$LIBSEPOL_ROOT_DIR/src/booleans.c",
-        "$LIBSEPOL_ROOT_DIR/src/conditional.c",
-        "$LIBSEPOL_ROOT_DIR/src/constraint.c",
-        "$LIBSEPOL_ROOT_DIR/src/context.c",
-        "$LIBSEPOL_ROOT_DIR/src/context_record.c",
-        "$LIBSEPOL_ROOT_DIR/src/debug.c",
-        "$LIBSEPOL_ROOT_DIR/src/expand.c",
-        "$LIBSEPOL_ROOT_DIR/src/ebitmap.c",
-        "$LIBSEPOL_ROOT_DIR/src/genusers.c",
-        "$LIBSEPOL_ROOT_DIR/src/genbools.c",
-        "$LIBSEPOL_ROOT_DIR/src/handle.c",
-        "$LIBSEPOL_ROOT_DIR/src/hashtab.c",
-        "$LIBSEPOL_ROOT_DIR/src/hierarchy.c",
-        "$LIBSEPOL_ROOT_DIR/src/iface_record.c",
-        "$LIBSEPOL_ROOT_DIR/src/interfaces.c",
-        "$LIBSEPOL_ROOT_DIR/src/kernel_to_cil.c",
-        "$LIBSEPOL_ROOT_DIR/src/kernel_to_common.c",
         "$LIBSEPOL_ROOT_DIR/src/kernel_to_conf.c",
-        "$LIBSEPOL_ROOT_DIR/src/link.c",
-        "$LIBSEPOL_ROOT_DIR/src/mls.c",
-        "$LIBSEPOL_ROOT_DIR/src/module.c",
-        "$LIBSEPOL_ROOT_DIR/src/module_to_cil.c",
-        "$LIBSEPOL_ROOT_DIR/src/node_record.c",
-        "$LIBSEPOL_ROOT_DIR/src/nodes.c",
-        "$LIBSEPOL_ROOT_DIR/src/polcaps.c",
-        "$LIBSEPOL_ROOT_DIR/src/policydb.c",
-        "$LIBSEPOL_ROOT_DIR/src/policydb_convert.c",
-        "$LIBSEPOL_ROOT_DIR/src/policydb_public.c",
-        "$LIBSEPOL_ROOT_DIR/src/port_record.c",
-        "$LIBSEPOL_ROOT_DIR/src/ports.c",
-        "$LIBSEPOL_ROOT_DIR/src/roles.c",
+        "$LIBSEPOL_ROOT_DIR/src/ibendport_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/ibpkey_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/constraint.c",
+        "$LIBSEPOL_ROOT_DIR/src/ibendports.c",
         "$LIBSEPOL_ROOT_DIR/src/services.c",
-        "$LIBSEPOL_ROOT_DIR/src/sidtab.c",
-        "$LIBSEPOL_ROOT_DIR/src/symtab.c",
-        "$LIBSEPOL_ROOT_DIR/src/user_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/module_to_cil.c",
         "$LIBSEPOL_ROOT_DIR/src/users.c",
-        "$LIBSEPOL_ROOT_DIR/src/util.c",
+        "$LIBSEPOL_ROOT_DIR/src/ibpkeys.c",
+        "$LIBSEPOL_ROOT_DIR/src/handle.c",
+        "$LIBSEPOL_ROOT_DIR/src/booleans.c",
+        "$LIBSEPOL_ROOT_DIR/src/nodes.c",
+        "$LIBSEPOL_ROOT_DIR/src/optimize.c",
         "$LIBSEPOL_ROOT_DIR/src/write.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_binary.c",
+        "$LIBSEPOL_ROOT_DIR/src/policydb.c",
+        "$LIBSEPOL_ROOT_DIR/src/kernel_to_cil.c",
+        "$LIBSEPOL_ROOT_DIR/src/ports.c",
+        "$LIBSEPOL_ROOT_DIR/src/debug.c",
+        "$LIBSEPOL_ROOT_DIR/src/conditional.c",
+        "$LIBSEPOL_ROOT_DIR/src/policydb_public.c",
+        "$LIBSEPOL_ROOT_DIR/src/policydb_convert.c",
+        "$LIBSEPOL_ROOT_DIR/src/interfaces.c",
+        "$LIBSEPOL_ROOT_DIR/src/kernel_to_common.c",
+        "$LIBSEPOL_ROOT_DIR/src/mls.c",
+        "$LIBSEPOL_ROOT_DIR/src/symtab.c",
+        "$LIBSEPOL_ROOT_DIR/src/hierarchy.c",
+        "$LIBSEPOL_ROOT_DIR/src/ebitmap.c",
+        "$LIBSEPOL_ROOT_DIR/src/policydb_validate.c",
+        "$LIBSEPOL_ROOT_DIR/src/user_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/polcaps.c",
+        "$LIBSEPOL_ROOT_DIR/src/context.c",
+        "$LIBSEPOL_ROOT_DIR/src/module.c",
+        "$LIBSEPOL_ROOT_DIR/src/assertion.c",
+        "$LIBSEPOL_ROOT_DIR/src/util.c",
+        "$LIBSEPOL_ROOT_DIR/src/avrule_block.c",
+        "$LIBSEPOL_ROOT_DIR/src/port_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/context_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/link.c",
+        "$LIBSEPOL_ROOT_DIR/src/expand.c",
+        "$LIBSEPOL_ROOT_DIR/src/avtab.c",
+        "$LIBSEPOL_ROOT_DIR/src/sidtab.c",
+        "$LIBSEPOL_ROOT_DIR/src/node_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/iface_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/boolean_record.c",
+        "$LIBSEPOL_ROOT_DIR/src/hashtab.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_build_ast.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_copy_ast.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_find.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_fqn.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_lexer.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_list.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_log.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_binary.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_stack.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_tree.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_strpool.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_verify.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_mem.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_symtab.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_parser.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_policy.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_post.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_reset_ast.c",
         "$LIBSEPOL_ROOT_DIR/cil/src/cil_resolve_ast.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_stack.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_strpool.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_symtab.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_tree.c",
-        "$LIBSEPOL_ROOT_DIR/cil/src/cil_verify.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_post.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_copy_ast.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_list.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_log.c",
+        "$LIBSEPOL_ROOT_DIR/cil/src/cil_lexer.c",
     ]
-    
+
     include_dirs=[
         "$LIBSEPOL_ROOT_DIR/cil/src",
         "$LIBSEPOL_ROOT_DIR/src",
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -180,27 +183,27 @@ ohos_shared_library("libsepol"){
 
 ohos_executable("chkcon"){
     install_enable=true
-    
+
     sources=[
         "$LIBSEPOL_ROOT_DIR/utils/chkcon.c",
     ]
-    
+
     deps=[
         ":libsepol",
     ]
-    
+
     include_dirs=[
         "$LIBSEPOL_ROOT_DIR/cil/src",
         "$LIBSEPOL_ROOT_DIR/src",
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -260,7 +263,7 @@ ohos_shared_library("libselinux"){
         "$LIBSELINUX_ROOT_DIR/src/selinux_restorecon.c",
         "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
     ]
-    
+
         include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -270,7 +273,7 @@ ohos_shared_library("libselinux"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
@@ -278,14 +281,14 @@ ohos_shared_library("libselinux"){
         "-D__BIONIC__",
         "-DAUDITD_LOG_TAG=1003"
     ]
-    
+
     deps=[
         ":libpcre2",
         ":libsepol",
 #        ":libpcrecpp",
 #        ":libcrypto",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -295,17 +298,17 @@ ohos_shared_library("libselinux"){
 ohos_executable("setenforce"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/setenforce.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -315,13 +318,13 @@ ohos_executable("setenforce"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -329,17 +332,17 @@ ohos_executable("setenforce"){
 ohos_executable("getenforce"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/getenforce.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -349,13 +352,13 @@ ohos_executable("getenforce"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -364,17 +367,17 @@ ohos_executable("getenforce"){
 ohos_executable("getfilecon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/getfilecon.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -384,13 +387,13 @@ ohos_executable("getfilecon"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -399,17 +402,17 @@ ohos_executable("getfilecon"){
 ohos_executable("setfilecon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/setfilecon.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -419,13 +422,13 @@ ohos_executable("setfilecon"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -434,17 +437,17 @@ ohos_executable("setfilecon"){
 ohos_executable("selinuxexeccon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/selinuxexeccon.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -454,13 +457,13 @@ ohos_executable("selinuxexeccon"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -469,11 +472,11 @@ ohos_executable("selinuxexeccon"){
 ohos_executable("demoloop"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../demo/demo.c",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
@@ -483,7 +486,7 @@ ohos_executable("demoloop"){
         ":libselinux",
         ":libpcre2",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -491,17 +494,17 @@ ohos_executable("demoloop"){
 ohos_executable("selinux_check_access"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/selinux_check_access.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -511,13 +514,13 @@ ohos_executable("selinux_check_access"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -525,17 +528,17 @@ ohos_executable("selinux_check_access"){
 ohos_executable("getpidcon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/utils/getpidcon.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -545,13 +548,13 @@ ohos_executable("getpidcon"){
         "$LIBSEPOL_ROOT_DIR/cil/include",
         "$LIBSEPOL_ROOT_DIR/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -560,18 +563,18 @@ ohos_executable("getpidcon"){
 ohos_executable("load_policy"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/load_policy/load_policy.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libsepol",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -583,13 +586,13 @@ ohos_executable("load_policy"){
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -598,19 +601,20 @@ ohos_executable("load_policy"){
 ohos_executable("restorecon_xattr"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/setfiles/restorecon_xattr.c",
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/setfiles/restore.c",
+        "$LIBDEPENDS_ROOT_DIR/fts/fts.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
         ":libsepol",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -621,14 +625,15 @@ ohos_executable("restorecon_xattr"){
         "$LIBSEPOL_ROOT_DIR/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
+        "$LIBDEPENDS_ROOT_DIR/fts",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -636,19 +641,19 @@ ohos_executable("restorecon_xattr"){
 ohos_executable("restorecon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/setfiles/setfiles.c",
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/setfiles/restore.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libpcre2",
         ":libsepol",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -659,14 +664,15 @@ ohos_executable("restorecon"){
         "$LIBSEPOL_ROOT_DIR/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
+        "$LIBDEPENDS_ROOT_DIR/fts",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -674,18 +680,18 @@ ohos_executable("restorecon"){
 ohos_executable("secon"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../policycoreutils/secon/secon.c",
     ]
-    
+
     deps=[
         ":libselinux",
         ":libsepol",
         ":libpcre2",
 #        ":libpcrecpp",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -697,14 +703,14 @@ ohos_executable("secon"){
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
     ]
-    
+
     cflags=[
         "-D_GNU_SOURCE",
         "-DUSE_PCRE2",
         "-w",
         "-DVERSION=\"2.9\"",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
 }
@@ -712,21 +718,21 @@ ohos_executable("secon"){
 ohos_executable("checkpolicy"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/y.tab.c",
-        "$LIBSELINUX_ROOT_DIR/../checkpolicy/lex.yy.c",
+        "$LIBSELINUX_ROOT_DIR/../checkpolicy/policy_scan.c",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/queue.c",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/module_compiler.c",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/parse_util.c",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/policy_define.c",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy/checkpolicy.c",
     ]
-    
+
     deps=[
         ":libsepol",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -739,30 +745,29 @@ ohos_executable("checkpolicy"){
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
         "$LIBSELINUX_ROOT_DIR/../checkpolicy",
     ]
-    
+
     cflags=[
         "-Wall",
         "-Werror",
         "-Wshadow",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
-}    
+}
 
-ROOT_PATH=rebase_path("//")
 ohos_executable("secilc"){
 
     install_enable=true
-    
+
     sources=[
         "$LIBSELINUX_ROOT_DIR/../secilc/secilc.c",
     ]
-    
+
     deps=[
         ":libsepol",
     ]
-    
+
     include_dirs=[
         "$LIBSELINUX_ROOT_DIR/include/selinux",
         "$LIBSELINUX_ROOT_DIR/include",
@@ -773,16 +778,15 @@ ohos_executable("secilc"){
         "$LIBSEPOL_ROOT_DIR/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
+        "$LIBDEPENDS_ROOT_DIR/fts",
     ]
-    
+
     cflags=[
         "-Wall",
         "-Werror",
         "-Wshadow",
     ]
-    
+
     part_name="selinux"
     subsystem_name="security"
-    
-    exec_script("demo/build_policy.sh",["${ROOT_PATH}"])
 }

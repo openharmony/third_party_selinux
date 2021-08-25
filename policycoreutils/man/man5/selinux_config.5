@@ -11,10 +11,8 @@ The policy enforcement status \- \fIenforcing\fR, \fIpermissive\fR or \fIdisable
 .IP "2." 4
 The policy name or type that forms a path to the policy to be loaded and its supporting configuration files.
 .IP "3." 4
-How local users and booleans will be managed when the policy is loaded (note that this function was used by older releases of SELinux and is now deprecated).
-.IP "4." 4
 How SELinux-aware login applications should behave if no valid SELinux users are configured.
-.IP "5." 4
+.IP "4." 4
 Whether the system is to be relabeled or not.
 .RE
 
@@ -34,8 +32,6 @@ The \fIconfig\fR file supports the following parameters:
 .br
 \fBSELINUXTYPE = \fIpolicy_name\fR
 .br
-\fBSETLOCALDEFS = \fI0\fR | \fI1\fR
-.br
 \fBREQUIREUSERS = \fI0\fR | \fI1\fR
 .br
 \fBAUTORELABEL = \fI0\fR | \fI1\fR
@@ -52,7 +48,7 @@ SELinux security policy is enforced.
 .IP \fIpermissive\fR 4
 SELinux security policy is not enforced but logs the warnings (i.e. the action is allowed to proceed).
 .IP \fIdisabled\fR
-SELinux is disabled and no policy is loaded.
+No SELinux policy is loaded.  This option was used to disable SELinux completely, which is now deprecated.  Use the \fBselinux=0\fR kernel boot option instead (see \fBselinux\fR(8)).
 .RE
 .sp
 The entry can be determined using the \fBsestatus\fR(8) command or \fBselinux_getenforcemode\fR(3).
@@ -86,13 +82,6 @@ The binary policy name has by convention the SELinux policy version that it supp
 .RS
 .I /etc/selinux/targeted/policy/policy.24
 .RE
-.RE
-.sp
-.B SETLOCALDEFS
-.RS
-This entry is deprecated and should be removed or set to \fI0\fR.
-.sp
-If set to \fI1\fR, then \fBselinux_mkload_policy\fR(3) will read the local customization for booleans (see \fBbooleans\fR(5)) and users (see \fBlocal.users\fR(5)).
 .RE
 .sp
 .B REQUIRESEUSERS
@@ -138,4 +127,4 @@ SELINUXTYPE = targeted
 .RE
 
 .SH "SEE ALSO"
-.BR selinux "(8), " sestatus "(8), " selinux_path "(3), " selinux_policy_root_path "(3), " selinux_binary_policy_path "(3), " getseuserbyname "(3), " PAM "(8), " fixfiles "(8), " selinux_mkload_policy "(3), " selinux_getpolicytype "(3), " security_policyvers "(3), " selinux_getenforcemode "(3), " seusers "(5), " booleans "(5), " local.users "(5) "
+.BR selinux "(8), " sestatus "(8), " selinux_path "(3), " selinux_policy_root_path "(3), " selinux_binary_policy_path "(3), " getseuserbyname "(3), " PAM "(8), " fixfiles "(8), " selinux_mkload_policy "(3), " selinux_getpolicytype "(3), " security_policyvers "(3), " selinux_getenforcemode "(3), " seusers "(5) "

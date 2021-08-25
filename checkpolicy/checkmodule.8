@@ -28,6 +28,9 @@ module file.  This option is a development/debugging aid.
 .B \-C,\-\-cil
 Write CIL policy file rather than binary policy file.
 .TP
+.B \-E,\-\-werror
+Treat warnings as errors
+.TP
 .B \-h,\-\-help
 Print usage.
 .TP
@@ -38,7 +41,7 @@ Generate a non-base policy module.
 Enable the MLS/MCS support when checking and compiling the policy module.
 .TP
 .B \-V,\-\-version
- Show policy versions created by this program.  Note that you cannot currently build older versions.
+Show policy versions created by this program.
 .TP
 .B \-o,\-\-output filename
 Write a binary policy module file to the specified filename.
@@ -47,6 +50,9 @@ and will not generate a binary module at all.
 .TP
 .B \-U,\-\-handle-unknown <action>
 Specify how the kernel should handle unknown classes or permissions (deny, allow or reject).
+.TP
+.B \-c policyvers
+Specify the policy version, defaults to the latest.
 
 .SH EXAMPLE
 .nf
@@ -56,12 +62,11 @@ $ checkmodule \-M \-m httpd.te \-o httpd.mod
 
 .SH "SEE ALSO"
 .B semodule(8), semodule_package(8)
-SELinux documentation at http://www.nsa.gov/research/selinux,
-especially "Configuring the SELinux Policy".
+SELinux Reference Policy documentation at https://github.com/SELinuxProject/refpolicy/wiki
 
 
 .SH AUTHOR
 This manual page was copied from the checkpolicy man page 
-written by Arpad Magosanyi <mag@bunuel.tii.matav.hu>, 
+written by Árpád Magosányi <mag@bunuel.tii.matav.hu>,
 and edited by Dan Walsh <dwalsh@redhat.com>.
 The program was written by Stephen Smalley <sds@tycho.nsa.gov>.

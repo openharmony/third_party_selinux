@@ -32,7 +32,7 @@ from semanage import *
 PROGNAME = "policycoreutils"
 import sepolicy
 import setools
-from IPy import IP
+import ipaddress
 
 try:
     import gettext
@@ -380,7 +380,7 @@ class moduleRecords(semanageRecords):
     def customized(self):
         all = self.get_all()
         if len(all) == 0:
-            return
+            return []
         return ["-d %s" % x[0] for x in [t for t in all if t[1] == 0]]
 
     def list(self, heading=1, locallist=0):
@@ -477,6 +477,9 @@ class permissiveRecords(semanageRecords):
             if name and name.startswith("permissive_"):
                 l.append(name.split("permissive_")[1])
         return l
+
+    def customized(self):
+        return ["-a %s" % x for x in sorted(self.get_all())]
 
     def list(self, heading=1, locallist=0):
         all = [y["name"] for y in [x for x in sepolicy.info(sepolicy.TYPE) if x["permissive"]]]
@@ -1055,17 +1058,23 @@ class portRecords(semanageRecords):
             pass
 
     def __genkey(self, port, proto):
-        if proto == "tcp":
-            proto_d = SEMANAGE_PROTO_TCP
+        protocols = {"tcp": SEMANAGE_PROTO_TCP,
+                     "udp": SEMANAGE_PROTO_UDP,
+                     "sctp": SEMANAGE_PROTO_SCTP,
+                     "dccp": SEMANAGE_PROTO_DCCP}
+
+        if proto in protocols.keys():
+            proto_d = protocols[proto]
         else:
-            if proto == "udp":
-                proto_d = SEMANAGE_PROTO_UDP
-            else:
-                raise ValueError(_("Protocol udp or tcp is required"))
+            raise ValueError(_("Protocol has to be one of udp, tcp, dccp or sctp"))
         if port == "":
             raise ValueError(_("Port is required"))
 
-        ports = port.split("-")
+        if isinstance(port, str):
+            ports = port.split('-', 1)
+        else:
+            ports = (port,)
+
         if len(ports) == 1:
             high = low = int(ports[0])
         else:
@@ -1849,25 +1858,34 @@ class nodeRecords(semanageRecords):
         if addr == "":
             raise ValueError(_("Node Address is required"))
 
-        # verify valid comination
+        # verify that (addr, mask) is either a IP address (without a mask) or a valid network mask
         if len(mask) == 0 or mask[0] == "/":
-            i = IP(addr + mask)
-            newaddr = i.strNormal(0)
-            newmask = str(i.netmask())
-            if newmask == "0.0.0.0" and i.version() == 6:
-                newmask = "::"
-
-            protocol = "ipv%d" % i.version()
+            i = ipaddress.ip_network(addr + mask)
+            newaddr = str(i.network_address)
+            newmask = str(i.netmask)
+            protocol = "ipv%d" % i.version
 
         try:
             newprotocol = self.protocol.index(protocol)
         except:
             raise ValueError(_("Unknown or missing protocol"))
 
-        return newaddr, newmask, newprotocol
+        try:
+            audit_protocol = socket.getprotobyname(protocol)
+        except:
+            # Entry for "ipv4" not found in /etc/protocols on (at
+            # least) Debian? To ensure audit log compatibility, let's
+            # use the same numeric value as Fedora: 4, which is
+            # actually understood by kernel as IP over IP.
+            if (protocol == "ipv4"):
+                audit_protocol = socket.IPPROTO_IPIP
+            else:
+                raise ValueError(_("Unknown or missing protocol"))
+
+        return newaddr, newmask, newprotocol, audit_protocol
 
     def __add(self, addr, mask, proto, serange, ctype):
-        addr, mask, proto = self.validate(addr, mask, proto)
+        addr, mask, proto, audit_proto = self.validate(addr, mask, proto)
 
         if is_mls_enabled == 1:
             if serange == "":
@@ -1886,10 +1904,10 @@ class nodeRecords(semanageRecords):
         (rc, k) = semanage_node_key_create(self.sh, addr, mask, proto)
         if rc < 0:
             raise ValueError(_("Could not create key for %s") % addr)
-        if rc < 0:
-            raise ValueError(_("Could not check if addr %s is defined") % addr)
 
         (rc, exists) = semanage_node_exists(self.sh, k)
+        if rc < 0:
+            raise ValueError(_("Could not check if addr %s is defined") % addr)
         if exists:
             raise ValueError(_("Addr %s already defined") % addr)
 
@@ -1936,7 +1954,7 @@ class nodeRecords(semanageRecords):
         semanage_node_key_free(k)
         semanage_node_free(node)
 
-        self.mylog.log_change("resrc=node op=add laddr=%s netmask=%s proto=%s tcontext=%s:%s:%s:%s" % (addr, mask, socket.getprotobyname(self.protocol[proto]), "system_u", "object_r", ctype, serange))
+        self.mylog.log_change("resrc=node op=add laddr=%s netmask=%s proto=%s tcontext=%s:%s:%s:%s" % (addr, mask, audit_proto, "system_u", "object_r", ctype, serange))
 
     def add(self, addr, mask, proto, serange, ctype):
         self.begin()
@@ -1944,7 +1962,7 @@ class nodeRecords(semanageRecords):
         self.commit()
 
     def __modify(self, addr, mask, proto, serange, setype):
-        addr, mask, proto = self.validate(addr, mask, proto)
+        addr, mask, proto, audit_proto = self.validate(addr, mask, proto)
 
         if serange == "" and setype == "":
             raise ValueError(_("Requires setype or serange"))
@@ -1981,7 +1999,7 @@ class nodeRecords(semanageRecords):
         semanage_node_key_free(k)
         semanage_node_free(node)
 
-        self.mylog.log_change("resrc=node op=modify laddr=%s netmask=%s proto=%s tcontext=%s:%s:%s:%s" % (addr, mask, socket.getprotobyname(self.protocol[proto]), "system_u", "object_r", setype, serange))
+        self.mylog.log_change("resrc=node op=modify laddr=%s netmask=%s proto=%s tcontext=%s:%s:%s:%s" % (addr, mask, audit_proto, "system_u", "object_r", setype, serange))
 
     def modify(self, addr, mask, proto, serange, setype):
         self.begin()
@@ -1989,8 +2007,7 @@ class nodeRecords(semanageRecords):
         self.commit()
 
     def __delete(self, addr, mask, proto):
-
-        addr, mask, proto = self.validate(addr, mask, proto)
+        addr, mask, proto, audit_proto = self.validate(addr, mask, proto)
 
         (rc, k) = semanage_node_key_create(self.sh, addr, mask, proto)
         if rc < 0:
@@ -2014,7 +2031,7 @@ class nodeRecords(semanageRecords):
 
         semanage_node_key_free(k)
 
-        self.mylog.log_change("resrc=node op=delete laddr=%s netmask=%s proto=%s" % (addr, mask, socket.getprotobyname(self.protocol[proto])))
+        self.mylog.log_change("resrc=node op=delete laddr=%s netmask=%s proto=%s" % (addr, mask, audit_proto))
 
     def delete(self, addr, mask, proto):
         self.begin()

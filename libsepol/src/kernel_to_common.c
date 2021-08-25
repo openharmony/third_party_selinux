@@ -360,9 +360,7 @@ int ebitmap_to_strs(struct ebitmap *map, struct strs *strs, char **val_to_name)
 	uint32_t i;
 	int rc;
 
-	ebitmap_for_each_bit(map, node, i) {
-		if (!ebitmap_get_bit(map, i)) continue;
-
+	ebitmap_for_each_positive_bit(map, node, i) {
 		rc = strs_add(strs, val_to_name[i]);
 		if (rc != 0) {
 			return -1;
@@ -472,11 +470,9 @@ static int portcon_data_cmp(const void *a, const void *b)
 	rc = compare_ranges((*aa)->u.port.low_port, (*aa)->u.port.high_port,
 			    (*bb)->u.port.low_port, (*bb)->u.port.high_port);
 	if (rc == 0) {
-		if ((*aa)->u.port.protocol == (*bb)->u.port.protocol) {
-			rc = 0;
-		} else if ((*aa)->u.port.protocol == IPPROTO_TCP) {
+		if ((*aa)->u.port.protocol < (*bb)->u.port.protocol) {
 			rc = -1;
-		} else {
+		} else if ((*aa)->u.port.protocol > (*bb)->u.port.protocol) {
 			rc = 1;
 		}
 	}

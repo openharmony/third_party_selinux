@@ -127,10 +127,12 @@ int ebitmap_andnot(ebitmap_t *dst, ebitmap_t *e1, ebitmap_t *e2, unsigned int ma
 
 unsigned int ebitmap_cardinality(ebitmap_t *e1)
 {
-	unsigned int i, count = 0;
-	for (i=ebitmap_startbit(e1); i < ebitmap_length(e1); i++)
-		if (ebitmap_get_bit(e1, i))
-			count++;
+	unsigned int count = 0;
+	ebitmap_node_t *n;
+
+	for (n = e1->node; n; n = n->next) {
+		count += __builtin_popcountll(n->map);
+	}
 	return count;
 }
 
@@ -342,6 +344,26 @@ int ebitmap_set_bit(ebitmap_t * e, unsigned int bit, int value)
 	return 0;
 }
 
+unsigned int ebitmap_highest_set_bit(ebitmap_t * e)
+{
+	ebitmap_node_t *n;
+	MAPTYPE map;
+	unsigned int pos = 0;
+
+	n = e->node;
+	if (!n)
+		return 0;
+
+	while (n->next)
+		n = n->next;
+
+	map = n->map;
+	while (map >>= 1)
+		pos++;
+
+	return n->startbit + pos;
+}
+
 void ebitmap_destroy(ebitmap_t * e)
 {
 	ebitmap_node_t *n, *temp;
@@ -455,7 +477,7 @@ int ebitmap_read(ebitmap_t * e, void *fp)
 	}
 	if (count && l->startbit + MAPSIZE != e->highbit) {
 		printf
-		    ("security: ebitmap: hight bit %u has not the expected value %zu\n",
+		    ("security: ebitmap: high bit %u has not the expected value %zu\n",
 		     e->highbit, l->startbit + MAPSIZE);
 		goto bad;
 	}

@@ -118,16 +118,17 @@ class modulesPage(semanagePage):
 
     def new_module(self, args):
         try:
-            Popen(["/usr/share/system-config-selinux/polgengui.py"])
+            Popen(["selinux-polgengui"])
         except ValueError as e:
             self.error(e.args[0])
 
     def delete(self):
         store, iter = self.view.get_selection().get_selected()
         module = store.get_value(iter, 0)
+        priority = store.get_value(iter, 1)
         try:
             self.wait()
-            status, output = getstatusoutput("semodule -r %s" % module)
+            status, output = getstatusoutput("semodule -X %s -r %s" % (priority, module))
             self.ready()
             if status != 0:
                 self.error(output)
