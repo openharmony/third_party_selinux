@@ -1,1 +1,1 @@
-/ u:object_r:unlabeled:s0
+(/.*)? u:object_r:rootfs:s0
