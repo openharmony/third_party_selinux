@@ -174,7 +174,7 @@ mem2:	free(sp->fts_path);
 mem1:	free(sp);
 	return (NULL);
 }
-DEF_WEAK(fts_open);
+//DEF_WEAK(fts_open);
 
 static void
 fts_load(FTS *sp, FTSENT *p)
@@ -241,7 +241,7 @@ fts_close(FTS *sp)
 
 	return (error);
 }
-DEF_WEAK(fts_close);
+//DEF_WEAK(fts_close);
 
 /*
  * Special case of "/" at the end of the path so that slashes aren't
@@ -439,7 +439,7 @@ name:		t = sp->fts_path + NAPPEND(p->fts_parent);
 	p->fts_info = p->fts_errno ? FTS_ERR : FTS_DP;
 	return (sp->fts_cur = p);
 }
-DEF_WEAK(fts_read);
+//DEF_WEAK(fts_read);
 
 /*
  * Fts_set takes the stream as an argument although it's not used in this
@@ -458,7 +458,7 @@ fts_set(FTS *sp, FTSENT *p, int instr)
 	p->fts_instr = instr;
 	return (0);
 }
-DEF_WEAK(fts_set);
+//DEF_WEAK(fts_set);
 
 FTSENT *
 fts_children(FTS *sp, int instr)
@@ -527,7 +527,7 @@ fts_children(FTS *sp, int instr)
 	(void)close(fd);
 	return (sp->fts_child);
 }
-DEF_WEAK(fts_children);
+//DEF_WEAK(fts_children);
 
 /*
  * This is the tricky part -- do not casually change *anything* in here.  The
@@ -653,11 +653,11 @@ fts_build(FTS *sp, int type)
 		if (!ISSET(FTS_SEEDOT) && ISDOT(dp->d_name))
 			continue;
 
-		if (!(p = fts_alloc(sp, dp->d_name, dp->d_namlen)))
+		if (!(p = fts_alloc(sp, dp->d_name, strlen(dp->d_name))))
 			goto mem1;
-		if (dp->d_namlen >= maxlen) {	/* include space for NUL */
+		if (strlen(dp->d_name) >= maxlen) {	/* include space for NUL */
 			oldaddr = sp->fts_path;
-			if (fts_palloc(sp, dp->d_namlen +len + 1)) {
+			if (fts_palloc(sp, strlen(dp->d_name) +len + 1)) {
 				/*
 				 * No more memory for path or structures.  Save
 				 * errno, free up the current structure and the
@@ -683,7 +683,7 @@ mem1:				saved_errno = errno;
 
 		p->fts_level = level;
 		p->fts_parent = sp->fts_cur;
-		p->fts_pathlen = len + dp->d_namlen;
+		p->fts_pathlen = len + strlen(dp->d_name);
 		if (p->fts_pathlen < len) {
 			/*
 			 * If we wrap, free up the current structure and

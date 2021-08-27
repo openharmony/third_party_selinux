@@ -35,6 +35,26 @@
 #ifndef	_FTS_H_
 #define	_FTS_H_
 
+#include <sys/types.h>
+
+#if defined(__cplusplus)
+#define __BEGIN_EXTERN_C        extern "C" {
+#define __END_EXTERN_C          }
+#else
+#define __BEGIN_EXTERN_C
+#define __END_EXTERN_C
+#endif
+#define __BEGIN_DECLS   __BEGIN_EXTERN_C
+#define __END_DECLS     __END_EXTERN_C
+
+#define HIDDEN(x)               _libc_##x
+#define DEF_STRONG(x)           __strong_alias(x, HIDDEN(x))
+#define DEF_WEAK(x)             __weak_alias(x, HIDDEN(x))
+
+#define	_ALIGNBYTES		(sizeof(long) - 1)
+#define	ALIGNBYTES		_ALIGNBYTES
+
+
 typedef struct {
 	struct _ftsent *fts_cur;	/* current node */
 	struct _ftsent *fts_child;	/* linked list of children */
