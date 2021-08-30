@@ -37,6 +37,7 @@
 
 #include <sys/types.h>
 
+// 以下代码本不属于 fts.h，来自 OpenBSD (github.com/openbsd/src) {
 #if defined(__cplusplus)
 #define __BEGIN_EXTERN_C        extern "C" {
 #define __END_EXTERN_C          }
@@ -47,13 +48,17 @@
 #define __BEGIN_DECLS   __BEGIN_EXTERN_C
 #define __END_DECLS     __END_EXTERN_C
 
-#define HIDDEN(x)               _libc_##x
-#define DEF_STRONG(x)           __strong_alias(x, HIDDEN(x))
-#define DEF_WEAK(x)             __weak_alias(x, HIDDEN(x))
-
+// x86_64 {
+#define _ALIGNBYTES             (sizeof(long) - 1)
+#define _ALIGN(p)               (((unsigned long)(p) + _ALIGNBYTES) &~_ALIGNBYTES)
+#define ALIGN(p)                _ALIGN(p)
 #define	_ALIGNBYTES		(sizeof(long) - 1)
 #define	ALIGNBYTES		_ALIGNBYTES
+// }
 
+void	*recallocarray(void *, size_t, size_t, size_t);
+void    *reallocarray(void *, size_t, size_t);
+// }
 
 typedef struct {
 	struct _ftsent *fts_cur;	/* current node */
