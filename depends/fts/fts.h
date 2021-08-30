@@ -1,4 +1,4 @@
-/*	$OpenBSD: fts.h,v 1.12 2009/08/27 16:19:27 millert Exp $	*/
+/*	$OpenBSD: fts.h,v 1.14 2012/12/05 23:19:57 deraadt Exp $	*/
 /*	$NetBSD: fts.h,v 1.5 1994/12/28 01:41:50 mycroft Exp $	*/
 
 /*
@@ -35,8 +35,30 @@
 #ifndef	_FTS_H_
 #define	_FTS_H_
 
-#include <cdefs.h>
 #include <sys/types.h>
+
+// 以下代码本不属于 fts.h，来自 OpenBSD (github.com/openbsd/src) {
+#if defined(__cplusplus)
+#define __BEGIN_EXTERN_C        extern "C" {
+#define __END_EXTERN_C          }
+#else
+#define __BEGIN_EXTERN_C
+#define __END_EXTERN_C
+#endif
+#define __BEGIN_DECLS   __BEGIN_EXTERN_C
+#define __END_DECLS     __END_EXTERN_C
+
+// x86_64 {
+#define _ALIGNBYTES             (sizeof(long) - 1)
+#define _ALIGN(p)               (((unsigned long)(p) + _ALIGNBYTES) &~_ALIGNBYTES)
+#define ALIGN(p)                _ALIGN(p)
+#define	_ALIGNBYTES		(sizeof(long) - 1)
+#define	ALIGNBYTES		_ALIGNBYTES
+// }
+
+void	*recallocarray(void *, size_t, size_t, size_t);
+void    *reallocarray(void *, size_t, size_t);
+// }
 
 typedef struct {
 	struct _ftsent *fts_cur;	/* current node */
@@ -58,9 +80,8 @@ typedef struct {
 #define	FTS_XDEV	0x0040		/* don't cross devices */
 #define	FTS_OPTIONMASK	0x00ff		/* valid user option mask */
 
-#define FTS_NAMEONLY 0x1000  /* (private) child names only */
-#define FTS_STOP 0x2000      /* (private) unrecoverable error */
-#define FTS_FOR_FTW 0x4000   /* (private) fts is being called by ftw/nftw */
+#define	FTS_NAMEONLY	0x1000		/* (private) child names only */
+#define	FTS_STOP	0x2000		/* (private) unrecoverable error */
 	int fts_options;		/* fts_open options, global flags */
 } FTS;
 
@@ -83,8 +104,8 @@ typedef struct _ftsent {
 
 #define	FTS_ROOTPARENTLEVEL	-1
 #define	FTS_ROOTLEVEL		 0
-#define	FTS_MAXLEVEL		 0x7fff
-	short fts_level;		/* depth (-1 to N) */
+#define	FTS_MAXLEVEL		 0x7fffffff
+	int fts_level;		/* depth (-1 to N) */
 
 #define	FTS_D		 1		/* preorder directory */
 #define	FTS_DC		 2		/* directory that causes cycles */
@@ -111,23 +132,19 @@ typedef struct _ftsent {
 #define	FTS_SKIP	 4		/* discard node */
 	unsigned short fts_instr;	/* fts_set() instructions */
 
+	unsigned short fts_spare;	/* unused */
+
 	struct stat *fts_statp;		/* stat(2) information */
 	char fts_name[1];		/* file name */
 } FTSENT;
 
 __BEGIN_DECLS
-
-/*
- * Strictly these functions were available before Lollipop/21, but there was an accidental ABI
- * breakage in 21 that means you can't write code that runs on current devices and pre-21 devices,
- * so we break the tie in favor of current and future devices.
- */
-FTSENT* fts_children(FTS* __fts, int __options) ;
-int fts_close(FTS* __fts) ;
-FTS* fts_open(char* const* __path, int __options, int (*__comparator)(const FTSENT** __lhs, const FTSENT** __rhs)) ;
-FTSENT* fts_read(FTS* __fts) ;
-int fts_set(FTS* __fts, FTSENT* __entry, int __options) ;
-
+FTSENT	*fts_children(FTS *, int);
+int	 fts_close(FTS *);
+FTS	*fts_open(char * const *, int,
+	    int (*)(const FTSENT **, const FTSENT **));
+FTSENT	*fts_read(FTS *);
+int	 fts_set(FTS *, FTSENT *, int);
 __END_DECLS
 
 #endif /* !_FTS_H_ */
