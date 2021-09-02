@@ -470,6 +470,7 @@ ohos_executable("load_policy"){
     install_enable=true
     sources=[
         "$LIBSELINUX_ROOT_DIR/../tools/load_policy/load_policy.c",
+        "$LIBSELINUX_ROOT_DIR/../policycoreutils/load_policy.c",
     ]
     deps=[
         ":libselinux",
@@ -486,6 +487,7 @@ ohos_executable("load_policy"){
         "$LIBSEPOL_ROOT_DIR/include",
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
+        "$LIBSELINUX_ROOT_DIR/../policycoreutils",
     ]
     cflags=[
         "-D_GNU_SOURCE",
@@ -501,6 +503,7 @@ ohos_executable("restorecon"){
     install_enable=true
     sources=[
         "$LIBSELINUX_ROOT_DIR/../tools/restorecon/restorecon.c",
+        "$LIBSELINUX_ROOT_DIR/../policycoreutils/restorecon.c",
     ]
     deps=[
         ":libselinux",
@@ -518,6 +521,7 @@ ohos_executable("restorecon"){
         "$LIBDEPENDS_ROOT_DIR/pcre/include_internal",
         "$LIBDEPENDS_ROOT_DIR/pcre/include",
         "$LIBDEPENDS_ROOT_DIR/fts",
+        "$LIBSELINUX_ROOT_DIR/../policycoreutils",
     ]
     cflags=[
         "-D_GNU_SOURCE",
