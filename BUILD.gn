@@ -140,6 +140,7 @@ ohos_shared_library("libsepol"){
     ]
     cflags=[
         "-D_GNU_SOURCE",
+        "-DSHARED",
         "-w",
     ]
     part_name="selinux"

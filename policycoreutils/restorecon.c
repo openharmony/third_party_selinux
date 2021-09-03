@@ -8,13 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef static struct restore_opts {
+typedef struct restore_opts {
   unsigned int restorecon_flags;
-  char *progname;
   struct selabel_handle *hnd;
 } restore_opts_t;
 
-static void restore_init(restore_opts_t *opts) {
+static int restore_init(restore_opts_t *opts) {
   struct selinux_opt selinux_opts[] = {
       {SELABEL_OPT_VALIDATE, NULL},
       {SELABEL_OPT_PATH, NULL},
@@ -39,11 +38,6 @@ int restorecon(void) {
 
   memset(&opts, 0, sizeof(opts));
 
-  if (!(opts.progname = strdup(argv[0]))) {
-    fprintf(stderr, "%s:  Out of memory!\n", argv[0]);
-    return -1;
-  }
-
   if (is_selinux_enabled() < 1) {
     return 1;
   }
@@ -54,11 +48,6 @@ int restorecon(void) {
 
   errors = selinux_restorecon("/", opts.restorecon_flags);
   selabel_close(opts.hnd);
-
-  if (opts.progname) {
-    free(opts.progname);
-    opts.progname = NULL;
-  }
 
   return (errors ? -1 : 1);
 }
