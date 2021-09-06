@@ -140,7 +140,6 @@ ohos_shared_library("libsepol"){
     ]
     cflags=[
         "-D_GNU_SOURCE",
-        "-DSHARED",
         "-w",
     ]
     part_name="selinux"
@@ -238,6 +237,7 @@ ohos_shared_library("libselinux"){
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
+        "-DSHARED",
         "-DUSE_PCRE2",
         "-D__BIONIC__",
         "-DAUDITD_LOG_TAG=1003"
