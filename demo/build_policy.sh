@@ -13,7 +13,7 @@ RDIR=$(readlink -f "${CDIR}/../../../")
   command "${RDIR}/out/ohos-arm-release/clang_x64/security/selinux/secilc" \
     -m -M true -G -c 30 -N \
     -f /dev/null \
-    -o "${RDIR}/third_party/selinux/demo/precompiled_sepolicy" \
+    -o "${RDIR}/third_party/selinux/demo/policy.31" \
     "${RDIR}/third_party/selinux/demo/test.cil"
 }
 
