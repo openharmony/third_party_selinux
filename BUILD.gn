@@ -140,7 +140,6 @@ ohos_shared_library("libsepol"){
     ]
     cflags=[
         "-D_GNU_SOURCE",
-        "-DSHARED",
         "-w",
     ]
     part_name="selinux"
@@ -238,6 +237,7 @@ ohos_shared_library("libselinux"){
     cflags=[
         "-D_GNU_SOURCE",
         "-w",
+        "-DSHARED",
         "-DUSE_PCRE2",
         "-D__BIONIC__",
         "-DAUDITD_LOG_TAG=1003"
@@ -569,7 +569,7 @@ ohos_executable("checkpolicy"){
     subsystem_name="security"
 }
 
-
+ROOT_PATH=rebase_path("//")
 ohos_executable("secilc"){
     install_enable=true
     sources=[
@@ -597,4 +597,24 @@ ohos_executable("secilc"){
     ]
     part_name="selinux"
     subsystem_name="security"
+
+    exec_script("demo/build_policy.sh",["${ROOT_PATH}"])
+}
+
+ohos_prebuilt_etc("config") {
+    source = "//third_party/selinux/demo/config"
+    part_name = "selinux"
+    relative_install_dir = "selinux"
+}
+
+ohos_prebuilt_etc("precompiled_sepolicy") {
+    source = "//third_party/selinux/demo/policy.31"
+    part_name = "selinux"
+    relative_install_dir = "selinux/targeted/policy"
+}
+
+ohos_prebuilt_etc("file_contexts") {
+    source = "//third_party/selinux/demo/file_contexts"
+    part_name = "selinux"
+    relative_install_dir = "selinux/targeted/contexts/files"
 }
