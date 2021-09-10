@@ -645,25 +645,32 @@ ohos_executable("secilc"){
     subsystem_name="security"
 }
 
-ohos_prebuilt_etc("config") {
-    source = "$SELINUX_ROOT_DIR/demo/config"
-    part_name = "selinux"
-    relative_install_dir = "selinux"
+action("build_policy") {
+    script="demo/build_policy.sh"
+    deps=[
+        ":checkpolicy($host_toolchain)",
+        ":secilc($host_toolchain)",
+    ]
+    outputs=[ "$root_out_dir/" ]
 }
 
-ROOT_PATH=rebase_path("//")
+ohos_prebuilt_etc("config") {
+    source="$SELINUX_ROOT_DIR/demo/config"
+    part_name="selinux"
+    relative_install_dir="selinux"
+}
+
 ohos_prebuilt_etc("precompiled_sepolicy") {
-    deps = [ ":checkpolicy",
-             ":secilc",
+    deps=[
+        ":build_policy",
     ]
-    exec_script("demo/build_policy.sh",["${ROOT_PATH}"])
-    source = "$SELINUX_ROOT_DIR/demo/policy.31"
-    part_name = "selinux"
-    relative_install_dir = "selinux/targeted/policy"
+    source="$SELINUX_ROOT_DIR/demo/policy.31"
+    part_name="selinux"
+    relative_install_dir="selinux/targeted/policy"
 }
 
 ohos_prebuilt_etc("file_contexts") {
-    source = "$SELINUX_ROOT_DIR/demo/file_contexts"
-    part_name = "selinux"
-    relative_install_dir = "selinux/targeted/contexts/files"
+    source="$SELINUX_ROOT_DIR/demo/file_contexts"
+    part_name="selinux"
+    relative_install_dir="selinux/targeted/contexts/files"
 }
