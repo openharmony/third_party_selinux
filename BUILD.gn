@@ -549,47 +549,15 @@ ohos_executable("secilc") {
   subsystem_name = "security"
 }
 
-action("build_policy") {
-  script = "demo/build_policy.sh"
-  deps = [
-    ":checkpolicy($host_toolchain)",
-    ":secilc($host_toolchain)",
-  ]
-  outputs = [ "$root_out_dir/" ]
-}
-
-ohos_prebuilt_etc("config") {
-  source = "$SELINUX_ROOT_DIR/demo/config"
-  part_name = "selinux"
-  relative_install_dir = "selinux"
-}
-
-ohos_prebuilt_etc("precompiled_sepolicy") {
-  deps = [ ":build_policy" ]
-  source = "$SELINUX_ROOT_DIR/demo/policy.31"
-  part_name = "selinux"
-  relative_install_dir = "selinux/targeted/policy"
-}
-
-ohos_prebuilt_etc("file_contexts") {
-  source = "$SELINUX_ROOT_DIR/demo/file_contexts"
-  part_name = "selinux"
-  relative_install_dir = "selinux/targeted/contexts/files"
-}
-
 group("selinux_group") {
   if (build_selinux) {
     deps = [
       "//third_party/selinux:checkpolicy($host_toolchain)",
       "//third_party/selinux:chkcon",
-      "//third_party/selinux:config",
-      "//third_party/selinux:demoloop",
-      "//third_party/selinux:file_contexts",
       "//third_party/selinux:getenforce",
       "//third_party/selinux:getfilecon",
       "//third_party/selinux:getpidcon",
       "//third_party/selinux:load_policy",
-      "//third_party/selinux:precompiled_sepolicy",
       "//third_party/selinux:restorecon",
       "//third_party/selinux:secilc($host_toolchain)",
       "//third_party/selinux:selinux_check_access",
