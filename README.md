@@ -15,7 +15,6 @@ SELinux 是一组内核修改和用户空间工具，已经被添加到各种 Li
 | [third_party/selinux/](https://gitee.com/openharmony-sig/third_party_selinux.git) | `third_party/selinux/` | SELinux 的主仓库 |
 | [productdefine/common/](https://gitee.com/hu-huifeng/productdefine_common.git) | `productdefine/common/` | 添加 SELinux 组件定义 |
 | [third_party/toybox/](https://gitee.com/hu-huifeng/third_party_toybox.git) | `third_party/toybox/` | 完善了 `ls` 的 SELinux 支持 |
-| [base/security/permission/](https://gitee.com/hu-huifeng/security_permission.git) | `base/security/permission/` | 编译时的入口 |
 | [base/startup/init_lite/](https://gitee.com/shell_way/startup_init_lite.git) | `base/startup/init_lite/` | 系统启动加载策略并分化服务的标签 |
 | [build/](https://gitee.com/openharmony/build) | `build/` | 编译控制 |
 
@@ -49,7 +48,6 @@ https://gitee.com/openharmony-sig/third_party_selinux.git -> third_party/selinux
 3. 同步其他仓库  
 productdefine/common/     <- https://gitee.com/hu-huifeng/productdefine_common.git  
 third_party/toybox/       <- https://gitee.com/hu-huifeng/third_party_toybox.git  
-base/security/permission/ <- https://gitee.com/hu-huifeng/security_permission.git  
 base/startup/init_lite/   <- https://gitee.com/shell_way/startup_init_lite.git  
 build/                    <- https://gitee.com/shell_way/build.git  
 
