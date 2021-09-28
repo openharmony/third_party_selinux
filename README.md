@@ -2,7 +2,9 @@
 
 ## 目标
 
-此项目旨在将 SELinux 引入 OpenHarmony，
+此项目旨在将 SELinux 引入 OpenHarmony。安全增强式 Linux（ SELinux ， Security-Enhanced Linux ）是一个 Linux 内核的安全模块，其提供了访问控制安全策略机制，包括了强制访问控制（ Mandatory Access Control ， MAC ）。
+
+SELinux 是一组内核修改和用户空间工具，已经被添加到各种 Linux 发行版中。其软件架构力图将安全决策的执行与安全策略分离，并简化涉及执行安全策略的软件的数量。SELinux 的核心概念可以追溯回美国国家安全局的一些早期项目。
 
 ## 仓库
 
