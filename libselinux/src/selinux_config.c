@@ -339,7 +339,11 @@ const char *selinux_current_policy_path(void)
 	static char policy_path[PATH_MAX];
 
 	if (selinux_mnt) {
-		snprintf(policy_path, sizeof(policy_path), "%s/policy", selinux_mnt);
+		// FIXME 此处不应该改变 policy_path 的约定路径！
+		// 因为 OpenHarmony 的 e2fsdroid 无法支持五级系统目录，所以在此作出规避，
+		// 但是很显然这是不应当的。
+		//snprintf(policy_path, sizeof(policy_path), "%s/policy", selinux_mnt);
+		snprintf(policy_path, sizeof(policy_path), "%s", selinux_mnt);
 		if (access(policy_path, F_OK) == 0 ) {
 			return policy_path;
 		}
