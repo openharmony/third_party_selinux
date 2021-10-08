@@ -224,6 +224,7 @@ ohos_shared_library("libload_policy") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/../policycoreutils/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -253,6 +254,7 @@ ohos_shared_library("librestorecon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/../policycoreutils/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -448,6 +450,7 @@ ohos_executable("load_policy") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/../tools/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -467,6 +470,7 @@ ohos_executable("restorecon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/../tools/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
