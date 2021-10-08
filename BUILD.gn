@@ -191,70 +191,9 @@ ohos_shared_library("libselinux") {
     "-DAUDITD_LOG_TAG=1003",
   ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libsepol",
-  ]
-  part_name = "selinux"
-  subsystem_name = "security"
-}
-
-ohos_shared_library("libload_policy") {
-  output_name = "libload_policy"
-  sources = [
-    "$LIBSELINUX_ROOT_DIR/../policycoreutils/src/load_policy.c",
-    "$LIBSELINUX_ROOT_DIR/../tools/load_policy/load_policy.c",
-  ]
-  deps = [
     "$LIBPCRE2_ROOT_DIR:libpcre2",
-    ":libselinux",
-    ":libsepol",
   ]
-  include_dirs = [
-    "$LIBSELINUX_ROOT_DIR/include/selinux",
-    "$LIBSELINUX_ROOT_DIR/include",
-    "$LIBSELINUX_ROOT_DIR/src",
-    "$LIBSEPOL_ROOT_DIR/cil/src",
-    "$LIBSEPOL_ROOT_DIR/src",
-    "$LIBSEPOL_ROOT_DIR/cil/include",
-    "$LIBSEPOL_ROOT_DIR/include",
-    "$LIBSELINUX_ROOT_DIR/../policycoreutils/include",
-  ]
-  cflags = [
-    "-D_GNU_SOURCE",
-    "-DUSE_PCRE2",
-    "-w",
-  ]
-  license_file = "$LIBSELINUX_ROOT_DIR/../policycoreutils/LICENSE.txt"
-  part_name = "selinux"
-  subsystem_name = "security"
-}
-
-ohos_shared_library("librestorecon") {
-  output_name = "librestorecon"
-  sources = [ "$LIBSELINUX_ROOT_DIR/../policycoreutils/src/restorecon.c" ]
-  deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
-    ":libselinux",
-    ":libsepol",
-  ]
-  include_dirs = [
-    "$LIBSELINUX_ROOT_DIR/include/selinux",
-    "$LIBSELINUX_ROOT_DIR/include",
-    "$LIBSELINUX_ROOT_DIR/src",
-    "$LIBSEPOL_ROOT_DIR/cil/src",
-    "$LIBSEPOL_ROOT_DIR/src",
-    "$LIBSEPOL_ROOT_DIR/cil/include",
-    "$LIBSEPOL_ROOT_DIR/include",
-    "$LIBPCRE2_ROOT_DIR/include_internal",
-    "$LIBPCRE2_ROOT_DIR/include",
-    "$LIBSELINUX_ROOT_DIR/../policycoreutils/include",
-  ]
-  cflags = [
-    "-D_GNU_SOURCE",
-    "-DUSE_PCRE2",
-    "-w",
-  ]
-  license_file = "$LIBSELINUX_ROOT_DIR/../policycoreutils/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -263,8 +202,8 @@ ohos_executable("setenforce") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/setenforce.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -289,8 +228,8 @@ ohos_executable("getenforce") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getenforce.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -314,8 +253,8 @@ ohos_executable("getfilecon") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getfilecon.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -339,8 +278,8 @@ ohos_executable("setfilecon") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/setfilecon.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -364,8 +303,8 @@ ohos_executable("selinuxexeccon") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinuxexeccon.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -389,8 +328,8 @@ ohos_executable("selinux_check_access") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinux_check_access.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -414,8 +353,8 @@ ohos_executable("getpidcon") {
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getpidcon.c" ]
   deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
     ":libselinux",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include/selinux",
@@ -431,46 +370,6 @@ ohos_executable("getpidcon") {
     "-DUSE_PCRE2",
     "-w",
   ]
-  part_name = "selinux"
-  subsystem_name = "security"
-}
-
-ohos_executable("load_policy") {
-  install_enable = true
-  sources = [ "$LIBSELINUX_ROOT_DIR/../tools/load_policy/load_policy.c" ]
-  deps = [
-    ":libload_policy",
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
-    ":libselinux",
-    ":libsepol",
-  ]
-  include_dirs = [ "$LIBSELINUX_ROOT_DIR/../policycoreutils/include" ]
-  cflags = [
-    "-D_GNU_SOURCE",
-    "-DUSE_PCRE2",
-    "-w",
-  ]
-  license_file = "$LIBSELINUX_ROOT_DIR/../tools/LICENSE.txt"
-  part_name = "selinux"
-  subsystem_name = "security"
-}
-
-ohos_executable("restorecon") {
-  install_enable = true
-  sources = [ "$LIBSELINUX_ROOT_DIR/../tools/restorecon/restorecon.c" ]
-  deps = [
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
-    ":librestorecon",
-    ":libselinux",
-    ":libsepol",
-  ]
-  include_dirs = [ "$LIBSELINUX_ROOT_DIR/../policycoreutils/include" ]
-  cflags = [
-    "-D_GNU_SOURCE",
-    "-DUSE_PCRE2",
-    "-w",
-  ]
-  license_file = "$LIBSELINUX_ROOT_DIR/../tools/LICENSE.txt"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -531,22 +430,22 @@ ohos_executable("secilc") {
 group("selinux_group") {
   if (build_selinux) {
     deps = [
+      "//base/security/selinux:load_policy",
+      "//base/security/selinux:restorecon",
+      "//base/security/selinux:build_sepolicy",
+      "//base/security/selinux:config",
+      "//base/security/selinux:file_contexts",
+      "//base/security/selinux:selinux_test",
       "//third_party/selinux:checkpolicy($host_toolchain)",
       "//third_party/selinux:chkcon",
       "//third_party/selinux:getenforce",
       "//third_party/selinux:getfilecon",
       "//third_party/selinux:getpidcon",
-      "//third_party/selinux:load_policy",
-      "//third_party/selinux:restorecon",
       "//third_party/selinux:secilc($host_toolchain)",
       "//third_party/selinux:selinux_check_access",
       "//third_party/selinux:selinuxexeccon",
       "//third_party/selinux:setenforce",
       "//third_party/selinux:setfilecon",
-      "//base/security/selinux:config",
-      "//base/security/selinux:file_contexts",
-      "//base/security/selinux:build_sepolicy",
-      "//base/security/selinux:selinux_test",
     ]
   }
 }

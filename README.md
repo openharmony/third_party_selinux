@@ -1,63 +1,146 @@
-# third_party_selinux
+SELinux Userspace
+=================
 
-## 目标
+![SELinux logo](https://github.com/SELinuxProject.png)
+[![Run Tests](https://github.com/SELinuxProject/selinux/actions/workflows/run_tests.yml/badge.svg)](https://github.com/SELinuxProject/selinux/actions/workflows/run_tests.yml)
+[![Run SELinux testsuite in a virtual machine](https://github.com/SELinuxProject/selinux/actions/workflows/vm_testsuite.yml/badge.svg)](https://github.com/SELinuxProject/selinux/actions/workflows/vm_testsuite.yml)
+[![OSS-Fuzz Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/selinux.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#selinux)
+[![CIFuzz Status](https://github.com/SELinuxProject/selinux/actions/workflows/cifuzz.yml/badge.svg)](https://github.com/SELinuxProject/selinux/actions/workflows/cifuzz.yml)
 
-SELinux 是 Linux 历史上最杰出的新安全子系统。此项目旨在将 SELinux 引入 OpenHarmony，支持在运行 OpenHarmony OS 的轻量设备和小型设备上实现访问控制。安全增强式 Linux（ SELinux ， Security-Enhanced Linux ）是一个 Linux 内核的安全模块，其提供了访问控制安全策略机制，包括了强制访问控制（ Mandatory Access Control ， MAC ）。
+Please submit all bug reports and patches to <selinux@vger.kernel.org>.
 
-SELinux 是一组内核修改和用户空间工具，已经被添加到各种 Linux 发行版中。其软件架构力图将安全决策的执行与安全策略分离，并简化涉及执行安全策略的软件的数量。SELinux 的核心概念可以追溯回美国国家安全局的一些早期项目。
+Subscribe by sending "subscribe selinux" in the body of an email
+to <majordomo@vger.kernel.org>.
 
-## 仓库
+Archive of this mailing list is available on https://lore.kernel.org/selinux/.
 
-目前涉及到的仓库有以下几个。
 
-| 仓库 | 源码目录 | 说明 |
-| --- | --- | --- |
-| [third_party/selinux/](https://gitee.com/openharmony-sig/third_party_selinux.git) | `third_party/selinux/` | SELinux 的主仓库 |
-| [productdefine/common/](https://gitee.com/hu-huifeng/productdefine_common.git) | `productdefine/common/` | 添加 SELinux 组件定义 |
-| [third_party/toybox/](https://gitee.com/hu-huifeng/third_party_toybox.git) | `third_party/toybox/` | 完善了 `ls` 的 SELinux 支持 |
-| [base/startup/init_lite/](https://gitee.com/shell_way/startup_init_lite.git) | `base/startup/init_lite/` | 系统启动加载策略并分化服务的标签 |
-| [build/](https://gitee.com/openharmony/build) | `build/` | 编译控制 |
+Installation
+------------
 
-> 当前未合入主线，其中链接了一些个人仓库。
+SELinux libraries and tools are packaged in several Linux distributions:
 
-## 架构
+* Alpine Linux (https://pkgs.alpinelinux.org/package/edge/testing/x86/policycoreutils)
+* Arch Linux User Repository (https://aur.archlinux.org/packages/policycoreutils/)
+* Buildroot (https://git.buildroot.net/buildroot/tree/package/policycoreutils)
+* Debian and Ubuntu (https://packages.debian.org/sid/policycoreutils)
+* Gentoo (https://packages.gentoo.org/packages/sys-apps/policycoreutils)
+* RHEL and Fedora (https://src.fedoraproject.org/rpms/policycoreutils)
+* Yocto Project (http://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/tree/recipes-security/selinux)
+* and many more (https://repology.org/project/policycoreutils/versions)
 
-![整体架构](images/整体架构.png)
 
-引入了以下组件以支持 SELinux。
+Building and testing
+--------------------
 
-| 组件 | 来源 | 作用 | 形式 |
-| --- | --- | --- | --- |
-| `checkpolicy/` | [selinux/checkpolicy](https://github.com/SELinuxProject/selinux/tree/cf853c1a0c2328ad6c62fb2b2cc55d4926301d6b/checkpolicy) | `checkpolicy` | 可执行文件 |
-| `libselinux/` | [selinux/libselinux](https://github.com/SELinuxProject/selinux/tree/cf853c1a0c2328ad6c62fb2b2cc55d4926301d6b/libselinux) | `libselinux.so`、`getenforce`、`setenforce` | 动态库 |
-| `libsepol/` | [selinux/libsepol](https://github.com/SELinuxProject/selinux/tree/cf853c1a0c2328ad6c62fb2b2cc55d4926301d6b/libsepol) | 提供内部使用的 API | 动态库 |
-| `policycoreutils/` | 自研 | `libload_policy.so`、`librestorecon.so`、`load_policy`、`restorecon` | 动态库、可执行文件 |
-| `seclic/` | [selinux/seclic](https://github.com/SELinuxProject/selinux/tree/cf853c1a0c2328ad6c62fb2b2cc55d4926301d6b/secilc) | `seclic` | 可执行文件 |
-| `depends/fts/` | [openbsd](https://github.com/openbsd/src/tree/e8835b178a3e9df00c1c1fe0b9875fc5ef5a7854) | 提供内部使用的 API | 静态链接 |
-| `depends/pcre/pcre2/` | [pcre2](https://github.com/PhilipHazel/pcre2/tree/2ae7c30b95d63ecbaff6727eaff7c3a6a3969d56) | `libpcre2.so` | 动态库 |
+Build dependencies on Fedora:
 
-## 编译
+```sh
+# For C libraries and programs
+dnf install \
+    audit-libs-devel \
+    bison \
+    bzip2-devel \
+    CUnit-devel \
+    diffutils \
+    flex \
+    gcc \
+    gettext \
+    glib2-devel \
+    make \
+    libcap-devel \
+    libcap-ng-devel \
+    pam-devel \
+    pcre-devel \
+    xmlto
 
-1. 同步 OpenHarmony 代码  
-https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-standard-package-environment.md  
-按照步骤同步主线 L2 代码。  
+# For Python and Ruby bindings
+dnf install \
+    python3-devel \
+    ruby-devel \
+    swig
+```
 
-2. 下载本仓库  
-https://gitee.com/openharmony-sig/third_party_selinux.git -> third_party/selinux/  
+Build dependencies on Debian:
 
-3. 同步其他仓库  
-productdefine/common/     <- https://gitee.com/hu-huifeng/productdefine_common.git  
-third_party/toybox/       <- https://gitee.com/hu-huifeng/third_party_toybox.git  
-base/startup/init_lite/   <- https://gitee.com/shell_way/startup_init_lite.git  
-build/                    <- https://gitee.com/shell_way/build.git  
+```sh
+# For C libraries and programs
+apt-get install --no-install-recommends --no-install-suggests \
+    bison \
+    flex \
+    gawk \
+    gcc \
+    gettext \
+    make \
+    libaudit-dev \
+    libbz2-dev \
+    libcap-dev \
+    libcap-ng-dev \
+    libcunit1-dev \
+    libglib2.0-dev \
+    libpcre3-dev \
+    pkgconf \
+    python3 \
+    python3-distutils \
+    systemd \
+    xmlto
 
-4. 进行编译  
-./build/prebuilts_download.sh  
-selinux 默认没有开启编译，需要添加参数 --gn-args "support_selinux=true" 来开启 selinux  
-./build.sh --product-name Hi3516DV300 --gn-args "support_selinux=true"  
+# For Python and Ruby bindings
+apt-get install --no-install-recommends --no-install-suggests \
+    python3-dev \
+    ruby-dev \
+    swig
+```
 
-5. 运行验证  
-将镜像烧录到 Hi3516DV300 开发板上  
-ls -lZ /         # 查看文件标签是否成功  
-ps -eZ           # 查看进程标签是否成功  
-setenforce 1     # 进行各种操作，观察是否被拦截，以及串口是否有 avc denied  
+To build and install everything under a private directory, run:
+
+    make clean distclean
+
+    make DESTDIR=~/obj install install-rubywrap install-pywrap
+
+On Debian `PYTHON_SETUP_ARGS=--install-layout=deb` needs to be set when installing the python wrappers in order to create the correct python directory structure.
+
+To run tests with the built libraries and programs, several paths (relative to `$DESTDIR`) need to be added to variables `$LD_LIBRARY_PATH`, `$PATH` and `$PYTHONPATH`.
+This can be done using [./scripts/env_use_destdir](./scripts/env_use_destdir):
+
+    DESTDIR=~/obj ./scripts/env_use_destdir make test
+
+Some tests require the reference policy to be installed (for example in `python/sepolgen`).
+In order to run these ones, instructions similar to the ones in section `install` of [./.travis.yml](./.travis.yml) can be executed.
+
+To install as the default system libraries and binaries
+(overwriting any previously installed ones - dangerous!),
+on x86_64, run:
+
+    make LIBDIR=/usr/lib64 SHLIBDIR=/lib64 install install-pywrap relabel
+
+or on x86 (32-bit), run:
+
+    make install install-pywrap relabel
+
+This may render your system unusable if the upstream SELinux userspace
+lacks library functions or other dependencies relied upon by your
+distribution.  If it breaks, you get to keep both pieces.
+
+
+## Setting CFLAGS
+
+Setting CFLAGS during the make process will cause the omission of many defaults. While the project strives
+to provide a reasonable set of default flags, custom CFLAGS could break the build, or have other undesired
+changes on the build output. Thus, be very careful when setting CFLAGS. CFLAGS that are encouraged to be
+set when overriding are:
+
+- -fno-semantic-interposition for gcc or compilers that do not do this. clang does this by default. clang-10 and up
+   will support passing this flag, but ignore it. Previous clang versions fail.
+
+
+macOS
+-----
+
+To install libsepol on macOS (mainly for policy analysis):
+
+    cd libsepol; make PREFIX=/usr/local install
+
+This requires GNU coreutils:
+
+    brew install coreutils
