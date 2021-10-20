@@ -15,7 +15,7 @@ import("//build/ohos.gni")
 LIBSEPOL_ROOT_DIR = "//third_party/selinux/libsepol"
 LIBSELINUX_ROOT_DIR = "//third_party/selinux/libselinux"
 LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
-LIBPCRE2_ROOT_DIR = "//third_party/pcre"
+LIBPCRE2_ROOT_DIR = "//third_party/pcre2"
 
 ohos_shared_library("libsepol") {
   output_name = "libsepol"
