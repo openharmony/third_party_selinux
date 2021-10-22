@@ -96,6 +96,7 @@ ohos_shared_library("libsepol") {
     "-D_GNU_SOURCE",
     "-w",
   ]
+  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -114,6 +115,7 @@ ohos_executable("chkcon") {
     "-D_GNU_SOURCE",
     "-w",
   ]
+  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -194,6 +196,7 @@ ohos_shared_library("libselinux") {
     ":libsepol",
     "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -220,6 +223,7 @@ ohos_executable("setenforce") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -245,6 +249,7 @@ ohos_executable("getenforce") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -270,6 +275,7 @@ ohos_executable("getfilecon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -295,6 +301,7 @@ ohos_executable("setfilecon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -320,6 +327,7 @@ ohos_executable("selinuxexeccon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -345,6 +353,7 @@ ohos_executable("selinux_check_access") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -370,6 +379,7 @@ ohos_executable("getpidcon") {
     "-DUSE_PCRE2",
     "-w",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -401,6 +411,7 @@ ohos_executable("checkpolicy") {
     "-Werror",
     "-Wshadow",
   ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
 }
@@ -423,6 +434,7 @@ ohos_executable("secilc") {
     "-Werror",
     "-Wshadow",
   ]
+  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
   subsystem_name = "security"
 }
