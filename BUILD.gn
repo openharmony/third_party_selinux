@@ -97,6 +97,11 @@ ohos_shared_library("libsepol") {
     "-D_GNU_SOURCE",
     "-w",
   ]
+  install_enable = true
+  install_images = [
+    "system",
+    "ramdisk",
+  ]
   license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
   subsystem_name = "security"
@@ -196,6 +201,11 @@ ohos_shared_library("libselinux") {
   deps = [
     ":libsepol",
     "$LIBPCRE2_ROOT_DIR:libpcre2",
+  ]
+  install_enable = true
+  install_images = [
+    "system",
+    "ramdisk",
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
