@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2021 Huawei Device Co., Ltd.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+    This is the configuration file template for OpenHarmony OSS Audit Tool, please copy it to your project root dir and modify it refer to OpenHarmony/tools_oat/README.
+
+-->
+
+<configuration>
+    <oatconfig>
+        <licensefile>libselinux/LICENSE</licensefile>
+        <policylist>
+            <policy name="projectPolicy" desc="">
+                <policyitem type="copyright" name="北京万里红科技有限公司" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Mellanox Technologies Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Mellanox Techonologies Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Tresys Technology, LLC. All rights reserved" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name=" Trusted Computer Solutions, Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Red Hat Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Tresys Technology, LLC" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Free Software Foundation, Inc" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Red Hat, Inc., James Morris &lt;jmorris@redhat.com&gt;" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Manoj Srivastava &lt;srivasta@debian.org&gt;" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="NEC Corporation" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name=" Asim Jalis" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name=" Trusted Computer Solutions, Inc" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/COPYING" desc="兼容license"/>
+                <policyitem type="compatibility" name="libselinux-1.0" path="libselinux/LICENSE" desc="兼容license"/>
+                <policyitem type="compatibility" name="GPL-3.0+" path="checkpolicy/y.tab.h" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="compatibility" name="GPL-3.0+" path="checkpolicy/y.tab.c" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="compatibility" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.h" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
+                <policyitem type="compatibility" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.c" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.c" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.h" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/test/unit/.*.h" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="lsecilc/.*.c" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="BUILD.gn" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libselinux/src/.*.c" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libselinux/src/.*.h" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="secilc/.*.c" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/include/cil/.*.h" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="secilc/COPYING" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="secilc/LICENSE" desc=""/>
+                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.l" desc=""/>
+
+            </policy>
+        </policylist>
+
+        <filefilterlist>
+            <filefilter name="defaultFilter" desc="Files not to check">
+            </filefilter>
+            <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
+                <filteritem type="filepath" name="libselinux/man/.*.3" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/man/.*.5" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/man/.*.8" desc="no license header"/>
+                <filteritem type="filepath" name="checkpolicy/.*.h" desc="no license header"/>
+                <filteritem type="filepath" name="checkpolicy/.*.c" desc="no license header"/>
+                <filteritem type="filepath" name="checkpolicy/.*.8" desc="no license header"/>
+                <filteritem type="filepath" name="checkpolicy/.*.l" desc="no license header"/>
+                <filteritem type="filepath" name="checkpolicy/VERSION" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/include/selinux/.*.h" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/src/.*.c" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/src/.*.h" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/src/.*.i" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/utils/.*.c" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/cil/.*.cil" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/cil/test/unit/.*.c" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/man/.*.8" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/man/.*.3" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/src/.*" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/tests/.*" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/utils/.*" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/test/.*.cil" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/VERSION" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/docs/theme.theme" desc="no license header"/>
+            </filefilter>
+            <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies">
+                <filteritem type="filepath" name="libselinux/man/man3/.*.3" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/man/man5/.*.5" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/man/man8/.*.8" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/man/ru/.*.5" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/ru/.*.8" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/test/.*.c" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/include/selinux/.*.h" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/src/.*.c" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/src/.*.h" desc="Describe the reason for filtering scan results"/> 
+                <filteritem type="filepath" name="libselinux/src/.*.i" desc="Describe the reason for filtering scan results"/> 
+                <filteritem type="filepath" name="libselinux/utils/.*.c" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libsepol/.*.c" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libsepol/.*.h" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libsepol/man/.*.3" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libsepol/man/.*.8" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/test/.*.cil" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/.*.C" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/docs/theme.theme" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/.*.c" desc="InvalidCopyright"/>
+                <filteritem type="filepath" name="secilc/VERSION" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/VERSION" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/queue.h" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/secil2conf.8.xml" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/checkmodule.8" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libsepol/tests/policies/support/misc_macros.spt" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/queue.c" desc="InvalidCopyright"/>
+                <filteritem type="filepath" name="libsepol/VERSION" desc="InvalidCopyright"/>
+                <filteritem type="filepath" name="libsepol/cil/test/integration_testing/.*.cil" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/secilc.8.xml" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/checkpolicy.8" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/man/man3/.*.c" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/VERSION" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/src/setup.py" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/checkpolicy.h" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="secilc/docs/secil.xml" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="checkpolicy/policy_define.h" desc="Describe the reason for filtering scan results"/>
+                <!-- <filteritem type="filepath" name="checkpolicy/policy_define.h" desc="Describe the reason for filtering scan results"/> -->
+            </filefilter>
+            <filefilter name="licenseFileNamePolicyFilter" desc="Filters for LICENSE file policies">
+                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
+            </filefilter>
+            <filefilter name="readmeFileNamePolicyFilter" desc="Filters for README file policies">
+                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
+            </filefilter>
+            <filefilter name="readmeOpenSourcefileNamePolicyFilter" desc="Filters for README.OpenSource file policies">
+                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
+                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
+            </filefilter>
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+				<filteritem type="filepath" name="libselinux/man/ru/.*" desc="the binary file in third party"/>
+                <filteritem type="filepath" name="secilc/docs/cil_design.dia" desc="the binary file in third party"/>
+                <filteritem type="filepath" name="secilc/docs/.*.jpeg" desc="the binary file in third party"/>
+
+            </filefilter>
+
+        </filefilterlist>
+        
+        <licensematcherlist>
+        <licensematcher name="GPL-2.0+" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
+				<licensetext name="
+					This file is distributed under the same license as the cryptsetup package.
+				" desc=""/>
+			</licensematcher>
+        </licensematcherlist>
+    </oatconfig>
+</configuration>
