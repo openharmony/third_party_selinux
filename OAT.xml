@@ -35,26 +35,35 @@
                 <policyitem type="copyright" name="NEC Corporation" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name=" Asim Jalis" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name=" Trusted Computer Solutions, Inc" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="license" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
-                <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/COPYING" desc="兼容license"/>
+                <policyitem type="license" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/COPYING" desc="uboot是作为独立进程，不会导致boot外的软件受到GPL许可证的影响。"/>
+                <policyitem type="license" name="GPL-2.0+" path="checkpolicy/COPYING" desc="uboot是作为独立进程，不会导致boot外的软件受到GPL许可证的影响。"/>
                 <policyitem type="compatibility" name="libselinux-1.0" path="libselinux/LICENSE" desc="兼容license"/>
+                <policyitem type="license" name="libselinux-1.0" path="libselinux/LICENSE" desc="兼容license"/>
                 <policyitem type="compatibility" name="GPL-3.0+" path="checkpolicy/y.tab.h" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="GPL-3.0+" path="checkpolicy/y.tab.c" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="license" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.h" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
                 <policyitem type="compatibility" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.h" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
                 <policyitem type="compatibility" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.c" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.c" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.h" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/test/unit/.*.h" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="lsecilc/.*.c" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="BUILD.gn" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libselinux/src/.*.c" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libselinux/src/.*.h" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="secilc/.*.c" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/include/cil/.*.h" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="secilc/COPYING" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="secilc/LICENSE" desc=""/>
-                <policyitem type="compatibility" name="InvalidLicense" path="libsepol/cil/src/.*.l" desc=""/>
-
+                <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/.*.c" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/.*.h" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/test/unit/.*.h" desc="兼容license"/>
+                <policyitem type="license" name="HPND" path="BUILD.gn" desc="兼容license"/>
+                <policyitem type="compatibility" name="HPND" path="BUILD.gn" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="secilc/COPYING" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/cil_lexer.l" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/include/cil/cil.h" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="secilc/secilc.c" desc="兼容license"/>
+                <policyitem type="license" name="BSD-2-clause" path="secilc/secil2conf.c" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/src/.*.c" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/src/.*.h" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/test/unit/.*.h" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="secilc/COPYING" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/src/cil_lexer.l" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/include/cil/cil.h" desc="兼容license"/>
             </policy>
         </policylist>
 
@@ -78,12 +87,24 @@
                 <filteritem type="filepath" name="libsepol/cil/.*.cil" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/cil/test/unit/.*.c" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/man/.*.8" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/include/sepol/policydb/.*.h" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/include/sepol/.*.h" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/man/.*.3" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/src/.*" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/man/man3/.*.c" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/cil/src/cil_reset_ast.c" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/cil/src/cil_reset_ast.h" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/cil/src/cil_lexer.c" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/tests/.*" desc="no license header"/>
                 <filteritem type="filepath" name="libsepol/utils/.*" desc="no license header"/>
                 <filteritem type="filepath" name="secilc/test/.*.cil" desc="no license header"/>
                 <filteritem type="filepath" name="secilc/VERSION" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/VERSION" desc="no license header"/>
+                <filteritem type="filepath" name="libsepol/VERSION" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/secil2conf.8.xml" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/secilc.8.xml" desc="no license header"/>
+                <filteritem type="filepath" name="secilc/docs/secil.xml" desc="no license header"/>
+                <filteritem type="filepath" name="libselinux/src/setup.py" desc="no license header"/>
                 <filteritem type="filepath" name="secilc/docs/theme.theme" desc="no license header"/>
             </filefilter>
             <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies">
@@ -95,8 +116,8 @@
                 <filteritem type="filepath" name="checkpolicy/test/.*.c" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="libselinux/include/selinux/.*.h" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="libselinux/src/.*.c" desc="Describe the reason for filtering scan results"/>
-                <filteritem type="filepath" name="libselinux/src/.*.h" desc="Describe the reason for filtering scan results"/> 
-                <filteritem type="filepath" name="libselinux/src/.*.i" desc="Describe the reason for filtering scan results"/> 
+                <filteritem type="filepath" name="libselinux/src/.*.h" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="libselinux/src/.*.i" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="libselinux/utils/.*.c" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="libsepol/.*.c" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="libsepol/.*.h" desc="Describe the reason for filtering scan results"/>
@@ -123,38 +144,170 @@
                 <filteritem type="filepath" name="checkpolicy/checkpolicy.h" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="secilc/docs/secil.xml" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="checkpolicy/policy_define.h" desc="Describe the reason for filtering scan results"/>
-                <!-- <filteritem type="filepath" name="checkpolicy/policy_define.h" desc="Describe the reason for filtering scan results"/> -->
             </filefilter>
             <filefilter name="licenseFileNamePolicyFilter" desc="Filters for LICENSE file policies">
-                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="readmeFileNamePolicyFilter" desc="Filters for README file policies">
-                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="readmeOpenSourcefileNamePolicyFilter" desc="Filters for README.OpenSource file policies">
-                <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
-                <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
-				<filteritem type="filepath" name="libselinux/man/ru/.*" desc="the binary file in third party"/>
+                <filteritem type="filepath" name="libselinux/man/ru/.*" desc="the binary file in third party"/>
                 <filteritem type="filepath" name="secilc/docs/cil_design.dia" desc="the binary file in third party"/>
                 <filteritem type="filepath" name="secilc/docs/.*.jpeg" desc="the binary file in third party"/>
-
             </filefilter>
-
         </filefilterlist>
-        
+
         <licensematcherlist>
-        <licensematcher name="GPL-2.0+" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
-				<licensetext name="
-					This file is distributed under the same license as the cryptsetup package.
-				" desc=""/>
-			</licensematcher>
+            <licensematcher name="public domain license" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
+                <licensetext name="
+                    //  LibSha1
+                    //
+                    //  Implementation of SHA1 hash function.
+                    //  Original author:  Steve Reid &lt;sreid@sea-to-sky.net&gt;
+                    //  Contributions by: James H. Brown &lt;jbrown@burgoyne.com&gt;, Saul Kravitz &lt;Saul.Kravitz@celera.com&gt;,
+                    //  and Ralph Giles &lt;giles@ghostscript.com&gt;
+                    //  Modified by WaterJuice retaining Public Domain license.
+                    //
+                    //  This is free and unencumbered software released into the public domain - June 2013 waterjuice.org
+                    //  Modified to:
+                    //    - stop symbols being exported for libselinux shared library - October 2015
+                    //                             Richard Haines &lt;richard_c_haines@btinternet.com&gt;
+                    //    - Not cast the workspace from a byte array to a CHAR64LONG16 due to alignment isses.
+                    //      Fixes:
+                    //        sha1.c:73:33: error: cast from 'uint8_t *' (aka 'unsigned char *') to 'CHAR64LONG16 *' increases required alignment from 1 to 4 [-Werror,-Wcast-align]
+                    //             CHAR64LONG16*       block = (CHAR64LONG16*) workspace;
+                    //                                                                     William Roberts &lt;william.c.roberts@intel.com&gt;
+                " desc=""/>
+                <licensetext name="
+                    //  LibSha1
+                    //
+                    //  Implementation of SHA1 hash function.
+                    //  Original author:  Steve Reid &lt;sreid@sea-to-sky.net&gt;
+                    //  Contributions by: James H. Brown &lt;jbrown@burgoyne.com&gt;, Saul Kravitz &lt;Saul.Kravitz@celera.com&gt;,
+                    //  and Ralph Giles &lt;giles@ghostscript.com&gt;
+                    //  Modified by WaterJuice retaining Public Domain license.
+                    //
+                    //  This is free and unencumbered software released into the public domain - June 2013 waterjuice.org
+                " desc=""/>
+            </licensematcher>
+            <licensematcher name="BSD-2-clause" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
+                <licensetext name="
+                    * Copyright 2011 Tresys Technology, LLC. All rights reserved.
+                    *
+                    * Redistribution and use in source and binary forms, with or without
+                    * modification, are permitted provided that the following conditions are met:
+                    *
+                    *    1. Redistributions of source code must retain the above copyright notice,
+                    *       this list of conditions and the following disclaimer.
+                    *
+                    *    2. Redistributions in binary form must reproduce the above copyright notice,
+                    *       this list of conditions and the following disclaimer in the documentation
+                    *       and/or other materials provided with the distribution.
+                    *
+                    * THIS SOFTWARE IS PROVIDED BY TRESYS TECHNOLOGY, LLC ``AS IS'' AND ANY EXPRESS
+                    * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+                    * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+                    * EVENT SHALL TRESYS TECHNOLOGY, LLC OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+                    * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+                    * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+                    * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+                    * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+                    * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+                    * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                    *
+                    * The views and conclusions contained in the software and documentation are those
+                    * of the authors and should not be interpreted as representing official policies,
+                    * either expressed or implied, of Tresys Technology, LLC.
+                " desc=""/>
+                <licensetext name="
+                    * Copyright 2014 Tresys Technology, LLC. All rights reserved.
+                    * 
+                    * Redistribution and use in source and binary forms, with or without
+                    * modification, are permitted provided that the following conditions are met:
+                    * 
+                    *    1. Redistributions of source code must retain the above copyright notice,
+                    *       this list of conditions and the following disclaimer.
+                    * 
+                    *    2. Redistributions in binary form must reproduce the above copyright notice,
+                    *       this list of conditions and the following disclaimer in the documentation
+                    *       and/or other materials provided with the distribution.
+                    * 
+                    * THIS SOFTWARE IS PROVIDED BY TRESYS TECHNOLOGY, LLC ``AS IS'' AND ANY EXPRESS
+                    * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+                    * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+                    * EVENT SHALL TRESYS TECHNOLOGY, LLC OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+                    * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+                    * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+                    * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+                    * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+                    * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+                    * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                    * 
+                    * The views and conclusions contained in the software and documentation are those
+                    * of the authors and should not be interpreted as representing official policies,
+                    * either expressed or implied, of Tresys Technology, LLC.
+                " desc=""/>
+                <licensetext name="
+                    * Copyright 2013 Tresys Technology, LLC. All rights reserved.
+                    * 
+                    * Redistribution and use in source and binary forms, with or without
+                    * modification, are permitted provided that the following conditions are met:
+                    * 
+                    *    1. Redistributions of source code must retain the above copyright notice,
+                    *       this list of conditions and the following disclaimer.
+                    * 
+                    *    2. Redistributions in binary form must reproduce the above copyright notice,
+                    *       this list of conditions and the following disclaimer in the documentation
+                    *       and/or other materials provided with the distribution.
+                    * 
+                    * THIS SOFTWARE IS PROVIDED BY TRESYS TECHNOLOGY, LLC ``AS IS'' AND ANY EXPRESS
+                    * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+                    * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+                    * EVENT SHALL TRESYS TECHNOLOGY, LLC OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+                    * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+                    * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+                    * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+                    * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+                    * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+                    * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                    * 
+                    * The views and conclusions contained in the software and documentation are those
+                    * of the authors and should not be interpreted as representing official policies,
+                    * either expressed or implied, of Tresys Technology, LLC.
+                " desc=""/>
+                <licensetext name="
+                    * Copyright 2011 Tresys Technology, LLC. All rights reserved.
+                    * 
+                    * Redistribution and use in source and binary forms, with or without
+                    * modification, are permitted provided that the following conditions are met:
+                    * 
+                    *    1. Redistributions of source code must retain the above copyright notice,
+                    *       this list of conditions and the following disclaimer.
+                    * 
+                    *    2. Redistributions in binary form must reproduce the above copyright notice,
+                    *       this list of conditions and the following disclaimer in the documentation
+                    *       and/or other materials provided with the distribution.
+                    * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+                    * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                    * 
+                    * The views and conclusions contained in the software and documentation are those
+                    * of the authors and should not be interpreted as representing official policies,
+                    * either expressed or implied, of Tresys Technology, LLC.
+                " desc=""/>
+            </licensematcher>
+            <licensematcher name="HPND" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
+                <licensetext name="
+                    # Copyright (c) 2021 北京万里红科技有限公司
+                    # Copyright(c) Huawei Technologies Co.,Ltd.
+                    # 2020-2021.All rights reserved.
+                    # Copyright(c)2016,Google inc.
+                    #
+                    # Permission to use,copy,modify,and/or distribute this software for any
+                    # purpose with or without fee is hereby granted,provided that the above
+                    # copyright notice and this permission notice appear in all copies.
+                " desc=""/>
+            </licensematcher>
         </licensematcherlist>
     </oatconfig>
 </configuration>
