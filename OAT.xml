@@ -57,7 +57,9 @@
                 <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/cil_lexer.l" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/include/cil/cil.h" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="secilc/secilc.c" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="secilc/secilc.c" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="secilc/secil2conf.c" desc="兼容license"/>
+                <policyitem type="compatibility" name="BSD-2-clause" path="secilc/secil2conf.c" desc="兼容license"/>
                 <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/src/.*.c" desc="兼容license"/>
                 <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/src/.*.h" desc="兼容license"/>
                 <policyitem type="compatibility" name="BSD-2-clause" path="libsepol/cil/test/unit/.*.h" desc="兼容license"/>
