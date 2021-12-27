@@ -189,11 +189,11 @@ ohos_shared_library("libselinux") {
     "$LIBSEPOL_ROOT_DIR/cil/include",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
+
   if (is_linux == false) {
-    include_dirs += [
-      "$LIBFTS_ROOT_DIR/sys/",
-    ]
+    include_dirs += [ "$LIBFTS_ROOT_DIR/sys/" ]
   }
+
   cflags = [
     "-D_GNU_SOURCE",
     "-w",
