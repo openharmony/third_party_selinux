@@ -19,6 +19,13 @@ LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
 LIBPCRE2_ROOT_DIR = "//third_party/pcre2"
 
 ohos_shared_library("libsepol") {
+  exec_script("/usr/bin/flex",
+              [
+                "-o",
+                rebase_path("libsepol/cil/src/cil_lexer.c"),
+                rebase_path("libsepol/cil/src/cil_lexer.l"),
+              ],
+              "")
   output_name = "libsepol"
   sources = [
     "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
@@ -199,7 +206,7 @@ ohos_shared_library("libselinux") {
     "-w",
     "-DSHARED",
     "-DUSE_PCRE2",
-    "-D__BIONIC__",
+    "-U__BIONIC__",
     "-DAUDITD_LOG_TAG=1003",
   ]
   deps = [
@@ -400,6 +407,22 @@ ohos_executable("getpidcon") {
 }
 
 ohos_executable("checkpolicy") {
+  exec_script("/usr/bin/bison",
+              [
+                "-y",
+                "-d",
+                rebase_path("checkpolicy/policy_parse.y"),
+                "-o",
+                rebase_path("checkpolicy/y.tab.c"),
+              ],
+              "")
+  exec_script("/usr/bin/flex",
+              [
+                "-o",
+                rebase_path("checkpolicy/policy_scan.c"),
+                rebase_path("checkpolicy/policy_scan.l"),
+              ],
+              "")
   install_enable = true
   sources = [
     "$LIBSELINUX_ROOT_DIR/../checkpolicy/checkpolicy.c",
@@ -454,9 +477,38 @@ ohos_executable("secilc") {
   subsystem_name = "security"
 }
 
+ohos_executable("sefcontext_compile") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/sefcontext_compile.c" ]
+  deps = [
+    ":libselinux",
+    ":libsepol",
+    "$LIBPCRE2_ROOT_DIR:libpcre2",
+  ]
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include/selinux",
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSELINUX_ROOT_DIR/src",
+    "$LIBPCRE2_ROOT_DIR/include",
+    "$LIBSEPOL_ROOT_DIR/cil/src",
+    "$LIBSEPOL_ROOT_DIR/src",
+    "$LIBSEPOL_ROOT_DIR/cil/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-DUSE_PCRE2",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "security"
+}
+
 group("selinux_group") {
-  if (build_selinux) {
+  if (build_selinux && defined(product_name) && product_name == "rk3568") {
     deps = [
+      "//base/security/selinux:build_file_contexts",
       "//base/security/selinux:build_sepolicy",
       "//base/security/selinux:config",
       "//base/security/selinux:file_contexts",
@@ -469,6 +521,7 @@ group("selinux_group") {
       "//third_party/selinux:getfilecon",
       "//third_party/selinux:getpidcon",
       "//third_party/selinux:secilc($host_toolchain)",
+      "//third_party/selinux:sefcontext_compile($host_toolchain)",
       "//third_party/selinux:selinux_check_access",
       "//third_party/selinux:selinuxexeccon",
       "//third_party/selinux:setenforce",
