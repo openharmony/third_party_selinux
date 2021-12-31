@@ -192,14 +192,10 @@ ohos_shared_library("libselinux") {
     "$LIBSELINUX_ROOT_DIR/include",
     "$LIBSELINUX_ROOT_DIR/src",
     "$LIBPCRE2_ROOT_DIR/include",
-    "$LIBFTS_ROOT_DIR/include",
+    "$LIBFTS_ROOT_DIR/",
     "$LIBSEPOL_ROOT_DIR/cil/include",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
-
-  if (is_linux == false) {
-    include_dirs += [ "$LIBFTS_ROOT_DIR/sys/" ]
-  }
 
   cflags = [
     "-D_GNU_SOURCE",
