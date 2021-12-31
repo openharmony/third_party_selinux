@@ -14,7 +14,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <fts.h>
+#include <include/fts.h>
 #include <inttypes.h>
 #include <limits.h>
 #include <stdint.h>
