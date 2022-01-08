@@ -502,7 +502,7 @@ ohos_executable("sefcontext_compile") {
 }
 
 group("selinux_group") {
-  if (build_selinux && defined(product_name) && product_name == "rk3568") {
+  if (build_selinux) {
     deps = [
       "//base/security/selinux:build_file_contexts",
       "//base/security/selinux:build_sepolicy",
