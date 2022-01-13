@@ -213,6 +213,7 @@ ohos_shared_library("libselinux") {
   install_images = [
     "system",
     "ramdisk",
+    "updater",
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
