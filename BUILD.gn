@@ -501,28 +501,3 @@ ohos_executable("sefcontext_compile") {
   part_name = "selinux"
   subsystem_name = "security"
 }
-
-group("selinux_group") {
-  if (build_selinux) {
-    deps = [
-      "//base/security/selinux:build_file_contexts",
-      "//base/security/selinux:build_sepolicy",
-      "//base/security/selinux:config",
-      "//base/security/selinux:file_contexts",
-      "//base/security/selinux:load_policy",
-      "//base/security/selinux:restorecon",
-      "//base/security/selinux:selinux_test",
-      "//third_party/selinux:checkpolicy($host_toolchain)",
-      "//third_party/selinux:chkcon",
-      "//third_party/selinux:getenforce",
-      "//third_party/selinux:getfilecon",
-      "//third_party/selinux:getpidcon",
-      "//third_party/selinux:secilc($host_toolchain)",
-      "//third_party/selinux:sefcontext_compile($host_toolchain)",
-      "//third_party/selinux:selinux_check_access",
-      "//third_party/selinux:selinuxexeccon",
-      "//third_party/selinux:setenforce",
-      "//third_party/selinux:setfilecon",
-    ]
-  }
-}
