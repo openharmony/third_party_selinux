@@ -609,7 +609,9 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	bool updated = false;
 	const char *lookup_path = pathname;
 	float pc;
-
+	if (!strncmp(pathname, "/data/app/", sizeof("/data/app/") - 1)) {
+		goto out;
+	}
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
 			selinux_log(SELINUX_ERROR,
