@@ -609,9 +609,14 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	bool updated = false;
 	const char *lookup_path = pathname;
 	float pc;
-	if (!strncmp(pathname, "/data/app/", sizeof("/data/app/") - 1)) {
+	if (!strncmp(pathname, "/data/app/el1/", sizeof("/data/app/el1/") - 1) ||
+		!strncmp(pathname, "/data/app/el2/", sizeof("/data/app/el2/") - 1) ||
+		!strncmp(pathname, "/data/app/el3/", sizeof("/data/app/el3/") - 1) ||
+		!strncmp(pathname, "/data/app/el4/", sizeof("/data/app/el4/") - 1) ||
+		!strncmp(pathname, "/data/accounts/account_0/", sizeof("/data/accounts/account_0/") - 1)) {
 		goto out;
 	}
+
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
 			selinux_log(SELINUX_ERROR,
