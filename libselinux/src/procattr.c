@@ -126,7 +126,7 @@ static int getprocattrcon_raw(char ** context,
 
 	switch (attr[0]) {
 		case 'c':
-			prev_context = prev_current;
+			prev_context = NULL;
 			break;
 		case 'e':
 			prev_context = prev_exec;
