@@ -60,10 +60,13 @@
 #include "module_compiler.h"
 #include "policy_define.h"
 
+extern void init_parser(int pass_number);
+__attribute__ ((format(printf, 1, 2)))
+extern void yyerror2(const char *fmt, ...);
+
 policydb_t *policydbp;
 queue_t id_queue = 0;
 unsigned int pass;
-char *curfile = 0;
 int mlspol = 0;
 
 extern unsigned long policydb_lineno;
@@ -74,12 +77,6 @@ extern char source_file[PATH_MAX];
 extern int yywarn(const char *msg);
 extern int yyerror(const char *msg);
 
-#define ERRORMSG_LEN 255
-static char errormsg[ERRORMSG_LEN + 1] = {0};
-
-static int id_has_dot(char *id);
-static int parse_security_context(context_struct_t *c);
-
 /* initialize all of the state variables for the scanner/parser */
 void init_parser(int pass_number)
 {
@@ -89,12 +86,12 @@ void init_parser(int pass_number)
 	pass = pass_number;
 }
 
-__attribute__ ((format(printf, 1, 2)))
 void yyerror2(const char *fmt, ...)
 {
+	char errormsg[256];
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf(errormsg, ERRORMSG_LEN, fmt, ap);
+	vsnprintf(errormsg, sizeof(errormsg), fmt, ap);
 	yyerror(errormsg);
 	va_end(ap);
 }
@@ -141,7 +138,7 @@ int insert_id(const char *id, int push)
 
 /* If the identifier has a dot within it and that its first character
    is not a dot then return 1, else return 0. */
-static int id_has_dot(char *id)
+static int id_has_dot(const char *id)
 {
 	if (strchr(id, '.') >= id + 1) {
 		return 1;
@@ -1168,11 +1165,6 @@ int expand_attrib(void)
 
 	ebitmap_init(&attrs);
 	while ((id = queue_remove(id_queue))) {
-		if (!id) {
-			yyerror("No attribute name for expandattribute statement?");
-			goto exit;
-		}
-
 		if (!is_id_in_scope(SYM_TYPES, id)) {
 			yyerror2("attribute %s is not within scope", id);
 			goto exit;
@@ -1610,7 +1602,7 @@ static int set_types(type_set_t * set, char *id, int *add, char starallowed)
 	return -1;
 }
 
-int define_compute_type_helper(int which, avrule_t ** rule)
+static int define_compute_type_helper(int which, avrule_t ** rule)
 {
 	char *id;
 	type_datum_t *datum;
@@ -1801,7 +1793,7 @@ int define_bool_tunable(int is_tunable)
 		return -1;
 	}
 
-	datum->state = (int)(bool_value[0] == 'T') ? 1 : 0;
+	datum->state = (bool_value[0] == 'T') ? 1 : 0;
 	free(bool_value);
 	return 0;
       cleanup:
@@ -1837,7 +1829,7 @@ struct av_ioctl_range_list {
 	struct av_ioctl_range_list *next;
 };
 
-int avrule_sort_ioctls(struct av_ioctl_range_list **rangehead)
+static int avrule_sort_ioctls(struct av_ioctl_range_list **rangehead)
 {
 	struct av_ioctl_range_list *r, *r2, *sorted, *sortedhead = NULL;
 
@@ -1885,7 +1877,7 @@ error:
 	return -1;
 }
 
-int avrule_merge_ioctls(struct av_ioctl_range_list **rangehead)
+static int avrule_merge_ioctls(struct av_ioctl_range_list **rangehead)
 {
 	struct av_ioctl_range_list *r, *tmp;
 	r = *rangehead;
@@ -1905,12 +1897,13 @@ int avrule_merge_ioctls(struct av_ioctl_range_list **rangehead)
 	return 0;
 }
 
-int avrule_read_ioctls(struct av_ioctl_range_list **rangehead)
+static int avrule_read_ioctls(struct av_ioctl_range_list **rangehead)
 {
 	char *id;
 	struct av_ioctl_range_list *rnew, *r = NULL;
-	*rangehead = NULL;
 	uint8_t omit = 0;
+
+	*rangehead = NULL;
 
 	/* read in all the ioctl commands */
 	while ((id = queue_remove(id_queue))) {
@@ -1947,7 +1940,9 @@ int avrule_read_ioctls(struct av_ioctl_range_list **rangehead)
 		}
 	}
 	r = *rangehead;
-	r->omit = omit;
+	if (r) {
+		r->omit = omit;
+	}
 	return 0;
 error:
 	yyerror("out of memory");
@@ -1955,7 +1950,7 @@ error:
 }
 
 /* flip to included ranges */
-int avrule_omit_ioctls(struct av_ioctl_range_list **rangehead)
+static int avrule_omit_ioctls(struct av_ioctl_range_list **rangehead)
 {
 	struct av_ioctl_range_list *rnew, *r, *newhead, *r2;
 
@@ -2003,7 +1998,7 @@ error:
 	return -1;
 }
 
-int avrule_ioctl_ranges(struct av_ioctl_range_list **rangelist)
+static int avrule_ioctl_ranges(struct av_ioctl_range_list **rangelist)
 {
 	struct av_ioctl_range_list *rangehead;
 	uint8_t omit;
@@ -2031,7 +2026,7 @@ int avrule_ioctl_ranges(struct av_ioctl_range_list **rangelist)
 	return 0;
 }
 
-int define_te_avtab_xperms_helper(int which, avrule_t ** rule)
+static int define_te_avtab_xperms_helper(int which, avrule_t ** rule)
 {
 	char *id;
 	class_perm_node_t *perms, *tail = NULL, *cur_perms = NULL;
@@ -2131,7 +2126,7 @@ int define_te_avtab_xperms_helper(int which, avrule_t ** rule)
 			     policydbp->p_class_val_to_name[i]);
 			continue;
 		} else {
-			cur_perms->data |= 1U << (perdatum->s.value - 1);
+			cur_perms->data |= UINT32_C(1) << (perdatum->s.value - 1);
 		}
 	}
 
@@ -2145,14 +2140,14 @@ out:
 }
 
 /* index of the u32 containing the permission */
-#define XPERM_IDX(x) (x >> 5)
+#define XPERM_IDX(x) ((x) >> 5)
 /* set bits 0 through x-1 within the u32 */
-#define XPERM_SETBITS(x) ((1U << (x & 0x1f)) - 1)
+#define XPERM_SETBITS(x) ((UINT32_C(1) << ((x) & 0x1f)) - 1)
 /* low value for this u32 */
-#define XPERM_LOW(x) (x << 5)
+#define XPERM_LOW(x) ((x) << 5)
 /* high value for this u32 */
-#define XPERM_HIGH(x) (((x + 1) << 5) - 1)
-void avrule_xperm_setrangebits(uint16_t low, uint16_t high,
+#define XPERM_HIGH(x) ((((x) + 1) << 5) - 1)
+static void avrule_xperm_setrangebits(uint16_t low, uint16_t high,
 				av_extended_perms_t *xperms)
 {
 	unsigned int i;
@@ -2174,7 +2169,7 @@ void avrule_xperm_setrangebits(uint16_t low, uint16_t high,
 	}
 }
 
-int avrule_xperms_used(av_extended_perms_t *xperms)
+static int avrule_xperms_used(const av_extended_perms_t *xperms)
 {
 	unsigned int i;
 
@@ -2191,10 +2186,10 @@ int avrule_xperms_used(av_extended_perms_t *xperms)
  * dir, size, driver, and function. Only the driver and function fields
  * are considered here
  */
-#define IOC_DRIV(x) (x >> 8)
-#define IOC_FUNC(x) (x & 0xff)
-#define IOC_CMD(driver, func) ((driver << 8) + func)
-int avrule_ioctl_partialdriver(struct av_ioctl_range_list *rangelist,
+#define IOC_DRIV(x) ((x) >> 8)
+#define IOC_FUNC(x) ((x) & 0xff)
+#define IOC_CMD(driver, func) (((driver) << 8) + (func))
+static int avrule_ioctl_partialdriver(struct av_ioctl_range_list *rangelist,
 				av_extended_perms_t *complete_driver,
 				av_extended_perms_t **extended_perms)
 {
@@ -2233,7 +2228,7 @@ int avrule_ioctl_partialdriver(struct av_ioctl_range_list *rangelist,
 
 }
 
-int avrule_ioctl_completedriver(struct av_ioctl_range_list *rangelist,
+static int avrule_ioctl_completedriver(struct av_ioctl_range_list *rangelist,
 			av_extended_perms_t **extended_perms)
 {
 	struct av_ioctl_range_list *r;
@@ -2275,7 +2270,7 @@ int avrule_ioctl_completedriver(struct av_ioctl_range_list *rangelist,
 	return 0;
 }
 
-int avrule_ioctl_func(struct av_ioctl_range_list *rangelist,
+static int avrule_ioctl_func(struct av_ioctl_range_list *rangelist,
 		av_extended_perms_t **extended_perms, unsigned int driver)
 {
 	struct av_ioctl_range_list *r;
@@ -2325,18 +2320,7 @@ int avrule_ioctl_func(struct av_ioctl_range_list *rangelist,
 	return 0;
 }
 
-void avrule_ioctl_freeranges(struct av_ioctl_range_list *rangelist)
-{
-	struct av_ioctl_range_list *r, *tmp;
-	r = rangelist;
-	while (r) {
-		tmp = r;
-		r = r->next;
-		free(tmp);
-	}
-}
-
-unsigned int xperms_for_each_bit(unsigned int *bit, av_extended_perms_t *xperms)
+static unsigned int xperms_for_each_bit(unsigned int *bit, av_extended_perms_t *xperms)
 {
 	unsigned int i;
 	for (i = *bit; i < sizeof(xperms->perms)*8; i++) {
@@ -2349,7 +2333,7 @@ unsigned int xperms_for_each_bit(unsigned int *bit, av_extended_perms_t *xperms)
 	return 0;
 }
 
-int avrule_cpy(avrule_t *dest, avrule_t *src)
+static int avrule_cpy(avrule_t *dest, const avrule_t *src)
 {
 	class_perm_node_t *src_perms;
 	class_perm_node_t *dest_perms, *dest_tail;
@@ -2397,10 +2381,10 @@ int avrule_cpy(avrule_t *dest, avrule_t *src)
 	return 0;
 }
 
-int define_te_avtab_ioctl(avrule_t *avrule_template)
+static int define_te_avtab_ioctl(const avrule_t *avrule_template)
 {
 	avrule_t *avrule;
-	struct av_ioctl_range_list *rangelist;
+	struct av_ioctl_range_list *rangelist, *r;
 	av_extended_perms_t *complete_driver, *partial_driver, *xperms;
 	unsigned int i;
 
@@ -2458,6 +2442,12 @@ done:
 	if (partial_driver)
 		free(partial_driver);
 
+	while (rangelist != NULL) {
+		r = rangelist;
+		rangelist = rangelist->next;
+		free(r);
+	}
+
 	return 0;
 }
 
@@ -2466,6 +2456,7 @@ int define_te_avtab_extended_perms(int which)
 	char *id;
 	unsigned int i;
 	avrule_t *avrule_template;
+	int rc = 0;
 
 	if (pass == 1) {
 		for (i = 0; i < 4; i++) {
@@ -2481,18 +2472,20 @@ int define_te_avtab_extended_perms(int which)
 
 	id = queue_remove(id_queue);
 	if (strcmp(id,"ioctl") == 0) {
-		free(id);
-		if (define_te_avtab_ioctl(avrule_template))
-			return -1;
+		rc = define_te_avtab_ioctl(avrule_template);
 	} else {
 		yyerror("only ioctl extended permissions are supported");
-		free(id);
-		return -1;
+		rc = -1;
 	}
-	return 0;
+
+	free(id);
+	avrule_destroy(avrule_template);
+	free(avrule_template);
+
+	return rc;
 }
 
-int define_te_avtab_helper(int which, avrule_t ** rule)
+static int define_te_avtab_helper(int which, avrule_t ** rule)
 {
 	char *id;
 	class_datum_t *cladatum;
@@ -2619,7 +2612,7 @@ int define_te_avtab_helper(int which, avrule_t ** rule)
 				}
 				continue;
 			} else {
-				cur_perms->data |= 1U << (perdatum->s.value - 1);
+				cur_perms->data |= UINT32_C(1) << (perdatum->s.value - 1);
 			}
 		      next:
 			cur_perms = cur_perms->next;
@@ -3446,9 +3439,10 @@ bad:
 	return -1;
 }
 
-static constraint_expr_t *constraint_expr_clone(constraint_expr_t * expr)
+static constraint_expr_t *constraint_expr_clone(const constraint_expr_t * expr)
 {
-	constraint_expr_t *h = NULL, *l = NULL, *e, *newe;
+	constraint_expr_t *h = NULL, *l = NULL, *newe;
+	const constraint_expr_t *e;
 	for (e = expr; e; e = e->next) {
 		newe = malloc(sizeof(*newe));
 		if (!newe)
@@ -3621,7 +3615,7 @@ int define_constraint(constraint_expr_t * expr)
 					return -1;
 				}
 			}
-			node->permissions |= (1 << (perdatum->s.value - 1));
+			node->permissions |= (UINT32_C(1) << (perdatum->s.value - 1));
 		}
 		free(id);
 	}
@@ -4088,8 +4082,6 @@ cond_expr_t *define_cond_expr(uint32_t expr_type, void *arg1, void *arg2)
 static int set_user_roles(role_set_t * set, char *id)
 {
 	role_datum_t *r;
-	unsigned int i;
-	ebitmap_node_t *node;
 
 	if (strcmp(id, "*") == 0) {
 		free(id);
@@ -4115,12 +4107,9 @@ static int set_user_roles(role_set_t * set, char *id)
 		return -1;
 	}
 
-	/* set the role and every role it dominates */
-	ebitmap_for_each_positive_bit(&r->dominates, node, i) {
-		if (ebitmap_set_bit(&set->roles, i, TRUE))
-			goto oom;
-	}
 	free(id);
+	if (ebitmap_set_bit(&set->roles, r->s.value - 1, TRUE))
+		goto oom;
 	return 0;
       oom:
 	yyerror("out of memory");
@@ -5476,7 +5465,7 @@ int define_fs_use(int behavior)
 	return 0;
 }
 
-int define_genfs_context_helper(char *fstype, int has_type)
+static int define_genfs_context_helper(char *fstype, int has_type)
 {
 	struct genfs *genfs_p, *genfs, *newgenfs;
 	ocontext_t *newc, *c, *head, *p;

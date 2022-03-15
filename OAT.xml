@@ -35,6 +35,7 @@
                 <policyitem type="copyright" name="NEC Corporation" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name=" Asim Jalis" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name=" Trusted Computer Solutions, Inc" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="*" path="secilc/secil2tree.8.xml" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="license" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
@@ -51,6 +52,9 @@
                 <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/.*.c" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/src/.*.h" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="libsepol/cil/test/unit/.*.h" desc="兼容license"/>
+                <policyitem type="license" name="*" path="secilc/secil2tree.8.xml" desc="兼容license"/>
+                <policyitem type="license" name="*" path="secilc/secil2tree.c" desc="兼容license"/>
+                <policyitem type="license" name="*" path="libsepol/fuzz/secilc-fuzzer.c" desc="兼容license"/>
                 <policyitem type="license" name="HPND" path="BUILD.gn" desc="兼容license"/>
                 <policyitem type="compatibility" name="HPND" path="BUILD.gn" desc="兼容license"/>
                 <policyitem type="license" name="BSD-2-clause" path="secilc/COPYING" desc="兼容license"/>
