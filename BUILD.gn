@@ -48,6 +48,7 @@ ohos_shared_library("libsepol") {
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_symtab.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_tree.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_verify.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_write_ast.c",
     "$LIBSEPOL_ROOT_DIR/src/assertion.c",
     "$LIBSEPOL_ROOT_DIR/src/avrule_block.c",
     "$LIBSEPOL_ROOT_DIR/src/avtab.c",
