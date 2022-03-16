@@ -92,9 +92,6 @@
 #include "checkpolicy.h"
 #include "parse_util.h"
 
-extern char *optarg;
-extern int optind;
-
 static policydb_t policydb;
 static sidtab_t sidtab;
 
@@ -106,24 +103,27 @@ static int handle_unknown = SEPOL_DENY_UNKNOWN;
 static const char *txtfile = "policy.conf";
 static const char *binfile = "policy";
 
-unsigned int policyvers = POLICYDB_VERSION_MAX;
+unsigned int policyvers = 0;
 
 static __attribute__((__noreturn__)) void usage(const char *progname)
 {
 	printf
 	    ("usage:  %s [-b[F]] [-C] [-d] [-U handle_unknown (allow,deny,reject)] [-M] "
-	     "[-c policyvers (%d-%d)] [-o output_file|-] [-S] "
+	     "[-c policyvers (%d-%d)] [-o output_file|-] [-S] [-O] "
 	     "[-t target_platform (selinux,xen)] [-E] [-V] [input_file]\n",
 	     progname, POLICYDB_VERSION_MIN, POLICYDB_VERSION_MAX);
 	exit(1);
 }
 
 #define FGETS(out, size, in) \
-if (fgets(out,size,in)==NULL) {	\
-		fprintf(stderr, "fgets failed at line %d: %s\n", __LINE__,\
-				strerror(errno)); \
-			exit(1);\
-}
+do { \
+	if (fgets(out,size,in)==NULL) {	\
+		fprintf(stderr, "fgets failed at line %d: %s\n", __LINE__, \
+			strerror(errno)); \
+		exit(1);\
+	} \
+} while (0)
+
 static int print_sid(sepol_security_id_t sid,
 		     context_struct_t * context
 		     __attribute__ ((unused)), void *data
@@ -294,9 +294,7 @@ static int identify_equiv_types(void)
 }
 #endif
 
-extern char *av_to_string(uint32_t tclass, sepol_access_vector_t av);
-
-int display_bools(void)
+static int display_bools(void)
 {
 	uint32_t i;
 
@@ -307,10 +305,10 @@ int display_bools(void)
 	return 0;
 }
 
-void display_expr(cond_expr_t * exp)
+static void display_expr(const cond_expr_t * exp)
 {
 
-	cond_expr_t *cur;
+	const cond_expr_t *cur;
 	for (cur = exp; cur != NULL; cur = cur->next) {
 		switch (cur->expr_type) {
 		case COND_BOOL:
@@ -342,9 +340,9 @@ void display_expr(cond_expr_t * exp)
 	}
 }
 
-int display_cond_expressions(void)
+static int display_cond_expressions(void)
 {
-	cond_node_t *cur;
+	const cond_node_t *cur;
 
 	for (cur = policydbp->cond_list; cur != NULL; cur = cur->next) {
 		printf("expression: ");
@@ -354,7 +352,7 @@ int display_cond_expressions(void)
 	return 0;
 }
 
-int change_bool(char *name, int state)
+static int change_bool(const char *name, int state)
 {
 	cond_bool_datum_t *bool;
 
@@ -409,7 +407,7 @@ int main(int argc, char **argv)
 	unsigned int reason;
 	int flags;
 	struct policy_file pf;
-	struct option long_options[] = {
+	const struct option long_options[] = {
 		{"output", required_argument, NULL, 'o'},
 		{"target", required_argument, NULL, 't'},
 		{"binary", no_argument, NULL, 'b'},
@@ -501,8 +499,7 @@ int main(int argc, char **argv)
 					usage(argv[0]);
 					exit(1);
 				}
-				if (policyvers != n)
-					policyvers = n;
+				policyvers = n;
 				break;
 			}
 		case 'E':
@@ -515,7 +512,8 @@ int main(int argc, char **argv)
 	}
 
 	if (show_version) {
-		printf("%d (compatibility range %d-%d)\n", policyvers,
+		printf("%d (compatibility range %d-%d)\n",
+			   policyvers ? policyvers : POLICYDB_VERSION_MAX ,
 		       POLICYDB_VERSION_MAX, POLICYDB_VERSION_MIN);
 		exit(0);
 	}
@@ -588,6 +586,16 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 		}
+
+		if (policydbp->policyvers <= POLICYDB_VERSION_PERMISSIVE) {
+			if (policyvers > policydbp->policyvers) {
+				fprintf(stderr, "Binary policies with version <= %u cannot be upgraded\n", POLICYDB_VERSION_PERMISSIVE);
+			} else if (policyvers) {
+				policydbp->policyvers = policyvers;
+			}
+		} else {
+			policydbp->policyvers = policyvers ? policyvers : POLICYDB_VERSION_MAX;
+		}
 	} else {
 		if (conf) {
 			fprintf(stderr, "Can only generate policy.conf from binary policy\n");
@@ -629,6 +637,8 @@ int main(int argc, char **argv)
 			policydb_destroy(policydbp);
 			policydbp = &policydb;
 		}
+
+		policydbp->policyvers = policyvers ? policyvers : POLICYDB_VERSION_MAX;
 	}
 
 	if (policydb_load_isids(&policydb, &sidtab))
@@ -653,8 +663,6 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 		}
-
-		policydb.policyvers = policyvers;
 
 		if (!cil) {
 			if (!conf) {
@@ -693,7 +701,10 @@ int main(int argc, char **argv)
 		}
 
 		if (outfp != stdout) {
-			fclose(outfp);
+			if(fclose(outfp)) {
+				fprintf(stderr, "%s:  error closing %s:  %s\n", argv[0], outfile, strerror(errno));
+				exit(1);
+			}
 		}
 	} else if (cil) {
 		fprintf(stderr, "%s:  No file to write CIL was specified\n", argv[0]);
@@ -783,7 +794,7 @@ int main(int argc, char **argv)
 			case 0:
 				printf("\nallowed {");
 				for (i = 1; i <= sizeof(avd.allowed) * 8; i++) {
-					if (avd.allowed & (1 << (i - 1))) {
+					if (avd.allowed & (UINT32_C(1) << (i - 1))) {
 						v.val = i;
 						ret =
 						    hashtab_map(cladatum->
@@ -957,8 +968,12 @@ int main(int argc, char **argv)
 			printf("fs kdevname?  ");
 			FGETS(ans, sizeof(ans), stdin);
 			ans[strlen(ans) - 1] = 0;
-			sepol_fs_sid(ans, &ssid, &tsid);
-			printf("fs_sid %d default_file_sid %d\n", ssid, tsid);
+			ret = sepol_fs_sid(ans, &ssid, &tsid);
+			if (ret) {
+				printf("unknown fs kdevname\n");
+			} else {
+				printf("fs_sid %d default_file_sid %d\n", ssid, tsid);
+			}
 			break;
 		case '9':
 			printf("protocol?  ");
@@ -986,8 +1001,12 @@ int main(int argc, char **argv)
 			printf("netif name?  ");
 			FGETS(ans, sizeof(ans), stdin);
 			ans[strlen(ans) - 1] = 0;
-			sepol_netif_sid(ans, &ssid, &tsid);
-			printf("if_sid %d default_msg_sid %d\n", ssid, tsid);
+			ret = sepol_netif_sid(ans, &ssid, &tsid);
+			if (ret) {
+				printf("unknown name\n");
+			} else {
+				printf("if_sid %d default_msg_sid %d\n", ssid, tsid);
+			}
 			break;
 		case 'b':{
 				char *p;
@@ -1166,8 +1185,6 @@ int main(int argc, char **argv)
 					printf("\nNo such class.\n");
 					break;
 				}
-				cladatum =
-				    policydb.class_val_to_struct[tclass - 1];
 			} else {
 				ans[strlen(ans) - 1] = 0;
 				cladatum =
@@ -1219,8 +1236,6 @@ int main(int argc, char **argv)
 					printf("\nNo such class.\n");
 					break;
 				}
-				cladatum =
-				    policydb.class_val_to_struct[tclass - 1];
 			} else {
 				ans[strlen(ans) - 1] = 0;
 				cladatum =

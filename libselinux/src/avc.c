@@ -206,19 +206,18 @@ static int avc_init_internal(const char *prefix,
 		rc = security_getenforce();
 		if (rc < 0) {
 			avc_log(SELINUX_ERROR,
-				"%s:  could not determine enforcing mode: %s\n",
-				avc_prefix,
-				strerror(errno));
+				"%s:  could not determine enforcing mode: %m\n",
+				avc_prefix);
 			goto out;
 		}
 		avc_enforcing = rc;
 	}
 
-	rc = selinux_status_open(1);
+	rc = selinux_status_open(0);
 	if (rc < 0) {
 		avc_log(SELINUX_ERROR,
-			"%s: could not open selinux status page: %d (%s)\n",
-			avc_prefix, errno, strerror(errno));
+			"%s: could not open selinux status page: %d (%m)\n",
+			avc_prefix, errno);
 		goto out;
 	}
 	avc_running = 1;
