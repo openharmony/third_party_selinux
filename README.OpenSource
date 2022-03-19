@@ -3,7 +3,8 @@
     "Name": "selinux",
     "License": "GNU GENERAL PUBLIC LICENSE",
     "License File": "LICENSE",
-    "Version Number": "3.2",
+    "Version Number": "3.3",
+    "Owner": "jiangxiaofeng8@huawei.com",
     "Upstream URL": "https://github.com/SELinuxProject/selinux",
     "Description": "The CI now uses GitHub Actions to run tests and the SELinux testsuite in a virtual machine. Replace the Travis CI badge with the ones for these workflows."
     }
