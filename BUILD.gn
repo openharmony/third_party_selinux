@@ -109,6 +109,7 @@ ohos_shared_library("libsepol") {
   install_images = [
     "system",
     "ramdisk",
+    "updater",
   ]
   license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
