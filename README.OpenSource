@@ -1,7 +1,7 @@
 [
     {
     "Name": "selinux",
-    "License": "GNU GENERAL PUBLIC LICENSE",
+    "License": "GNU LESSER GENERAL PUBLIC LICENSE",
     "License File": "LICENSE",
     "Version Number": "3.3",
     "Owner": "jiangxiaofeng8@huawei.com",
