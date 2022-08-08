@@ -23,6 +23,7 @@
         <policylist>
             <policy name="projectPolicy" desc="">
                 <policyitem type="copyright" name="北京万里红科技有限公司" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="Huawei Device Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name="Mellanox Technologies Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name="Mellanox Techonologies Inc." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="copyright" name="Tresys Technology, LLC. All rights reserved" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
@@ -38,6 +39,7 @@
                 <policyitem type="copyright" name="*" path="secilc/secil2tree.8.xml" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="license" name="LGPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="license" name="Apache-2.0" path="check_md5.sh" desc="不影响兼容性"/>
                 <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="license" name="GPLStyleLicense" path=".*" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/COPYING" desc="uboot是作为独立进程，不会导致boot外的软件受到GPL许可证的影响。"/>

@@ -21,13 +21,23 @@ LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
 LIBPCRE2_ROOT_DIR = "//third_party/pcre2"
 
 ohos_shared_library("libsepol") {
-  exec_script("/usr/bin/flex",
-              [
-                "-o",
-                rebase_path("libsepol/cil/src/cil_lexer.c"),
-                rebase_path("libsepol/cil/src/cil_lexer.l"),
-              ],
-              "")
+  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
+  _arguments = [
+    rebase_path("libsepol/cil/src/cil_lexer.c"),
+    rebase_path("libsepol/cil/src/cil_lexer.l"),
+    rebase_path("libsepol/cil/src/cil_lexer.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/flex",
+                [
+                  "-o",
+                  rebase_path("libsepol/cil/src/cil_lexer.c"),
+                  rebase_path("libsepol/cil/src/cil_lexer.l"),
+                ],
+                "")
+  }
+
   output_name = "libsepol"
   sources = [
     "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
