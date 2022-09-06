@@ -210,10 +210,7 @@ ohos_shared_library("libselinux") {
     "-DAUDITD_LOG_TAG=1003",
     "-DPCRE2_CODE_UNIT_WIDTH=8",
   ]
-  deps = [
-    ":libsepol",
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
-  ]
+  deps = [ "$LIBPCRE2_ROOT_DIR:libpcre2" ]
   install_enable = true
   install_images = [
     "system",
