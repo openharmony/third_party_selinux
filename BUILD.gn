@@ -322,22 +322,40 @@ ohos_executable("getpidcon") {
 }
 
 ohos_executable("checkpolicy") {
-  exec_script("/usr/bin/bison",
-              [
-                "-y",
-                "-d",
-                rebase_path("checkpolicy/policy_parse.y"),
-                "-o",
-                rebase_path("checkpolicy/y.tab.c"),
-              ],
-              "")
-  exec_script("/usr/bin/flex",
-              [
-                "-o",
-                rebase_path("checkpolicy/policy_scan.c"),
-                rebase_path("checkpolicy/policy_scan.l"),
-              ],
-              "")
+  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
+  _arguments = [
+    rebase_path("checkpolicy/y.tab.c"),
+    rebase_path("checkpolicy/policy_parse.y"),
+    rebase_path("checkpolicy/y.tab.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/bison",
+                [
+                  "-y",
+                  "-d",
+                  rebase_path("checkpolicy/policy_parse.y"),
+                  "-o",
+                  rebase_path("checkpolicy/y.tab.c"),
+                ],
+                "")
+  }
+  _arguments = []
+  _arguments = [
+    rebase_path("checkpolicy/policy_scan.c"),
+    rebase_path("checkpolicy/policy_scan.l"),
+    rebase_path("checkpolicy/policy_scan.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/flex",
+                [
+                  "-o",
+                  rebase_path("checkpolicy/policy_scan.c"),
+                  rebase_path("checkpolicy/policy_scan.l"),
+                ],
+                "")
+  }
   install_enable = true
   sources = [
     "$CHECKPOLICY_ROOT_DIR/checkpolicy.c",
