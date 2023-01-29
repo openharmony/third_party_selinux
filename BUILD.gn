@@ -39,6 +39,7 @@ ohos_shared_library("libsepol") {
   }
 
   output_name = "libsepol"
+  version_script = "libsepol.map"
   sources = [
     "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_binary.c",
