@@ -236,6 +236,10 @@ ohos_executable("setenforce") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("getenforce") {
@@ -250,6 +254,10 @@ ohos_executable("getenforce") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("getfilecon") {
@@ -264,6 +272,10 @@ ohos_executable("getfilecon") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("setfilecon") {
@@ -278,6 +290,10 @@ ohos_executable("setfilecon") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("selinuxexeccon") {
@@ -292,6 +308,10 @@ ohos_executable("selinuxexeccon") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("selinux_check_access") {
@@ -306,6 +326,10 @@ ohos_executable("selinux_check_access") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("getpidcon") {
@@ -320,6 +344,10 @@ ohos_executable("getpidcon") {
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "security"
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
 
 ohos_executable("checkpolicy") {
