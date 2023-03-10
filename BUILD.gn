@@ -114,6 +114,7 @@ ohos_shared_library("libsepol") {
   ]
   cflags = [
     "-D_GNU_SOURCE",
+    "-DHAVE_REALLOCARRAY",
     "-w",
   ]
   install_enable = true
