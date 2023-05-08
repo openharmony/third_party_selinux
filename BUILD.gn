@@ -10,15 +10,21 @@
 
 import("//build/ohos.gni")
 
-#import("//build/ohos_var.gni")
-#import("//developtools/profiler/build/config.gni")
-
 LIBSEPOL_ROOT_DIR = "//third_party/selinux/libsepol"
 LIBSELINUX_ROOT_DIR = "//third_party/selinux/libselinux"
 CHECKPOLICY_ROOT_DIR = "//third_party/selinux/checkpolicy"
 SECILC_ROOT_DIR = "//third_party/selinux/secilc"
 LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
 LIBPCRE2_ROOT_DIR = "//third_party/pcre2"
+
+config("third_party_selinux_config") {
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSELINUX_ROOT_DIR",
+    "$LIBPCRE2_ROOT_DIR/pcre2/src",
+    "$LIBFTS_ROOT_DIR",
+  ]
+}
 
 ohos_shared_library("libsepol") {
   md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
@@ -202,6 +208,8 @@ ohos_shared_library("libselinux") {
     "$LIBFTS_ROOT_DIR/",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
+
+  public_configs = [ ":third_party_selinux_config" ]
 
   cflags = [
     "-DOHOS_FC_INIT",
