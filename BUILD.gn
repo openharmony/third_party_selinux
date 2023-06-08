@@ -229,6 +229,10 @@ ohos_shared_library("libselinux") {
     "updater",
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  innerapi_tags = [
+    "platformsdk_indirect",
+    "chipsetsdk_indirect",
+  ]
   part_name = "selinux"
   subsystem_name = "security"
 }
