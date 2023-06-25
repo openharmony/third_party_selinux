@@ -131,7 +131,7 @@ ohos_shared_library("libsepol") {
   ]
   license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
 
 ohos_executable("chkcon") {
@@ -145,7 +145,7 @@ ohos_executable("chkcon") {
   ]
   license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
 
 ohos_shared_library("libselinux") {
@@ -234,7 +234,7 @@ ohos_shared_library("libselinux") {
     "chipsetsdk_indirect",
   ]
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
 
 ohos_executable("setenforce") {
@@ -249,7 +249,7 @@ ohos_executable("setenforce") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -267,7 +267,7 @@ ohos_executable("getenforce") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -285,7 +285,7 @@ ohos_executable("getfilecon") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -303,7 +303,7 @@ ohos_executable("setfilecon") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -321,7 +321,7 @@ ohos_executable("selinuxexeccon") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -339,7 +339,7 @@ ohos_executable("selinux_check_access") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -357,7 +357,7 @@ ohos_executable("getpidcon") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
   install_images = [
     "system",
     "updater",
@@ -422,7 +422,7 @@ ohos_executable("checkpolicy") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
 
 ohos_executable("secilc") {
@@ -440,7 +440,7 @@ ohos_executable("secilc") {
   ]
   license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
 
 ohos_executable("sefcontext_compile") {
@@ -464,5 +464,5 @@ ohos_executable("sefcontext_compile") {
   ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
-  subsystem_name = "security"
+  subsystem_name = "thirdparty"
 }
