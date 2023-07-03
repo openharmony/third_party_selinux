@@ -1,5 +1,5 @@
 {
-    "name": "@ohos/thirdparty_selinux",
+    "name": "@ohos/selinux",
     "description": "The CI now uses GitHub Actions to run tests and the SELinux testsuite in a virtual machine. Replace the Travis CI badge with the ones for these workflows.",
     "version": "3.1",
     "license": [
@@ -21,7 +21,7 @@
         "secilc/COPYING"
     ],
     "component": {
-        "name": "thirdparty_selinux",
+        "name": "selinux",
         "subsystem": "thirdparty",
         "syscap": [],
         "features": [],
