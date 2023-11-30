@@ -26,7 +26,7 @@
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/include/.*.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/src/.*.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/src/.*.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
-                <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/COPYING" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
+                <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/LICENSE" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="checkpolicy/parse_util.*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/src/debug.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
                 <policyitem type="compatibility" name="LGPLStyleLicense" path="libsepol/src/sha1.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="协议为 Autoconf/Libtool exception to GPL 2.0 or later，满足该协议的约束，不受GPL协议影响。"/>
@@ -36,7 +36,7 @@
                 <policyitem type="compatibility" name="HPND" path="BUILD.gn" desc="兼容license"/>
                 <policyitem type="compatibility" name="public domain license" path="libselinux/src/sha1.*" desc="兼容license"/>
                 <policyitem type="compatibility" name="zlib-acknowledgement" path="libsepol/cil/test/unit/CuTest.*" desc="The original file of the third-party software. The license is compatible with Apache 2.0."/>
-                <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/COPYING" desc="uboot是作为独立进程，不会导致boot外的软件受到GPL许可证的影响。"/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="checkpolicy/LICENSE" desc="uboot是作为独立进程，不会导致boot外的软件受到GPL许可证的影响。"/>
                 <policyitem type="compatibility" name="libselinux-1.0" path="libselinux/LICENSE" desc="兼容license"/>
 
                 <policyitem type="license" name="BSD-2-clause" path="secilc/.*.c" desc="兼容license"/>

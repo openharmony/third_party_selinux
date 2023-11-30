@@ -203,7 +203,7 @@ ohos_shared_library("libselinux") {
     "$LIBSELINUX_ROOT_DIR/src/stringrep.c",
   ]
 
-if (current_toolchain == host_toolchain) {
+  if (current_toolchain == host_toolchain) {
     # host build
     sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
   }
