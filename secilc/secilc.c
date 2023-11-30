@@ -37,7 +37,7 @@
 #ifdef ANDROID
 #include <cil/cil.h>
 #else
-#include <sepol/cil/cil.h>
+#include <cil/cil.h>
 #endif
 #include <sepol/policydb.h>
 
