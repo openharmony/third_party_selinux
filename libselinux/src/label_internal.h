@@ -108,12 +108,7 @@ struct selabel_handle {
 	 * The main spec file used. Note for file contexts the local and/or
 	 * homedirs could also have been used to resolve a context.
 	 */
-#ifdef OHOS_FC_INIT
-	char **spec_file;
-	size_t spec_file_nums;
-#else
 	char *spec_file;
-#endif
 
 	/* ptr to SHA1 hash information if SELABEL_OPT_DIGEST set */
 	struct selabel_digest *digest;

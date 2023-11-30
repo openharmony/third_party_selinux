@@ -143,17 +143,8 @@ static int selabel_fini(struct selabel_handle *rec,
 			    struct selabel_lookup_rec *lr,
 			    int translating)
 {
-#ifdef OHOS_FC_INIT
-	char *path = NULL;
-	if (rec->spec_file != NULL) {
-		path = rec->spec_file[0];
-	}
-	if (compat_validate(rec, lr, path, lr->lineno))
-		return -1;
-#else
 	if (compat_validate(rec, lr, rec->spec_file, lr->lineno))
 		return -1;
-#endif
 
 	if (translating && !lr->ctx_trans &&
 	    selinux_raw_to_trans_context(lr->ctx_raw, &lr->ctx_trans))
@@ -204,20 +195,6 @@ selabel_lookup_bm_common(struct selabel_handle *rec, int translating,
 	return lr;
 }
 
-#ifdef OHOS_FC_INIT
-static void free_spec_files(struct selabel_handle *rec)
-{
-	if (rec->spec_file != NULL) {
-		for (int path_index = 0; path_index < rec->spec_file_nums; path_index++) {
-			if (rec->spec_file[path_index] != NULL) {
-				free(rec->spec_file[path_index]);
-			}
-		}
-		free(rec->spec_file);
-	}
-}
-#endif
-
 /*
  * Public API
  */
@@ -251,11 +228,7 @@ struct selabel_handle *selabel_open(unsigned int backend,
 	if ((*initfuncs[backend])(rec, opts, nopts)) {
 		if (rec->digest)
 			selabel_digest_fini(rec->digest);
-#ifdef OHOS_FC_INIT
-		free_spec_files(rec);
-#else
 		free(rec->spec_file);
-#endif
 		free(rec);
 		rec = NULL;
 	}
@@ -393,11 +366,7 @@ void selabel_close(struct selabel_handle *rec)
 	if (rec->digest)
 		selabel_digest_fini(rec->digest);
 	rec->func_close(rec);
-#ifdef OHOS_FC_INIT
-	free_spec_files(rec);
-#else
 	free(rec->spec_file);
-#endif
 	free(rec);
 }
 
