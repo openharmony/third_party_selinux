@@ -129,7 +129,7 @@ ohos_shared_library("libsepol") {
     "ramdisk",
     "updater",
   ]
-  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "thirdparty"
 }
@@ -143,7 +143,7 @@ ohos_executable("chkcon") {
     "-D_GNU_SOURCE",
     "-w",
   ]
-  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "thirdparty"
 }
@@ -438,7 +438,7 @@ ohos_executable("secilc") {
     "-Werror",
     "-Wshadow",
   ]
-  license_file = "$LIBSEPOL_ROOT_DIR/COPYING"
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "thirdparty"
 }
