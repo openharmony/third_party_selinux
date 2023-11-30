@@ -709,6 +709,72 @@ static char *selabel_sub_key(struct saved_data *data, const char *key)
 
 static void closef(struct selabel_handle *rec);
 
+#ifdef OHOS_FC_INIT
+static int init(struct selabel_handle *rec, const struct selinux_opt *opts, unsigned n)
+{
+	struct saved_data *data = (struct saved_data *)rec->data;
+	const char *prefix = NULL;
+	int status = -1;
+	size_t path_nums = 0;
+	size_t opt_nums = n;
+
+	while (n--) {
+		switch (opts[n].type) {
+			case SELABEL_OPT_PATH:
+				path_nums++;
+				break;
+			default:
+				break;
+		}
+	}
+
+	if (path_nums == 0) {
+		selinux_log(SELINUX_ERROR, "No specific file_contexts provided\n");
+		goto finish;
+	}
+
+	rec->spec_file = (char **)calloc(path_nums, sizeof(char *));
+	if (rec->spec_file == NULL) {
+		goto finish;
+	}
+	rec->spec_file_nums = path_nums;
+	size_t i = 0;
+	n = opt_nums;
+	while (n--) {
+		if (opts[n].type == SELABEL_OPT_PATH) {
+			rec->spec_file[i] = strdup(opts[n].value);
+			if (rec->spec_file[i] == NULL) {
+				goto finish;
+			}
+			i++;
+		}
+	}
+
+	for (int path_index = 0; path_index < rec->spec_file_nums; path_index++) {
+		status = process_file(rec->spec_file[path_index], NULL, rec, prefix, rec->digest);
+		if (status) {
+			goto finish;
+		}
+
+		if (rec->validating) {
+			status = nodups_specs(data, rec->spec_file[path_index]);
+			if (status) {
+				goto finish;
+			}
+		}
+	}
+
+	digest_gen_hash(rec->digest);
+
+	status = sort_specs(data);
+
+finish:
+	if (status)
+		closef(rec);
+
+	return status;
+}
+#else
 static int init(struct selabel_handle *rec, const struct selinux_opt *opts,
 		unsigned n)
 {
@@ -800,6 +866,7 @@ finish:
 
 	return status;
 }
+#endif
 
 /*
  * Backend interface routines
