@@ -1,11 +1,7 @@
 /* File name suffixes.  */
 S_(BINPOLICY, "/policy/policy")
     S_(CONTEXTS_DIR, "/contexts")
-    // FIXME 此处不应该改变 file_contexts  的约定路径！
-    // 因为 OpenHarmony 的 e2fsdroid 无法支持五级系统目录，所以在此作出规避，
-    // 但是很显然这是不应当的。
-    //S_(FILE_CONTEXTS, "/contexts/files/file_contexts")
-    S_(FILE_CONTEXTS, "/contexts/file_contexts")
+    S_(FILE_CONTEXTS, "/contexts/files/file_contexts")
     S_(HOMEDIR_CONTEXTS, "/contexts/files/homedir_template")
     S_(DEFAULT_CONTEXTS, "/contexts/default_contexts")
     S_(USER_CONTEXTS, "/contexts/users/")
