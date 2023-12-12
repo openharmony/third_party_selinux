@@ -26,6 +26,14 @@ config("third_party_selinux_config") {
   ]
 }
 
+config("third_party_selinux_nolto_config") {
+  cflags = [
+    "-fno-emulated-tls",
+    "-fno-lto",
+    "-fno-whole-program-vtables",
+  ]
+}
+
 ohos_shared_library("libsepol") {
   md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
   _arguments = [
@@ -150,6 +158,7 @@ ohos_executable("chkcon") {
 
 ohos_shared_library("libselinux") {
   output_name = "libselinux"
+
   sources = [
     "$LIBFTS_ROOT_DIR/lib/libc/gen/fts.c",
     "$LIBSELINUX_ROOT_DIR/src/avc.c",
@@ -214,6 +223,8 @@ ohos_shared_library("libselinux") {
     "$LIBFTS_ROOT_DIR/",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
+
+  configs = [ ":third_party_selinux_nolto_config" ]
 
   public_configs = [ ":third_party_selinux_config" ]
 
