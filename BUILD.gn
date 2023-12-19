@@ -27,11 +27,15 @@ config("third_party_selinux_config") {
 }
 
 config("third_party_selinux_nolto_config") {
-  cflags = [
-    "-fno-emulated-tls",
-    "-fno-lto",
-    "-fno-whole-program-vtables",
-  ]
+  if (use_libfuzzer && !is_mac) {
+    cflags = []
+  } else {
+    cflags = [
+      "-fno-emulated-tls",
+      "-fno-lto",
+      "-fno-whole-program-vtables",
+    ]
+  }
 }
 
 ohos_shared_library("libsepol") {
