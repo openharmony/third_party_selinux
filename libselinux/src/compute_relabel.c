@@ -36,13 +36,7 @@ int security_compute_relabel_raw(const char * scon,
 		ret = -1;
 		goto out;
 	}
-
-	ret = snprintf(buf, size, "%s %s %hu", scon, tcon, unmap_class(tclass));
-	if (ret < 0 || (size_t)ret >= size) {
-		errno = EOVERFLOW;
-		ret = -1;
-		goto out2;
-	}
+	snprintf(buf, size, "%s %s %hu", scon, tcon, unmap_class(tclass));
 
 	ret = write(fd, buf, strlen(buf));
 	if (ret < 0)

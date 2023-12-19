@@ -68,9 +68,11 @@ context_t context_new(const char *str)
 			for (p = tok; *p; p++) {	/* empty */
 			}
 		}
-		n->component[i] = strndup(tok, p - tok);
+		n->component[i] = (char *)malloc(p - tok + 1);
 		if (n->component[i] == 0)
 			goto err;
+		strncpy(n->component[i], tok, p - tok);
+		n->component[i][p - tok] = '\0';
 		tok = *p ? p + 1 : p;
 	}
 	return result;
@@ -114,7 +116,7 @@ void context_free(context_t context)
 /*
  * Return a pointer to the string value of the context.
  */
-const char *context_str(context_t context)
+char *context_str(context_t context)
 {
 	context_private_t *n = context->ptr;
 	int i;
@@ -147,18 +149,19 @@ static int set_comp(context_private_t * n, int idx, const char *str)
 	char *t = NULL;
 	const char *p;
 	if (str) {
+		t = (char *)malloc(strlen(str) + 1);
+		if (!t) {
+			return -1;
+		}
 		for (p = str; *p; p++) {
 			if (*p == '\t' || *p == '\n' || *p == '\r' ||
 			    ((*p == ':' || *p == ' ') && idx != COMP_RANGE)) {
+				free(t);
 				errno = EINVAL;
 				return -1;
 			}
 		}
-
-		t = strdup(str);
-		if (!t) {
-			return -1;
-		}
+		strcpy(t, str);
 	}
 	conditional_free(&n->component[idx]);
 	n->component[idx] = t;

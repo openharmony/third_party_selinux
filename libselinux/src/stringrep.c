@@ -63,9 +63,6 @@ static struct discover_class_node * discover_class(const char *s)
 		return NULL;
 	}
 
-	if (strchr(s, '/') != NULL)
-		return NULL;
-
 	/* allocate a node */
 	node = malloc(sizeof(struct discover_class_node));
 	if (node == NULL)
@@ -82,10 +79,7 @@ static struct discover_class_node * discover_class(const char *s)
 		goto err2;
 
 	/* load up class index */
-	ret = snprintf(path, sizeof path, "%s/class/%s/index", selinux_mnt,s);
-	if (ret < 0 || (size_t)ret >= sizeof path)
-		goto err3;
-
+	snprintf(path, sizeof path, "%s/class/%s/index", selinux_mnt,s);
 	fd = open(path, O_RDONLY | O_CLOEXEC);
 	if (fd < 0)
 		goto err3;
@@ -100,10 +94,7 @@ static struct discover_class_node * discover_class(const char *s)
 		goto err3;
 
 	/* load up permission indices */
-	ret = snprintf(path, sizeof path, "%s/class/%s/perms",selinux_mnt,s);
-	if (ret < 0 || (size_t)ret >= sizeof path)
-		goto err3;
-
+	snprintf(path, sizeof path, "%s/class/%s/perms",selinux_mnt,s);
 	dir = opendir(path);
 	if (dir == NULL)
 		goto err3;
@@ -113,10 +104,7 @@ static struct discover_class_node * discover_class(const char *s)
 		unsigned int value;
 		struct stat m;
 
-		ret = snprintf(path, sizeof path, "%s/class/%s/perms/%s", selinux_mnt,s,dentry->d_name);
-		if (ret < 0 || (size_t)ret >= sizeof path)
-			goto err4;
-
+		snprintf(path, sizeof path, "%s/class/%s/perms/%s", selinux_mnt,s,dentry->d_name);
 		fd = open(path, O_RDONLY | O_CLOEXEC);
 		if (fd < 0)
 			goto err4;

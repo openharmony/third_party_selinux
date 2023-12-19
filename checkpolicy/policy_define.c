@@ -117,11 +117,12 @@ int insert_id(const char *id, int push)
 	char *newid = 0;
 	int error;
 
-	newid = strdup(id);
+	newid = (char *)malloc(strlen(id) + 1);
 	if (!newid) {
 		yyerror("out of memory");
 		return -1;
 	}
+	strcpy(newid, id);
 	if (push)
 		error = queue_push(id_queue, (queue_element_t) newid);
 	else
@@ -1416,7 +1417,7 @@ static int define_typebounds_helper(char *bounds_id, char *type_id)
 	if (!type->bounds)
 		type->bounds = bounds->s.value;
 	else if (type->bounds != bounds->s.value) {
-		yyerror2("type %s has inconsistent bounds %s/%s",
+		yyerror2("type %s has inconsistent master {%s,%s}",
 			 type_id,
 			 policydbp->p_type_val_to_name[type->bounds - 1],
 			 policydbp->p_type_val_to_name[bounds->s.value - 1]);
@@ -2208,7 +2209,7 @@ static int avrule_ioctl_partialdriver(struct av_ioctl_range_list *rangelist,
 	xperms = calloc(1, sizeof(av_extended_perms_t));
 	if (!xperms) {
 		yyerror("out of memory");
-		return -1;
+		return - 1;
 	}
 
 	r = rangelist;
@@ -2245,7 +2246,7 @@ static int avrule_ioctl_completedriver(struct av_ioctl_range_list *rangelist,
 	xperms = calloc(1, sizeof(av_extended_perms_t));
 	if (!xperms) {
 		yyerror("out of memory");
-		return -1;
+		return - 1;
 	}
 
 	r = rangelist;
@@ -2289,7 +2290,7 @@ static int avrule_ioctl_func(struct av_ioctl_range_list *rangelist,
 	xperms = calloc(1, sizeof(av_extended_perms_t));
 	if (!xperms) {
 		yyerror("out of memory");
-		return -1;
+		return - 1;
 	}
 
 	r = rangelist;
@@ -2352,11 +2353,11 @@ static int avrule_cpy(avrule_t *dest, const avrule_t *src)
 	dest->flags = src->flags;
 	if (type_set_cpy(&dest->stypes, &src->stypes)) {
 		yyerror("out of memory");
-		return -1;
+		return - 1;
 	}
 	if (type_set_cpy(&dest->ttypes, &src->ttypes)) {
 		yyerror("out of memory");
-		return -1;
+		return - 1;
 	}
 	dest->line = src->line;
 	dest->source_filename = strdup(source_file);
@@ -2370,12 +2371,11 @@ static int avrule_cpy(avrule_t *dest, const avrule_t *src)
 	src_perms = src->perms;
 	while (src_perms) {
 		dest_perms = (class_perm_node_t *) calloc(1, sizeof(class_perm_node_t));
+		class_perm_node_init(dest_perms);
 		if (!dest_perms) {
 			yyerror("out of memory");
 			return -1;
 		}
-		class_perm_node_init(dest_perms);
-
 		if (!dest->perms)
 			dest->perms = dest_perms;
 		else
@@ -4904,7 +4904,7 @@ bad:
 	return -1;
 }
 
-int define_devicetree_context(void)
+int define_devicetree_context()
 {
 	ocontext_t *newc, *c, *l, *head;
 
@@ -5295,7 +5295,7 @@ int define_netif_context(void)
 	return 0;
 }
 
-int define_ipv4_node_context(void)
+int define_ipv4_node_context()
 {	
 	char *id;
 	int rc = 0;

@@ -30,7 +30,7 @@ static __attribute__ ((__noreturn__)) void usage(const char *progname)
 	exit(1);
 }
 
-static mode_t string_to_mode(const char *s)
+static mode_t string_to_mode(char *s)
 {
 	switch (s[0]) {
 	case 'b':
@@ -53,7 +53,7 @@ static mode_t string_to_mode(const char *s)
 
 int main(int argc, char **argv)
 {
-	int raw = 0, mode = 0, rc, opt, i, num_links;
+	int raw = 0, mode = 0, rc, opt, i, num_links, string_len;
 	char *validate = NULL, *path = NULL, *context = NULL, *file = NULL;
 	char **links = NULL;
 
@@ -101,11 +101,13 @@ int main(int argc, char **argv)
 		}
 
 		for (i = optind, num_links = 0; i < argc; i++, num_links++) {
-			links[num_links] = strdup(argv[i]);
+			string_len = strlen(argv[i]) + 1;
+			links[num_links] = malloc(string_len);
 			if (!links[num_links]) {
-				fprintf(stderr, "ERROR: strdup failed.\n");
+				fprintf(stderr, "ERROR: malloc failed.\n");
 				exit(1);
 			}
+			strcpy(links[num_links], argv[i]);
 		}
 	}
 

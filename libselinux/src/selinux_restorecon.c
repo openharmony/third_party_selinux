@@ -432,11 +432,10 @@ static pthread_mutex_t fl_mutex = PTHREAD_MUTEX_INITIALIZER;
  * that matched.
  */
 static int filespec_add(ino_t ino, const char *con, const char *file,
-			const struct rest_flags *flags)
+			struct rest_flags *flags)
 {
 	file_spec_t *prevfl, *fl;
-	uint32_t h;
-	int ret;
+	int h, ret;
 	struct stat64 sb;
 
 	__pthread_mutex_lock(&fl_mutex);
@@ -525,8 +524,7 @@ unlock_1:
 static void filespec_eval(void)
 {
 	file_spec_t *fl;
-	uint32_t h;
-	size_t used, nel, len, longest;
+	int h, used, nel, len, longest;
 
 	if (!fl_head)
 		return;
@@ -546,7 +544,7 @@ static void filespec_eval(void)
 	}
 
 	selinux_log(SELINUX_INFO,
-		     "filespec hash table stats: %zu elements, %zu/%zu buckets used, longest chain length %zu\n",
+		     "filespec hash table stats: %d elements, %d/%d buckets used, longest chain length %d\n",
 		     nel, used, HASH_BUCKETS, longest);
 }
 #else
@@ -561,7 +559,7 @@ static void filespec_eval(void)
 static void filespec_destroy(void)
 {
 	file_spec_t *fl, *tmp;
-	uint32_t h;
+	int h;
 
 	if (!fl_head)
 		return;
@@ -631,15 +629,16 @@ out:
 #define DATA_APP_EL4 "/data/app/el4/"
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
 
-static int restorecon_sb(const char *pathname, const struct stat *sb,
-			    const struct rest_flags *flags, bool first)
+static int restorecon_sb(const char *pathname, struct rest_flags *flags, bool first)
 {
 	char *newcon = NULL;
 	char *curcon = NULL;
 	char *newtypecon = NULL;
-	int rc;
+	int fd = -1, rc;
+	struct stat stat_buf;
+	bool updated = false;
 	const char *lookup_path = pathname;
-
+	float pc;
 	if (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
@@ -647,7 +646,6 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
 		goto out;
 	}
-
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
 			selinux_log(SELINUX_ERROR,
@@ -658,13 +656,21 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 		lookup_path += rootpathlen;
 	}
 
+	fd = open(pathname, O_PATH | O_NOFOLLOW | O_EXCL);
+	if (fd < 0)
+		goto err;
+
+	rc = fstat(fd, &stat_buf);
+	if (rc < 0)
+		goto err;
+
 	if (rootpath != NULL && lookup_path[0] == '\0')
 		/* this is actually the root dir of the alt root. */
 		rc = selabel_lookup_raw(fc_sehandle, &newcon, "/",
-						    sb->st_mode & S_IFMT);
+						    stat_buf.st_mode);
 	else
 		rc = selabel_lookup_raw(fc_sehandle, &newcon, lookup_path,
-						    sb->st_mode & S_IFMT);
+						    stat_buf.st_mode);
 
 	if (rc < 0) {
 		if (errno == ENOENT) {
@@ -673,10 +679,10 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 					    "Warning no default label for %s\n",
 					    lookup_path);
 
-			return 0; /* no match, but not an error */
+			goto out; /* no match, but not an error */
 		}
 
-		return -1;
+		goto err;
 	}
 
 	if (flags->progress) {
@@ -684,7 +690,7 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 		fc_count++;
 		if (fc_count % STAR_COUNT == 0) {
 			if (flags->mass_relabel && efile_count > 0) {
-				float pc = (fc_count < efile_count) ? (100.0 *
+				pc = (fc_count < efile_count) ? (100.0 *
 					     fc_count / efile_count) : 100;
 				fprintf(stdout, "\r%-.1f%%", (double)pc);
 			} else {
@@ -696,19 +702,17 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	}
 
 	if (flags->add_assoc) {
-		rc = filespec_add(sb->st_ino, newcon, pathname, flags);
+		rc = filespec_add(stat_buf.st_ino, newcon, pathname, flags);
 
 		if (rc < 0) {
 			selinux_log(SELINUX_ERROR,
 				    "filespec_add error: %s\n", pathname);
-			freecon(newcon);
-			return -1;
+			goto out1;
 		}
 
 		if (rc > 0) {
 			/* Already an association and it took precedence. */
-			freecon(newcon);
-			return 0;
+			goto out;
 		}
 	}
 
@@ -716,7 +720,7 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 		selinux_log(SELINUX_INFO, "%s matched by %s\n",
 			    pathname, newcon);
 
-	if (lgetfilecon_raw(pathname, &curcon) < 0) {
+	if (fgetfilecon_raw(fd, &curcon) < 0) {
 		if (errno != ENODATA)
 			goto err;
 
@@ -724,8 +728,6 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	}
 
 	if (curcon == NULL || strcmp(curcon, newcon) != 0) {
-		bool updated = false;
-
 		if (!flags->set_specctx && curcon &&
 				    (is_context_customizable(curcon) > 0)) {
 			if (flags->verbose) {
@@ -751,7 +753,7 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 		}
 
 		if (!flags->nochange) {
-			if (lsetfilecon(pathname, newcon) < 0)
+			if (fsetfilecon(fd, newcon) < 0)
 				goto err;
 			updated = true;
 		}
@@ -760,9 +762,7 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 			selinux_log(SELINUX_INFO,
 				    "%s %s from %s to %s\n",
 				    updated ? "Relabeled" : "Would relabel",
-				    pathname,
-				    curcon ? curcon : "<no context>",
-				    newcon);
+				    pathname, curcon, newcon);
 
 		if (flags->syslog_changes && !flags->nochange) {
 			if (curcon)
@@ -778,6 +778,8 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 out:
 	rc = 0;
 out1:
+	if (fd >= 0)
+		close(fd);
 	freecon(curcon);
 	freecon(newcon);
 	return rc;
@@ -875,7 +877,6 @@ static void *selinux_restorecon_thread(void *arg)
 	FTSENT *ftsent;
 	int error;
 	char ent_path[PATH_MAX];
-	struct stat ent_st;
 	bool first = false;
 
 	if (state->parallel)
@@ -972,21 +973,12 @@ loop_body:
 			}
 			/* fall through */
 		default:
-			if (strlcpy(ent_path, ftsent->fts_path, sizeof(ent_path)) >= sizeof(ent_path)) {
-				selinux_log(SELINUX_ERROR,
-					    "Path name too long on %s.\n",
-					    ftsent->fts_path);
-				errno = ENAMETOOLONG;
-				state->error = -1;
-				state->abort = true;
-				goto finish;
-			}
+			strcpy(ent_path, ftsent->fts_path);
 
-			ent_st = *ftsent->fts_statp;
 			if (state->parallel)
 				pthread_mutex_unlock(&state->mutex);
 
-			error = restorecon_sb(ent_path, &ent_st, &state->flags,
+			error = restorecon_sb(ent_path, &state->flags,
 					      first);
 
 			if (state->parallel) {
@@ -1124,10 +1116,6 @@ static int selinux_restorecon_common(const char *pathname_orig,
 			pathname = realpath(pathname_orig, NULL);
 			if (!pathname) {
 				free(basename_cpy);
-				/* missing parent directory */
-				if (state.flags.ignore_noent && errno == ENOENT) {
-					return 0;
-				}
 				goto realpatherr;
 			}
 		} else {
@@ -1141,9 +1129,6 @@ static int selinux_restorecon_common(const char *pathname_orig,
 			free(dirname_cpy);
 			if (!pathdnamer) {
 				free(basename_cpy);
-				if (state.flags.ignore_noent && errno == ENOENT) {
-					return 0;
-				}
 				goto realpatherr;
 			}
 			if (!strcmp(pathdnamer, "/"))
@@ -1189,7 +1174,7 @@ static int selinux_restorecon_common(const char *pathname_orig,
 			goto cleanup;
 		}
 
-		error = restorecon_sb(pathname, &sb, &state.flags, true);
+		error = restorecon_sb(pathname, &state.flags, true);
 		goto cleanup;
 	}
 

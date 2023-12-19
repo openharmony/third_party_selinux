@@ -62,9 +62,10 @@ static int find_default_type(FILE * fp, const char *role, char **type)
 		return -1;
 	}
 
-	t = strndup(ptr, strlen(buf) - len - 1);
+	t = malloc(strlen(buf) - len);
 	if (!t)
 		return -1;
+	strcpy(t, ptr);
 	*type = t;
 	return 0;
 }

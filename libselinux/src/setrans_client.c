@@ -66,13 +66,7 @@ static int setransd_open(void)
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
-
-	if (strlcpy(addr.sun_path, SETRANS_UNIX_SOCKET, sizeof(addr.sun_path)) >= sizeof(addr.sun_path)) {
-		close(fd);
-		errno = EOVERFLOW;
-		return -1;
-	}
-
+	strncpy(addr.sun_path, SETRANS_UNIX_SOCKET, sizeof(addr.sun_path));
 	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 		close(fd);
 		return -1;

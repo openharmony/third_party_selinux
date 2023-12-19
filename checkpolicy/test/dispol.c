@@ -486,11 +486,12 @@ int main(int argc, char **argv)
 			}
 			ans[strlen(ans) - 1] = 0;
 
-			name = strdup(ans);
+			name = malloc((strlen(ans) + 1) * sizeof(char));
 			if (name == NULL) {
-				fprintf(stderr, "couldn't strdup string.\n");
+				fprintf(stderr, "couldn't malloc string.\n");
 				break;
 			}
+			strcpy(name, ans);
 
 			printf("state? ");
 			if (fgets(ans, sizeof(ans), stdin) == NULL) {

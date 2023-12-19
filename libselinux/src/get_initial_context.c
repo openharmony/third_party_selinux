@@ -23,17 +23,8 @@ int security_get_initial_context_raw(const char * name, char ** con)
 		return -1;
 	}
 
-	if (strchr(name, '/')) {
-		errno = EINVAL;
-		return -1;
-	}
-
-	ret = snprintf(path, sizeof path, "%s%s%s", selinux_mnt, SELINUX_INITCON_DIR, name);
-	if (ret < 0 || (size_t)ret >= sizeof path) {
-		errno = EOVERFLOW;
-		return -1;
-	}
-
+	snprintf(path, sizeof path, "%s%s%s", 
+		 selinux_mnt, SELINUX_INITCON_DIR, name);
 	fd = open(path, O_RDONLY | O_CLOEXEC);
 	if (fd < 0)
 		return -1;

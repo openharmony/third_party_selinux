@@ -776,11 +776,12 @@ static int roles_init(policydb_t * p)
 		rc = -ENOMEM;
 		goto out;
 	}
-	key = strdup(OBJECT_R);
+	key = malloc(strlen(OBJECT_R) + 1);
 	if (!key) {
 		rc = -ENOMEM;
 		goto out_free_role;
 	}
+	strcpy(key, OBJECT_R);
 	rc = symtab_insert(p, SYM_ROLES, key, role,
 			   (p->policy_type ==
 			    POLICY_MOD ? SCOPE_REQ : SCOPE_DECL), 1,
@@ -4569,7 +4570,7 @@ int policydb_read(policydb_t * p, struct policy_file *fp, unsigned verbose)
 		}
 	}
 
-	if (policydb_validate(fp->handle, p))
+	if (validate_policydb(fp->handle, p))
 		goto bad;
 
 	return POLICYDB_SUCCESS;

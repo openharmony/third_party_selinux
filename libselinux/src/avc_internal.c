@@ -51,6 +51,7 @@ char avc_prefix[AVC_PREFIX_SIZE] = "uavc";
 int avc_running = 0;
 int avc_enforcing = 1;
 int avc_setenforce = 0;
+int avc_netlink_trouble = 0;
 
 /* process setenforce events for netlink and sestatus */
 int avc_process_setenforce(int enforcing)
@@ -294,6 +295,7 @@ void avc_netlink_loop(void)
 
 	close(fd);
 	fd = -1;
+	avc_netlink_trouble = 1;
 	avc_log(SELINUX_ERROR,
 		"%s:  netlink thread: errors encountered, terminating\n",
 		avc_prefix);
