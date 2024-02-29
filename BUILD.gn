@@ -15,13 +15,11 @@ LIBSELINUX_ROOT_DIR = "//third_party/selinux/libselinux"
 CHECKPOLICY_ROOT_DIR = "//third_party/selinux/checkpolicy"
 SECILC_ROOT_DIR = "//third_party/selinux/secilc"
 LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
-LIBPCRE2_ROOT_DIR = "//third_party/pcre2"
 
 config("third_party_selinux_config") {
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include",
     "$LIBSELINUX_ROOT_DIR",
-    "$LIBPCRE2_ROOT_DIR/pcre2/src",
     "$LIBFTS_ROOT_DIR",
   ]
 }
@@ -223,7 +221,6 @@ ohos_shared_library("libselinux") {
 
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include",
-    "$LIBPCRE2_ROOT_DIR/pcre2/src",
     "$LIBFTS_ROOT_DIR/",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
@@ -242,7 +239,7 @@ ohos_shared_library("libselinux") {
     "-DAUDITD_LOG_TAG=1003",
     "-DPCRE2_CODE_UNIT_WIDTH=8",
   ]
-  deps = [ "$LIBPCRE2_ROOT_DIR:libpcre2" ]
+  external_deps = [ "pcre2:libpcre2" ]
   install_enable = true
   install_images = [
     "system",
@@ -470,11 +467,10 @@ ohos_executable("sefcontext_compile") {
   deps = [
     ":libselinux",
     ":libsepol",
-    "$LIBPCRE2_ROOT_DIR:libpcre2",
   ]
+  external_deps = [ "pcre2:libpcre2" ]
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include",
-    "$LIBPCRE2_ROOT_DIR/pcre2/src",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
   cflags = [
