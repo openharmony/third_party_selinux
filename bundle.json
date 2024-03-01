@@ -56,16 +56,7 @@
                 {
                     "name": "//third_party/selinux:libselinux",
                     "header": {
-                        "header_files": [
-                            "avc.h",
-                            "context.h",
-                            "get_context_list.h",
-                            "get_default_type.h",
-                            "label.h",
-                            "restorecon.h",
-                            "selinux.h",
-                            "skip_elx_constants.h"
-                        ],
+                        "header_files": [],
                         "header_base": "//third_party/selinux/libselinux/include/selinux"
                     }
                 }
