@@ -31,12 +31,36 @@
         "rom": "1024KB",
         "ram": "1024KB",
         "deps": {
-            "components": [],
-            "third_party": [ "pcre2" ]
+            "components": [
+                "pcre2"
+            ],
+            "third_party": [
+                "pcre2"
+            ]
         },
         "build": {
-            "sub_component": [],
-            "inner_kits": [],
+            "sub_component": [
+                "//third_party/selinux:checkpolicy",
+                "//third_party/selinux:secilc",
+                "//third_party/selinux:sefcontext_compile",
+                "//third_party/selinux:chkcon",
+                "//third_party/selinux:getenforce",
+                "//third_party/selinux:getfilecon",
+                "//third_party/selinux:getpidcon",
+                "//third_party/selinux:selinux_check_access",
+                "//third_party/selinux:selinuxexeccon",
+                "//third_party/selinux:setenforce",
+                "//third_party/selinux:setfilecon"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//third_party/selinux:libselinux",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//third_party/selinux/libselinux/include/selinux"
+                    }
+                }
+            ],
             "test": []
         }
     }
