@@ -35,6 +35,7 @@
 #include <selinux/restorecon.h>
 #include <selinux/skip_elx_constants.h>
 
+#include "ignore_path.h"
 #include "callbacks.h"
 #include "selinux_internal.h"
 #include "label_file.h"
@@ -990,6 +991,27 @@ loop_body:
 				fts_set(fts, ftsent, FTS_SKIP);
 				continue;
 			}
+
+			enum SkipType skip_ignore_flag = skip_ignore_relabel(ftsent->fts_path);
+			selinux_log(SELINUX_INFO,
+						"ignore cfg parsing result %d \n",
+						skip_ignore_flag);
+			switch (skip_ignore_flag) {
+			case SKIP_SELF_SUB_DIR:
+				selinux_log(SELINUX_INFO,
+							"Skipping restorecon on directory(%s), cause ignroe_cfg\n",
+							ftsent->fts_path);
+				fts_set(fts, ftsent, FTS_SKIP);
+				continue;
+			case SKIP_SUB_DIR:
+				selinux_log(SELINUX_INFO,
+							"Skipping restorecon on directory(%s) sub directory, cause ignroe_cfg\n",
+							ftsent->fts_path);
+				fts_set(fts, ftsent, FTS_SKIP);
+			default:
+				break;
+			}
+
 			/* fall through */
 		default:
 			if (strlcpy(ent_path, ftsent->fts_path, sizeof(ent_path)) >= sizeof(ent_path)) {
@@ -1253,6 +1275,11 @@ static int selinux_restorecon_common(const char *pathname_orig,
 	 * is set (from http://marc.info/?l=selinux&m=124688830500777&w=2).
 	 */
 	state.dev_num = state.ftsent_first->fts_statp->st_dev;
+	
+	bool load_ignore_path = load_ignore_cfg();
+	if (!load_ignore_path) {
+		selinux_log(SELINUX_ERROR, "Failed to load ignore cfg!\n");
+	}
 
 	if (nthreads == 1) {
 		state.parallel = false;
