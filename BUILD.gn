@@ -14,13 +14,11 @@ LIBSEPOL_ROOT_DIR = "//third_party/selinux/libsepol"
 LIBSELINUX_ROOT_DIR = "//third_party/selinux/libselinux"
 CHECKPOLICY_ROOT_DIR = "//third_party/selinux/checkpolicy"
 SECILC_ROOT_DIR = "//third_party/selinux/secilc"
-LIBFTS_ROOT_DIR = "//third_party/FreeBSD"
 
 config("third_party_selinux_config") {
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include",
     "$LIBSELINUX_ROOT_DIR",
-    "$LIBFTS_ROOT_DIR",
   ]
 }
 
@@ -162,7 +160,6 @@ ohos_shared_library("libselinux") {
   output_name = "libselinux"
 
   sources = [
-    "$LIBFTS_ROOT_DIR/lib/libc/gen/fts.c",
     "$LIBSELINUX_ROOT_DIR/src/avc.c",
     "$LIBSELINUX_ROOT_DIR/src/avc_internal.c",
     "$LIBSELINUX_ROOT_DIR/src/avc_sidtab.c",
@@ -221,7 +218,6 @@ ohos_shared_library("libselinux") {
 
   include_dirs = [
     "$LIBSELINUX_ROOT_DIR/include",
-    "$LIBFTS_ROOT_DIR/",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
 
@@ -240,6 +236,7 @@ ohos_shared_library("libselinux") {
     "-DPCRE2_CODE_UNIT_WIDTH=8",
   ]
   external_deps = [ "pcre2:libpcre2" ]
+  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
   install_enable = true
   install_images = [
     "system",

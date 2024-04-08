@@ -2,12 +2,7 @@
     "name": "@ohos/selinux",
     "description": "The CI now uses GitHub Actions to run tests and the SELinux testsuite in a virtual machine. Replace the Travis CI badge with the ones for these workflows.",
     "version": "3.1",
-    "license": [
-        "GPL V2.0",
-        "Public Domain",
-        "LGPL V2.1",
-        "BSD 2-Clause License"
-    ],
+    "license": "GPL V2.0 or Public Domain or LGPL V2.1 or BSD 2-Clause License",
     "publishAs": "code-segment",
     "segment": {
         "destPath": "third_party/selinux"
@@ -32,10 +27,12 @@
         "ram": "1024KB",
         "deps": {
             "components": [
-                "pcre2"
+                "pcre2",
+                "FreeBSD"
             ],
             "third_party": [
-                "pcre2"
+                "pcre2",
+                "FreeBSD"
             ]
         },
         "build": {
