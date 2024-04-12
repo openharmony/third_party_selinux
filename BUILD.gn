@@ -182,6 +182,7 @@ ohos_shared_library("libselinux") {
     "$LIBSELINUX_ROOT_DIR/src/getenforce.c",
     "$LIBSELINUX_ROOT_DIR/src/getfilecon.c",
     "$LIBSELINUX_ROOT_DIR/src/getpeercon.c",
+    "$LIBSELINUX_ROOT_DIR/src/ignore_path.c",
     "$LIBSELINUX_ROOT_DIR/src/init.c",
     "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
     "$LIBSELINUX_ROOT_DIR/src/label.c",
