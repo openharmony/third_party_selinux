@@ -156,61 +156,63 @@ ohos_executable("chkcon") {
   subsystem_name = "thirdparty"
 }
 
+selinux_sources = [
+  "$LIBSELINUX_ROOT_DIR/src/avc.c",
+  "$LIBSELINUX_ROOT_DIR/src/avc_internal.c",
+  "$LIBSELINUX_ROOT_DIR/src/avc_sidtab.c",
+  "$LIBSELINUX_ROOT_DIR/src/booleans.c",
+  "$LIBSELINUX_ROOT_DIR/src/callbacks.c",
+  "$LIBSELINUX_ROOT_DIR/src/canonicalize_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/checkAccess.c",
+  "$LIBSELINUX_ROOT_DIR/src/check_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_av.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_create.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_member.c",
+  "$LIBSELINUX_ROOT_DIR/src/context.c",
+  "$LIBSELINUX_ROOT_DIR/src/deny_unknown.c",
+  "$LIBSELINUX_ROOT_DIR/src/disable.c",
+  "$LIBSELINUX_ROOT_DIR/src/enabled.c",
+  "$LIBSELINUX_ROOT_DIR/src/fgetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/freecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/fsetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/get_initial_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/getenforce.c",
+  "$LIBSELINUX_ROOT_DIR/src/getfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/getpeercon.c",
+  "$LIBSELINUX_ROOT_DIR/src/ignore_path.c",
+  "$LIBSELINUX_ROOT_DIR/src/init.c",
+  "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
+  "$LIBSELINUX_ROOT_DIR/src/label.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_backends_android.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_db.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_file.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_media.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_support.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_x.c",
+  "$LIBSELINUX_ROOT_DIR/src/lgetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/load_policy.c",
+  "$LIBSELINUX_ROOT_DIR/src/lsetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/mapping.c",
+  "$LIBSELINUX_ROOT_DIR/src/matchpathcon.c",
+  "$LIBSELINUX_ROOT_DIR/src/policyvers.c",
+  "$LIBSELINUX_ROOT_DIR/src/procattr.c",
+  "$LIBSELINUX_ROOT_DIR/src/regex.c",
+  "$LIBSELINUX_ROOT_DIR/src/reject_unknown.c",
+  "$LIBSELINUX_ROOT_DIR/src/selinux_config.c",
+  "$LIBSELINUX_ROOT_DIR/src/selinux_restorecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/sestatus.c",
+  "$LIBSELINUX_ROOT_DIR/src/setenforce.c",
+  "$LIBSELINUX_ROOT_DIR/src/setfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/setrans_client.c",
+  "$LIBSELINUX_ROOT_DIR/src/seusers.c",
+  "$LIBSELINUX_ROOT_DIR/src/sha1.c",
+  "$LIBSELINUX_ROOT_DIR/src/stringrep.c",
+]
+
 ohos_shared_library("libselinux") {
   output_name = "libselinux"
 
-  sources = [
-    "$LIBSELINUX_ROOT_DIR/src/avc.c",
-    "$LIBSELINUX_ROOT_DIR/src/avc_internal.c",
-    "$LIBSELINUX_ROOT_DIR/src/avc_sidtab.c",
-    "$LIBSELINUX_ROOT_DIR/src/booleans.c",
-    "$LIBSELINUX_ROOT_DIR/src/callbacks.c",
-    "$LIBSELINUX_ROOT_DIR/src/canonicalize_context.c",
-    "$LIBSELINUX_ROOT_DIR/src/checkAccess.c",
-    "$LIBSELINUX_ROOT_DIR/src/check_context.c",
-    "$LIBSELINUX_ROOT_DIR/src/compute_av.c",
-    "$LIBSELINUX_ROOT_DIR/src/compute_create.c",
-    "$LIBSELINUX_ROOT_DIR/src/compute_member.c",
-    "$LIBSELINUX_ROOT_DIR/src/context.c",
-    "$LIBSELINUX_ROOT_DIR/src/deny_unknown.c",
-    "$LIBSELINUX_ROOT_DIR/src/disable.c",
-    "$LIBSELINUX_ROOT_DIR/src/enabled.c",
-    "$LIBSELINUX_ROOT_DIR/src/fgetfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/freecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/fsetfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/get_initial_context.c",
-    "$LIBSELINUX_ROOT_DIR/src/getenforce.c",
-    "$LIBSELINUX_ROOT_DIR/src/getfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/getpeercon.c",
-    "$LIBSELINUX_ROOT_DIR/src/ignore_path.c",
-    "$LIBSELINUX_ROOT_DIR/src/init.c",
-    "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
-    "$LIBSELINUX_ROOT_DIR/src/label.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_backends_android.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_db.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_file.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_media.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_support.c",
-    "$LIBSELINUX_ROOT_DIR/src/label_x.c",
-    "$LIBSELINUX_ROOT_DIR/src/lgetfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/load_policy.c",
-    "$LIBSELINUX_ROOT_DIR/src/lsetfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/mapping.c",
-    "$LIBSELINUX_ROOT_DIR/src/matchpathcon.c",
-    "$LIBSELINUX_ROOT_DIR/src/policyvers.c",
-    "$LIBSELINUX_ROOT_DIR/src/procattr.c",
-    "$LIBSELINUX_ROOT_DIR/src/regex.c",
-    "$LIBSELINUX_ROOT_DIR/src/reject_unknown.c",
-    "$LIBSELINUX_ROOT_DIR/src/selinux_config.c",
-    "$LIBSELINUX_ROOT_DIR/src/selinux_restorecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/sestatus.c",
-    "$LIBSELINUX_ROOT_DIR/src/setenforce.c",
-    "$LIBSELINUX_ROOT_DIR/src/setfilecon.c",
-    "$LIBSELINUX_ROOT_DIR/src/setrans_client.c",
-    "$LIBSELINUX_ROOT_DIR/src/seusers.c",
-    "$LIBSELINUX_ROOT_DIR/src/sha1.c",
-    "$LIBSELINUX_ROOT_DIR/src/stringrep.c",
-  ]
+  sources = selinux_sources
 
   if (current_toolchain == host_toolchain) {
     # host build
@@ -249,6 +251,42 @@ ohos_shared_library("libselinux") {
     "platformsdk_indirect",
     "chipsetsdk_indirect",
   ]
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_static_library("libselinux_static") {
+  output_name = "libselinux_static"
+
+  sources = selinux_sources
+
+  if (current_toolchain == host_toolchain) {
+    # host build
+    sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
+  }
+
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+
+  configs = [ ":third_party_selinux_nolto_config" ]
+
+  public_configs = [ ":third_party_selinux_config" ]
+
+  cflags = [
+    "-DOHOS_FC_INIT",
+    "-D_GNU_SOURCE",
+    "-w",
+    "-DSHARED",
+    "-DUSE_PCRE2",
+    "-U__BIONIC__",
+    "-DAUDITD_LOG_TAG=1003",
+    "-DPCRE2_CODE_UNIT_WIDTH=8",
+  ]
+  external_deps = [ "pcre2:libpcre2_static" ]
+  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "thirdparty"
 }

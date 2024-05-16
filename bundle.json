@@ -58,6 +58,13 @@
                     }
                 },
                 {
+                    "name": "//third_party/selinux:libselinux_static",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//third_party/selinux/libselinux/include/selinux"
+                    }
+                },
+                {
                     "name": "//third_party/selinux:checkpolicy"
                 },
                 {
