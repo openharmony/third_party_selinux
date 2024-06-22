@@ -238,6 +238,9 @@ ohos_shared_library("libselinux") {
     "-DAUDITD_LOG_TAG=1003",
     "-DPCRE2_CODE_UNIT_WIDTH=8",
   ]
+  if (host_cpu == "arm64") {
+    cflags += [ "-DWITH_FREEBSD" ]
+  }
   external_deps = [ "pcre2:libpcre2" ]
   public_external_deps = [ "FreeBSD:libfreebsd_static" ]
   install_enable = true
