@@ -633,6 +633,34 @@ out:
 #define DATA_APP_EL3 "/data/app/el3/"
 #define DATA_APP_EL4 "/data/app/el4/"
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
+#define HNP_ROOT_PATH "/data/app/el1/bundle/"
+#define HNP_PUBLIC_DIR "/hnppublic"
+#define HNP_PRIVATE_DIR "/hnp"
+
+static bool IsHnpPath(const char *path)
+{
+	size_t prefixLen = strlen(HNP_ROOT_PATH);
+	size_t suffixLen = 0;
+	size_t pathLen = strlen(path);
+
+	if (strstr(path, HNP_PUBLIC_DIR) != NULL) {
+		suffixLen = strlen(HNP_PUBLIC_DIR);
+	} else if (strstr(path, HNP_PRIVATE_DIR) != NUL) {
+		suffixLen = strlen(HNP_PRIVATE_DIR);
+	} else {
+		return false;
+	}
+
+	if (pathLen < prefixLen + 1 + suffixLen + 1) {
+		return false;
+	}
+
+	if (strncmp(path, HNP_ROOT_PATH, prefixLen) != 0) {
+		return false;
+	}
+
+	return true;
+}
 
 static int restorecon_sb(const char *pathname, const struct stat *sb,
 			    const struct rest_flags *flags, bool first)
@@ -643,11 +671,11 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	int rc;
 	const char *lookup_path = pathname;
 
-	if (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
+	if ((!IsHnpPath(pathname)) && (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1))) {
 		goto out;
 	}
 
