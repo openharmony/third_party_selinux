@@ -637,6 +637,7 @@ out:
 #define HNP_PUBLIC_DIR "/hnppublic"
 #define HNP_PRIVATE_DIR "/hnp"
 
+// hnp进程由bms拉起，允许hnp进程刷新/data/app/el1/bundle/userid下所有hnp文件的标签
 static bool IsHnpPath(const char *path)
 {
 	size_t prefixLen = strlen(HNP_ROOT_PATH);
