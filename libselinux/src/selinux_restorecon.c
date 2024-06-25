@@ -646,7 +646,7 @@ static bool IsHnpPath(const char *path)
 
 	if (strstr(path, HNP_PUBLIC_DIR) != NULL) {
 		suffixLen = strlen(HNP_PUBLIC_DIR);
-	} else if (strstr(path, HNP_PRIVATE_DIR) != NUL) {
+	} else if (strstr(path, HNP_PRIVATE_DIR) != NULL) {
 		suffixLen = strlen(HNP_PRIVATE_DIR);
 	} else {
 		return false;
