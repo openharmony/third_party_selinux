@@ -643,16 +643,13 @@ static bool IsHnpPath(const char *path)
 	size_t suffixLen = strlen(HNP_PUBLIC_DIR);
 	size_t pathLen = strlen(path);
 
-	if (strstr(path, HNP_PUBLIC_DIR) == NULL) {
-		return false;
-	}
-
-	if (pathLen < prefixLen + 1 + suffixLen + 1) {
-		return false;
+	if (strstr(path, HNP_PUBLIC_DIR) == NULL ||
+        (pathLen < prefixLen + 1 + suffixLen + 1)) {
+	    return false;
 	}
 
 	if (strncmp(path, HNP_ROOT_PATH, prefixLen) != 0) {
-		return false;
+        return false;
 	}
 
 	return true;
