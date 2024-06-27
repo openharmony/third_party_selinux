@@ -638,7 +638,7 @@ out:
 #define HNP_ROOT_PATH_LEN 21
 #define HNP_PUBLIC_DIR_LEN 10
 
-// hnp进程由bms拉起，允许hnp进程刷新/data/app/el1/bundle/userid下所有hnp文件的标签
+// Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
 static bool IsHnpPath(const char *path)
 {
 	size_t pathLen = strlen(path);
