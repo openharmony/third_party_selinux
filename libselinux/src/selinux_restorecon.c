@@ -661,8 +661,8 @@ static bool check_path_allow_restorecon(const char *pathname)
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
 		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
-		return false;
-	}
+        return false;
+    }
     return true;
 }
 
