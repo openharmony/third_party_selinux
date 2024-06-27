@@ -643,8 +643,8 @@ static bool IsHnpPath(const char *path)
 {
 	size_t pathLen = strlen(path);
 
-	if ((strstr(path, HNP_PUBLIC_DIR) == NULL) ||
-        (pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1)) {
+	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
+        (strstr(path, HNP_PUBLIC_DIR) == NULL)) {
         return false;
 	}
 
