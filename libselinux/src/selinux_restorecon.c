@@ -657,10 +657,10 @@ static bool is_hnp_path(const char *path)
 static bool check_path_allow_restorecon(const char *pathname)
 {
     if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname))) ||
-		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
-		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
-		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+        !strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
+        !strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
+        !strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
+        !strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
         return false;
     }
     return true;
