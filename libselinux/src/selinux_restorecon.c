@@ -635,20 +635,20 @@ out:
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
 #define HNP_ROOT_PATH "/data/app/el1/bundle/"
 #define HNP_PUBLIC_DIR "/hnppublic"
+#define HNP_ROOT_PATH_LEN 21
+#define HNP_PUBLIC_DIR_LEN 10
 
 // hnp进程由bms拉起，允许hnp进程刷新/data/app/el1/bundle/userid下所有hnp文件的标签
 static bool IsHnpPath(const char *path)
 {
-	size_t prefixLen = strlen(HNP_ROOT_PATH);
-	size_t suffixLen = strlen(HNP_PUBLIC_DIR);
 	size_t pathLen = strlen(path);
 
-	if (strstr(path, HNP_PUBLIC_DIR) == NULL ||
-        (pathLen < prefixLen + 1 + suffixLen + 1)) {
-	    return false;
+	if ((strstr(path, HNP_PUBLIC_DIR) == NULL) ||
+        (pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1)) {
+        return false;
 	}
 
-	if (strncmp(path, HNP_ROOT_PATH, prefixLen) != 0) {
+	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
         return false;
 	}
 
@@ -664,11 +664,11 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	int rc;
 	const char *lookup_path = pathname;
 
-	if ((!IsHnpPath(pathname)) && (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
+	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!IsHnpPath(pathname))) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1))) {
+		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
 		goto out;
 	}
 
