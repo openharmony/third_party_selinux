@@ -641,28 +641,28 @@ out:
 // Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
 static bool is_hnp_path(const char *path)
 {
-    size_t pathLen = strlen(path);
-    if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
-        (strstr(path, HNP_PUBLIC_DIR) == NULL)) {
-        return false;
-    }
+	size_t pathLen = strlen(path);
+	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
+		(strstr(path, HNP_PUBLIC_DIR) == NULL)) {
+		return false;
+	}
 
-    if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
-        return false;
-    }
-    return true;
+	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
+		return false;
+	}
+	return true;
 }
 
 static bool check_path_allow_restorecon(const char *pathname)
 {
-    if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname))) ||
-        !strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
-        !strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
-        !strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-        !strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
-        return false;
-    }
-    return true;
+	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname))) ||
+		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
+		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
+		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
+		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+		return false;
+	}
+	return true;
 }
 
 
