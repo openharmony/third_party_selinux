@@ -675,9 +675,9 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	int rc;
 	const char *lookup_path = pathname;
 
-    if (!check_path_allow_restorecon(pathname)) {
-        goto out;
-    }
+	if (!check_path_allow_restorecon(pathname)) {
+		goto out;
+	}
 
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
