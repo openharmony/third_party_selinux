@@ -650,7 +650,6 @@ static bool is_hnp_path(const char *path)
     if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
         return false;
     }
-
     return true;
 }
 
