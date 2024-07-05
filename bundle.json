@@ -30,10 +30,7 @@
                 "pcre2",
                 "FreeBSD"
             ],
-            "third_party": [
-                "pcre2",
-                "FreeBSD"
-            ]
+            "third_party": []
         },
         "build": {
             "sub_component": [
