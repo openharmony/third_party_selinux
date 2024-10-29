@@ -23,7 +23,7 @@
 #define SYSTEM_IGNORE_CFG_PATH "/system/etc/selinux/ignore_cfg"
 #define VENDOR_IGNORE_CFG_PATH "/vendor/etc/selinux/ignore_cfg"
 
-enum SkipType {
+enum skip_type {
     SKIP_NONE = 0,
     SKIP_SUB_DIR = 1,
     SKIP_SELF_SUB_DIR = 2
@@ -44,13 +44,13 @@ size_t trim_newline(char *str);
 
 typedef struct path_info {
     ignore_path_node_t **paths_ptr;
-    int suffix_len;
+    unsigned int suffix_len;
 } path_info_t;
 
 path_info_t trim_suffix_and_get_path_info(char *line, size_t real_length);
 bool load_ignore_cfg_from_file(const char *cfg_path);
 bool load_ignore_cfg();
-enum SkipType skip_ignore_relabel(const char *path);
+enum skip_type skip_ignore_relabel(const char *path);
 void free_ignore_list(ignore_path_node_t **list_ptr);
 
 #endif // IGNORE_PATH_H
