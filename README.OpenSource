@@ -4,7 +4,7 @@
     "License": "GPL V2.0;Public Domain;LGPL V2.1;BSD 2-Clause License",
     "License File": "NOTICE",
     "Version Number": "3.5",
-    "Owner": "jiangxiaofeng8@huawei.com",
+    "Owner": "maliang34@huawei.com",
     "Upstream URL": "https://github.com/SELinuxProject/selinux",
     "Description": "This is the upstream repository for the Security Enhanced Linux (SELinux) userland libraries and tools."
     }
