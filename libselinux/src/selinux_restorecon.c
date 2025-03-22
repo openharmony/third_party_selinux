@@ -643,6 +643,7 @@ out:
 #define AOT_ARK_SUFIXX_LEN 12
 #define SHADER_CACHE "shader_cache"
 #define SHADER_CACHE_LEN 12
+#define USER_ID_LEN 2
 
 // Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
 static bool is_hnp_path(const char *path)
@@ -699,7 +700,7 @@ static bool is_shader_path(const char *path)
 {
 	// only /data/app/el1/{userid}/shader_cache or /data/app/el1/public/shader_cache will be true
 	// length is the length of '/data/app/el1/' + 'shader_cache' +'{userid}/', The minimum length of the userid is 1
-	if (strlen(path) < DATA_APP_EL1_LEN + 2 + SHADER_CACHE_LEN) {
+	if (strlen(path) < DATA_APP_EL1_LEN + USER_ID_LEN + SHADER_CACHE_LEN) {
 		return false;
 	}
     path += strlen(DATA_APP_EL1) - 1;
