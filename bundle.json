@@ -55,6 +55,13 @@
                     }
                 },
                 {
+                    "name": "//third_party/selinux:libsepol",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//third_party/selinux/libsepol/include/sepol"
+                    }
+                },
+                {
                     "name": "//third_party/selinux:libselinux_static",
                     "header": {
                         "header_files": [],
