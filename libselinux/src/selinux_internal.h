@@ -13,7 +13,6 @@ extern int selinux_page_size ;
 #pragma weak pthread_key_create
 #pragma weak pthread_key_delete
 #pragma weak pthread_setspecific
-#pragma weak pthread_getspecific
 
 /* Call handler iff the first call.  */
 #define __selinux_once(ONCE_CONTROL, INIT_FUNCTION)	\
@@ -41,9 +40,6 @@ extern int selinux_page_size ;
 		if (pthread_setspecific != NULL)		\
 			pthread_setspecific(KEY, VALUE);	\
 	} while (0)
-
-#define __selinux_getspecific(KEY)				\
-	(pthread_getspecific != NULL ? pthread_getspecific(KEY) : NULL)
 
 /* selabel_lookup() is only thread safe if we're compiled with pthreads */
 
@@ -100,6 +96,21 @@ extern int has_selinux_config ;
 
 #ifndef HAVE_STRLCPY
 size_t strlcpy(char *dest, const char *src, size_t size);
+#endif
+
+#ifndef HAVE_REALLOCARRAY
+void *reallocarray(void *ptr, size_t nmemb, size_t size);
+#endif
+
+/* Use to ignore intentional unsigned under- and overflows while running under UBSAN. */
+#if defined(__clang__) && defined(__clang_major__) && (__clang_major__ >= 4)
+#if (__clang_major__ >= 12)
+#define ignore_unsigned_overflow_        __attribute__((no_sanitize("unsigned-integer-overflow", "unsigned-shift-base")))
+#else
+#define ignore_unsigned_overflow_        __attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
+#else
+#define ignore_unsigned_overflow_
 #endif
 
 #endif /* SELINUX_INTERNAL_H_ */

@@ -413,7 +413,7 @@ struct security_class_mapping {
  * starting at 1, and have one security_class_mapping structure entry
  * per define.
  */
-extern int selinux_set_mapping(struct security_class_mapping *map);
+extern int selinux_set_mapping(const struct security_class_mapping *map);
 
 /* Common helpers */
 
@@ -443,7 +443,11 @@ extern void selinux_flush_class_cache(void);
 /* Set the function used by matchpathcon_init when displaying
    errors about the file_contexts configuration.  If not set,
    then this defaults to fprintf(stderr, fmt, ...). */
-extern void set_matchpathcon_printf(void (*f) (const char *fmt, ...));
+extern void set_matchpathcon_printf(void
+#ifdef __GNUC__
+   __attribute__ ((format(printf, 1, 2)))
+#endif
+   (*f) (const char *fmt, ...));
 
 /* Set the function used by matchpathcon_init when checking the
    validity of a context in the file contexts configuration.  If not set,
@@ -740,14 +744,6 @@ extern int selinux_lsetfilecon_default(const char *path);
  * are calling into libselinux when this is called.
  */
 extern void selinux_reset_config(void);
-
-/**
- * Frees the ignore path configurations and resets the system and vendor configuration load states.
- *
- * This function frees two types of ignore paths: paths ending with a slash and paths ending with a star.
- * It also resets the load states of the system and vendor configurations to not loaded.
- */
-extern void free_ignore_cfg();
 
 #ifdef __cplusplus
 }

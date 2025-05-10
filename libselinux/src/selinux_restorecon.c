@@ -14,7 +14,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <include/fts.h>
+#include <fts.h>
 #include <inttypes.h>
 #include <limits.h>
 #include <stdint.h>
@@ -33,9 +33,7 @@
 #include <selinux/context.h>
 #include <selinux/label.h>
 #include <selinux/restorecon.h>
-#include <selinux/skip_elx_constants.h>
 
-#include "ignore_path.h"
 #include "callbacks.h"
 #include "selinux_internal.h"
 #include "label_file.h"
@@ -89,7 +87,6 @@ struct rest_flags {
 	bool warnonnomatch;
 	bool conflicterror;
 	bool count_errors;
-	bool skipelx;
 };
 
 static void restorecon_init(void)
@@ -178,8 +175,7 @@ static int add_exclude(const char *directory, bool who)
 		return -1;
 	}
 
-	tmp_list = realloc(exclude_lst,
-			   sizeof(struct edir) * (exclude_count + 1));
+	tmp_list = reallocarray(exclude_lst, exclude_count + 1, sizeof(struct edir));
 	if (!tmp_list)
 		goto oom;
 
@@ -247,7 +243,7 @@ static uint64_t exclude_non_seclabel_mounts(void)
 	int index = 0, found = 0;
 	uint64_t nfile = 0;
 	char *mount_info[4];
-	char *buf = NULL, *item;
+	char *buf = NULL, *item, *saveptr;
 
 	/* Check to see if the kernel supports seclabel */
 	if (uname(&uts) == 0 && strverscmp(uts.release, "2.6.30") < 0)
@@ -262,13 +258,14 @@ static uint64_t exclude_non_seclabel_mounts(void)
 	while (getline(&buf, &len, fp) != -1) {
 		found = 0;
 		index = 0;
-		item = strtok(buf, " ");
+		saveptr = NULL;
+		item = strtok_r(buf, " ", &saveptr);
 		while (item != NULL) {
 			mount_info[index] = item;
 			index++;
 			if (index == 4)
 				break;
-			item = strtok(NULL, " ");
+			item = strtok_r(NULL, " ", &saveptr);
 		}
 		if (index < 4) {
 			selinux_log(SELINUX_ERROR,
@@ -280,14 +277,15 @@ static uint64_t exclude_non_seclabel_mounts(void)
 		/* Remove pre-existing entry */
 		remove_exclude(mount_info[1]);
 
-		item = strtok(mount_info[3], ",");
+		saveptr = NULL;
+		item = strtok_r(mount_info[3], ",", &saveptr);
 		while (item != NULL) {
 			if (strcmp(item, "seclabel") == 0) {
 				found = 1;
 				nfile += file_system_count(mount_info[1]);
 				break;
 			}
-			item = strtok(NULL, ",");
+			item = strtok_r(NULL, ",", &saveptr);
 		}
 
 		/* Exclude mount points without the seclabel option */
@@ -628,116 +626,6 @@ out:
 	return rc;
 }
 
-#define DATA_APP_EL1 "/data/app/el1/"
-#define DATA_APP_EL2 "/data/app/el2/"
-#define DATA_APP_EL3 "/data/app/el3/"
-#define DATA_APP_EL4 "/data/app/el4/"
-#define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
-#define HNP_ROOT_PATH "/data/app/el1/bundle/"
-#define HNP_PUBLIC_DIR "/hnppublic"
-#define HNP_ROOT_PATH_LEN 21
-#define HNP_PUBLIC_DIR_LEN 10
-#define AOT_ARK_SUFIXX "aot_compiler"
-#define AOT_ARK_PUBLIC "public"
-#define DATA_APP_EL1_LEN 14
-#define AOT_ARK_SUFIXX_LEN 12
-#define SHADER_CACHE "shader_cache"
-#define SHADER_CACHE_LEN 12
-#define USER_ID_LEN 2
-
-// Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
-static bool is_hnp_path(const char *path)
-{
-	size_t pathLen = strlen(path);
-	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
-		(strstr(path, HNP_PUBLIC_DIR) == NULL)) {
-		return false;
-	}
-
-	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
-		return false;
-	}
-	return true;
-}
-
-static bool is_all_digits(const char *str, size_t len)
-{
-    for (size_t i = 0; i < len; i++) {
-        if (!isdigit(str[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-static bool is_aot_path(const char *path)
-{
-	// only /data/app/el1/{userid}/aot_compiler or /data/app/el1/public/aot_compiler will be true
-	// The minimum length is /data/app/el1/{userid}/aot_compiler, 2 is the length of '{userid}/'
-	if (strlen(path) < DATA_APP_EL1_LEN + 2 + AOT_ARK_SUFIXX_LEN) {
-		return false;
-	}
-    path += strlen(DATA_APP_EL1) - 1;
-    if (*path != '/') {
-        return false;
-    }
-    path++;
-    // find next '/'
-    const char *next_slash = strchr(path, '/');
-    if (next_slash == NULL) {
-        return false;
-    }
-    size_t len = next_slash - path;
-    if ((len != strlen(AOT_ARK_PUBLIC) || strncmp(path, AOT_ARK_PUBLIC, strlen(AOT_ARK_PUBLIC)) != 0) &&
-		!is_all_digits(path, len)) {
-        return false;
-    }
-    // end with aot_compiler
-    return strncmp(next_slash + 1, AOT_ARK_SUFIXX, strlen(AOT_ARK_SUFIXX)) == 0 &&
-		strlen(next_slash + 1) == strlen(AOT_ARK_SUFIXX);
-}
-
-static bool is_shader_path(const char *path)
-{
-	// only /data/app/el1/{userid}/shader_cache or /data/app/el1/public/shader_cache will be true
-	// length is the length of '/data/app/el1/' + 'shader_cache' +'{userid}/', The minimum length of the userid is 1
-	if (strlen(path) < DATA_APP_EL1_LEN + USER_ID_LEN + SHADER_CACHE_LEN) {
-		return false;
-	}
-    path += strlen(DATA_APP_EL1) - 1;
-    if (*path != '/') {
-        return false;
-    }
-    path++;
-    // find next '/'
-    const char *next_slash = strchr(path, '/');
-    if (next_slash == NULL) {
-        return false;
-    }
-    size_t len = next_slash - path;
-    if ((len != strlen(AOT_ARK_PUBLIC) || strncmp(path, AOT_ARK_PUBLIC, strlen(AOT_ARK_PUBLIC)) != 0) &&
-		!is_all_digits(path, len)) {
-        return false;
-    }
-    // end with aot_compiler
-    return strncmp(next_slash + 1, SHADER_CACHE, strlen(SHADER_CACHE)) == 0 &&
-		strlen(next_slash + 1) == strlen(SHADER_CACHE);
-}
-
-static bool check_path_allow_restorecon(const char *pathname)
-{
-	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
-		(!is_aot_path(pathname)) && (!is_shader_path(pathname))) ||
-		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
-		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
-		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
-		return false;
-	}
-	return true;
-}
-
-
 static int restorecon_sb(const char *pathname, const struct stat *sb,
 			    const struct rest_flags *flags, bool first)
 {
@@ -746,10 +634,6 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	char *newtypecon = NULL;
 	int rc;
 	const char *lookup_path = pathname;
-
-	if (!check_path_allow_restorecon(pathname)) {
-		goto out;
-	}
 
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
@@ -953,19 +837,6 @@ oom:
 	goto free;
 }
 
-static bool is_in_skip_elx(const char *path) {
-	if (sizeof(skip_elx_path) == 0) {
-		return false;
-	}
-	size_t len = sizeof(skip_elx_path) / sizeof(skip_elx_path[0]);
-	for (size_t i = 0; i < len; i++) {
-		if (strncmp(path, skip_elx_path[i], strlen(skip_elx_path[i])) == 0) {
-			return true;
-		}
-	}
-	return false;
-}
-
 struct rest_state {
 	struct rest_flags flags;
 	dev_t dev_num;
@@ -1086,32 +957,6 @@ loop_body:
 					}
 				}
 			}
-			
-			if (state->flags.skipelx && is_in_skip_elx(ftsent->fts_path)) {
-				fts_set(fts, ftsent, FTS_SKIP);
-				continue;
-			}
-
-			enum skip_type skip_ignore_flag = skip_ignore_relabel(ftsent->fts_path);
-			selinux_log(SELINUX_INFO,
-						"ignore cfg parsing result %d \n",
-						skip_ignore_flag);
-			switch (skip_ignore_flag) {
-			case SKIP_SELF_SUB_DIR:
-				selinux_log(SELINUX_INFO,
-							"Skipping restorecon on directory(%s), cause ignroe_cfg\n",
-							ftsent->fts_path);
-				fts_set(fts, ftsent, FTS_SKIP);
-				continue;
-			case SKIP_SUB_DIR:
-				selinux_log(SELINUX_INFO,
-							"Skipping restorecon on directory(%s) sub directory, cause ignroe_cfg\n",
-							ftsent->fts_path);
-				fts_set(fts, ftsent, FTS_SKIP);
-			default:
-				break;
-			}
-
 			/* fall through */
 		default:
 			if (strlcpy(ent_path, ftsent->fts_path, sizeof(ent_path)) >= sizeof(ent_path)) {
@@ -1203,8 +1048,6 @@ static int selinux_restorecon_common(const char *pathname_orig,
 		    SELINUX_RESTORECON_IGNORE_DIGEST) ? true : false;
 	state.flags.count_errors = (restorecon_flags &
 		    SELINUX_RESTORECON_COUNT_ERRORS) ? true : false;
-	state.flags.skipelx = (restorecon_flags &
-		    SELINUX_RESTORECON_SKIPELX) ? true : false;
 	state.setrestorecondigest = true;
 
 	state.head = NULL;
@@ -1375,11 +1218,6 @@ static int selinux_restorecon_common(const char *pathname_orig,
 	 * is set (from http://marc.info/?l=selinux&m=124688830500777&w=2).
 	 */
 	state.dev_num = state.ftsent_first->fts_statp->st_dev;
-	
-	bool load_ignore_path = load_ignore_cfg();
-	if (!load_ignore_path) {
-		selinux_log(SELINUX_ERROR, "Failed to load ignore cfg!\n");
-	}
 
 	if (nthreads == 1) {
 		state.parallel = false;

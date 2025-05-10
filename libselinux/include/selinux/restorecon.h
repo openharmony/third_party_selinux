@@ -126,11 +126,6 @@ extern int selinux_restorecon_parallel(const char *pathname,
  */
 #define SELINUX_RESTORECON_COUNT_ERRORS			0x20000
 
-/*
- * a flag indicating skip certain files or directories when restoring their security context.
- */
-#define SELINUX_RESTORECON_SKIPELX				0x40000
-
 /**
  * selinux_restorecon_set_sehandle - Set the global fc handle.
  * @hndl: specifies handle to set as the global fc handle.
