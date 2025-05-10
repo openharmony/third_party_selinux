@@ -33,6 +33,7 @@
 #include <selinux/context.h>
 #include <selinux/label.h>
 #include <selinux/restorecon.h>
+#include <selinux/skip_elx_constants.h>
 
 #include "callbacks.h"
 #include "selinux_internal.h"
@@ -87,6 +88,7 @@ struct rest_flags {
 	bool warnonnomatch;
 	bool conflicterror;
 	bool count_errors;
+	bool skipelx;
 };
 
 static void restorecon_init(void)
@@ -851,6 +853,19 @@ oom:
 	goto free;
 }
 
+static bool is_in_skip_elx(const char *path) {
+	if (sizeof(skip_elx_path) == 0) {
+		return false;
+	}
+	size_t len = sizeof(skip_elx_path) / sizeof(skip_elx_path[0]);
+	for (int i = 0; i < len; i++) {
+		if (strncmp(path, skip_elx_path[i], strlen(skip_elx_path[i])) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 struct rest_state {
 	struct rest_flags flags;
 	dev_t dev_num;
@@ -971,6 +986,11 @@ loop_body:
 					}
 				}
 			}
+			
+			if (state->flags.skipelx && is_in_skip_elx(ftsent->fts_path)) {
+				fts_set(fts, ftsent, FTS_SKIP);
+				continue;
+			}
 			/* fall through */
 		default:
 			if (strlcpy(ent_path, ftsent->fts_path, sizeof(ent_path)) >= sizeof(ent_path)) {
@@ -1062,6 +1082,8 @@ static int selinux_restorecon_common(const char *pathname_orig,
 		    SELINUX_RESTORECON_IGNORE_DIGEST) ? true : false;
 	state.flags.count_errors = (restorecon_flags &
 		    SELINUX_RESTORECON_COUNT_ERRORS) ? true : false;
+	state.flags.skipelx = (restorecon_flags &
+		    SELINUX_RESTORECON_SKIPELX) ? true : false;
 	state.setrestorecondigest = true;
 
 	state.head = NULL;
