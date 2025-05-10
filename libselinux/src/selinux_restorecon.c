@@ -634,6 +634,38 @@ out:
 #define DATA_APP_EL3 "/data/app/el3/"
 #define DATA_APP_EL4 "/data/app/el4/"
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
+#define HNP_ROOT_PATH "/data/app/el1/bundle/"
+#define HNP_PUBLIC_DIR "/hnppublic"
+#define HNP_ROOT_PATH_LEN 21
+#define HNP_PUBLIC_DIR_LEN 10
+
+// Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
+static bool is_hnp_path(const char *path)
+{
+	size_t pathLen = strlen(path);
+	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
+		(strstr(path, HNP_PUBLIC_DIR) == NULL)) {
+		return false;
+	}
+
+	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
+		return false;
+	}
+	return true;
+}
+
+static bool check_path_allow_restorecon(const char *pathname)
+{
+	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname))) ||
+		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
+		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
+		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
+		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+		return false;
+	}
+	return true;
+}
+
 
 static int restorecon_sb(const char *pathname, const struct stat *sb,
 			    const struct rest_flags *flags, bool first)
@@ -644,11 +676,7 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	int rc;
 	const char *lookup_path = pathname;
 
-	if (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
-		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
-		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
-		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+	if (!check_path_allow_restorecon(pathname)) {
 		goto out;
 	}
 
