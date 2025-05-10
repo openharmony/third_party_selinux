@@ -887,7 +887,7 @@ static bool is_in_skip_elx(const char *path) {
 		return false;
 	}
 	size_t len = sizeof(skip_elx_path) / sizeof(skip_elx_path[0]);
-	for (int i = 0; i < len; i++) {
+	for (size_t i = 0; i < len; i++) {
 		if (strncmp(path, skip_elx_path[i], strlen(skip_elx_path[i])) == 0) {
 			return true;
 		}
@@ -1021,7 +1021,7 @@ loop_body:
 				continue;
 			}
 
-			enum SkipType skip_ignore_flag = skip_ignore_relabel(ftsent->fts_path);
+			enum skip_type skip_ignore_flag = skip_ignore_relabel(ftsent->fts_path);
 			selinux_log(SELINUX_INFO,
 						"ignore cfg parsing result %d \n",
 						skip_ignore_flag);

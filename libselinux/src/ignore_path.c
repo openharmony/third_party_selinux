@@ -142,7 +142,7 @@ static bool find_ignore_path(ignore_path_node_t *current, const char *path)
 	return false;
 }
 
-enum SkipType skip_ignore_relabel(const char *path)
+enum skip_type skip_ignore_relabel(const char *path)
 {
 	if (find_ignore_path(g_ignore_paths.slash_suffix_paths, path)) {
 		return SKIP_SELF_SUB_DIR;
