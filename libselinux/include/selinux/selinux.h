@@ -745,6 +745,14 @@ extern int selinux_lsetfilecon_default(const char *path);
  */
 extern void selinux_reset_config(void);
 
+/**
+ * Frees the ignore path configurations and resets the system and vendor configuration load states.
+ *
+ * This function frees two types of ignore paths: paths ending with a slash and paths ending with a star.
+ * It also resets the load states of the system and vendor configurations to not loaded.
+ */
+extern void free_ignore_cfg();
+
 #ifdef __cplusplus
 }
 #endif
