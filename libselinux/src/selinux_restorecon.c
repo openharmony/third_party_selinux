@@ -626,6 +626,12 @@ out:
 	return rc;
 }
 
+#define DATA_APP_EL1 "/data/app/el1/"
+#define DATA_APP_EL2 "/data/app/el2/"
+#define DATA_APP_EL3 "/data/app/el3/"
+#define DATA_APP_EL4 "/data/app/el4/"
+#define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
+
 static int restorecon_sb(const char *pathname, const struct stat *sb,
 			    const struct rest_flags *flags, bool first)
 {
@@ -634,6 +640,14 @@ static int restorecon_sb(const char *pathname, const struct stat *sb,
 	char *newtypecon = NULL;
 	int rc;
 	const char *lookup_path = pathname;
+
+	if (!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) ||
+		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
+		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
+		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
+		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
+		goto out;
+	}
 
 	if (rootpath) {
 		if (strncmp(rootpath, lookup_path, rootpathlen) != 0) {
