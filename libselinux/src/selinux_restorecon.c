@@ -642,6 +642,8 @@ out:
 #define AOT_ARK_PUBLIC "public"
 #define DATA_APP_EL1_LEN 14
 #define AOT_ARK_SUFIXX_LEN 12
+#define SHADER_CACHE "shader_cache"
+#define SHADER_CACHE_LEN 12
 
 // Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
 static bool is_hnp_path(const char *path)
@@ -694,10 +696,37 @@ static bool is_aot_path(const char *path)
 		strlen(next_slash + 1) == strlen(AOT_ARK_SUFIXX);
 }
 
+static bool is_shader_path(const char *path)
+{
+	// only /data/app/el1/{userid}/shader_cache or /data/app/el1/public/shader_cache will be true
+	// length is the length of '/data/app/el1/' + 'shader_cache' +'{userid}/', The minimum length of the userid is 1
+	if (strlen(path) < DATA_APP_EL1_LEN + 2 + SHADER_CACHE_LEN) {
+		return false;
+	}
+    path += strlen(DATA_APP_EL1) - 1;
+    if (*path != '/') {
+        return false;
+    }
+    path++;
+    // find next '/'
+    const char *next_slash = strchr(path, '/');
+    if (next_slash == NULL) {
+        return false;
+    }
+    size_t len = next_slash - path;
+    if ((len != strlen(AOT_ARK_PUBLIC) || strncmp(path, AOT_ARK_PUBLIC, strlen(AOT_ARK_PUBLIC)) != 0) &&
+		!is_all_digits(path, len)) {
+        return false;
+    }
+    // end with aot_compiler
+    return strncmp(next_slash + 1, SHADER_CACHE, strlen(SHADER_CACHE)) == 0 &&
+		strlen(next_slash + 1) == strlen(SHADER_CACHE);
+}
+
 static bool check_path_allow_restorecon(const char *pathname)
 {
 	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
-		(!is_aot_path(pathname))) ||
+		(!is_aot_path(pathname)) && (!is_shader_path(pathname))) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
