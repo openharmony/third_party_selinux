@@ -88,6 +88,7 @@
 	"type_set_init";
 	"role_set_expand";
 	"role_allow_rule_init";
+	"role_allow_rule_destroy";
 	"policydb_filetrans_insert";
 	"filename_trans_rule_init";
 	"type_set_cpy";

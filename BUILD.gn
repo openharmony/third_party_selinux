@@ -59,6 +59,7 @@ ohos_shared_library("libsepol") {
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_binary.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_build_ast.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_copy_ast.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_deny.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_find.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_fqn.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_lexer.c",
@@ -179,6 +180,7 @@ selinux_sources = [
   "$LIBSELINUX_ROOT_DIR/src/getenforce.c",
   "$LIBSELINUX_ROOT_DIR/src/getfilecon.c",
   "$LIBSELINUX_ROOT_DIR/src/getpeercon.c",
+  "$LIBSELINUX_ROOT_DIR/src/hashtab.c",
   "$LIBSELINUX_ROOT_DIR/src/ignore_path.c",
   "$LIBSELINUX_ROOT_DIR/src/init.c",
   "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
@@ -239,6 +241,7 @@ ohos_shared_library("libselinux") {
     "-U__BIONIC__",
     "-DAUDITD_LOG_TAG=1003",
     "-DPCRE2_CODE_UNIT_WIDTH=8",
+    "-DHAVE_REALLOCARRAY",
   ]
   if (host_cpu == "arm64" && host_os == "linux") {
     cflags += [ "-DWITH_FREEBSD" ]
