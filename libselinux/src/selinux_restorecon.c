@@ -661,7 +661,8 @@ static bool is_hnp_path(const char *path)
 	return true;
 }
 
-static bool is_all_digits(const char *str, size_t len) {
+static bool is_all_digits(const char *str, size_t len)
+{
     for (size_t i = 0; i < len; i++) {
         if (!isdigit(str[i])) {
             return false;
@@ -673,7 +674,7 @@ static bool is_all_digits(const char *str, size_t len) {
 static bool is_aot_path(const char *path)
 {
 	// only /data/app/el1/{userid}/aot_compiler or /data/app/el1/public/aot_compiler will be true
-	// length is the length of '/data/app/el1/' + 'aot_compiler' +'{userid}/', The minimum length of the userid is 1
+	// The minimum length is /data/app/el1/{userid}/aot_compiler, 2 is the length of '{userid}/'
 	if (strlen(path) < DATA_APP_EL1_LEN + 2 + AOT_ARK_SUFIXX_LEN) {
 		return false;
 	}
