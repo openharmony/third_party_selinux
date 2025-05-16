@@ -4,3 +4,5 @@ lex.yy.c
 y.tab.c
 y.tab.h
 policy_scan.c
+tests/testpol.bin
+tests/testpol.conf
