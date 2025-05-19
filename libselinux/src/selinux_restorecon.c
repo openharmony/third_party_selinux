@@ -633,6 +633,7 @@ out:
 #define DATA_APP_EL2 "/data/app/el2/"
 #define DATA_APP_EL3 "/data/app/el3/"
 #define DATA_APP_EL4 "/data/app/el4/"
+#define DATA_APP_EL5 "/data/app/el5/"
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
 #define HNP_ROOT_PATH "/data/app/el1/bundle/"
 #define HNP_PUBLIC_DIR "/hnppublic"
@@ -732,6 +733,7 @@ static bool check_path_allow_restorecon(const char *pathname)
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
+        !strncmp(pathname, DATA_APP_EL5, sizeof(DATA_APP_EL5) - 1) ||
 		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
 		return false;
 	}
