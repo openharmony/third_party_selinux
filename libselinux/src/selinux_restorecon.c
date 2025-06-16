@@ -645,6 +645,8 @@ out:
 #define AOT_ARK_SUFIXX_LEN 12
 #define SHADER_CACHE "shader_cache"
 #define SHADER_CACHE_LEN 12
+#define SYSTEM_OPTIMIZE_SUFFIX "system_optimize"
+#define SYSTEM_OPTIMIZE_LEN 15
 #define USER_ID_LEN 2
 
 // Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
@@ -699,6 +701,28 @@ static bool is_aot_path(const char *path)
 		strlen(next_slash + 1) == strlen(AOT_ARK_SUFIXX);
 }
 
+static bool is_system_optimize_path(const char *path)
+{
+	// /data/app/el1/{userid}/system_optimize will be true
+	// The minimum length is /data/app/el1/{userid}/system_optimize, 2 is the length of '{userid}/'
+	if (strlen(path) < DATA_APP_EL1_LEN + 2 + SYSTEM_OPTIMIZE_LEN) {
+		return false;
+	}
+	path += strlen(DATA_APP_EL1) - 1;
+	if (*path != '/') {
+		return false;
+	}
+	path++;
+	// find next '/'
+	const char *next_slash = strchr(path, '/');
+	if (next_slash == NULL) {
+		return false;
+	}
+	// next is system_optimize
+	return strncmp(next_slash + 1, SYSTEM_OPTIMIZE_SUFFIX, strlen(SYSTEM_OPTIMIZE_SUFFIX)) == 0 &&
+		strlen(next_slash + 1) >= strlen(SYSTEM_OPTIMIZE_SUFFIX);
+}
+
 static bool is_shader_path(const char *path)
 {
 	// only /data/app/el1/{userid}/shader_cache or /data/app/el1/public/shader_cache will be true
@@ -729,7 +753,7 @@ static bool is_shader_path(const char *path)
 static bool check_path_allow_restorecon(const char *pathname)
 {
 	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
-		(!is_aot_path(pathname)) && (!is_shader_path(pathname))) ||
+		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname))) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
