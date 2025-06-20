@@ -34,24 +34,20 @@ config("third_party_selinux_nolto_config") {
   }
 }
 
-ohos_shared_library("libsepol") {
-  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
-  _arguments = [
-    rebase_path("libsepol/cil/src/cil_lexer.c"),
-    rebase_path("libsepol/cil/src/cil_lexer.l"),
-    rebase_path("libsepol/cil/src/cil_lexer.md5"),
+action("check_md5_libsepol") {
+  script = "//third_party/selinux/exec_check_md5.sh"
+  inputs = [
+    "libsepol/cil/src/cil_lexer.l",
   ]
-  result = exec_script(md5_check_script, _arguments, "string")
-  if (result != "") {
-    exec_script("/usr/bin/flex",
-                [
-                  "-o",
-                  rebase_path("libsepol/cil/src/cil_lexer.c"),
-                  rebase_path("libsepol/cil/src/cil_lexer.l"),
-                ],
-                "")
-  }
+  args = [
+    rebase_path("//third_party/selinux", root_build_dir),
+    "libsepol",
+    rebase_path("$target_gen_dir", root_build_dir),
+  ]
+  outputs = [ "$target_gen_dir/libsepol/cil/src/cil_lexer.c"]
+}
 
+ohos_shared_library("libsepol") {
   output_name = "libsepol"
   version_script = "libsepol.map"
   sources = [
@@ -62,7 +58,6 @@ ohos_shared_library("libsepol") {
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_deny.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_find.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_fqn.c",
-    "$LIBSEPOL_ROOT_DIR/cil/src/cil_lexer.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_list.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_log.c",
     "$LIBSEPOL_ROOT_DIR/cil/src/cil_mem.c",
@@ -123,8 +118,11 @@ ohos_shared_library("libsepol") {
     "$LIBSEPOL_ROOT_DIR/src/util.c",
     "$LIBSEPOL_ROOT_DIR/src/write.c",
   ]
+  sources += get_target_outputs(":check_md5_libsepol")
+  deps = [ ":check_md5_libsepol" ]
   include_dirs = [
     "$LIBSEPOL_ROOT_DIR/cil/include",
+    "$LIBSEPOL_ROOT_DIR/cil/src",
     "$LIBSEPOL_ROOT_DIR/include",
   ]
   cflags = [
@@ -426,52 +424,37 @@ ohos_executable("getpidcon") {
   ]
 }
 
+action("check_md5_checkpolicy") {
+  script = "//third_party/selinux/exec_check_md5.sh"
+  inputs = [
+    "checkpolicy/policy_scan.l",
+    "checkpolicy/policy_parse.y",
+  ]
+  args = [
+    rebase_path("//third_party/selinux", root_build_dir),
+    "checkpolicy",
+    rebase_path("$target_gen_dir", root_build_dir),
+  ]
+  outputs = [
+    "$target_gen_dir/checkpolicy/policy_scan.c",
+    "$target_gen_dir/checkpolicy/y.tab.c",
+  ]
+}
+
 ohos_executable("checkpolicy") {
-  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
-  _arguments = [
-    rebase_path("checkpolicy/y.tab.c"),
-    rebase_path("checkpolicy/policy_parse.y"),
-    rebase_path("checkpolicy/y.tab.md5"),
-  ]
-  result = exec_script(md5_check_script, _arguments, "string")
-  if (result != "") {
-    exec_script("/usr/bin/bison",
-                [
-                  "-y",
-                  "-d",
-                  rebase_path("checkpolicy/policy_parse.y"),
-                  "-o",
-                  rebase_path("checkpolicy/y.tab.c"),
-                ],
-                "")
-  }
-  _arguments = []
-  _arguments = [
-    rebase_path("checkpolicy/policy_scan.c"),
-    rebase_path("checkpolicy/policy_scan.l"),
-    rebase_path("checkpolicy/policy_scan.md5"),
-  ]
-  result = exec_script(md5_check_script, _arguments, "string")
-  if (result != "") {
-    exec_script("/usr/bin/flex",
-                [
-                  "-o",
-                  rebase_path("checkpolicy/policy_scan.c"),
-                  rebase_path("checkpolicy/policy_scan.l"),
-                ],
-                "")
-  }
   install_enable = true
   sources = [
     "$CHECKPOLICY_ROOT_DIR/checkpolicy.c",
     "$CHECKPOLICY_ROOT_DIR/module_compiler.c",
     "$CHECKPOLICY_ROOT_DIR/parse_util.c",
     "$CHECKPOLICY_ROOT_DIR/policy_define.c",
-    "$CHECKPOLICY_ROOT_DIR/policy_scan.c",
     "$CHECKPOLICY_ROOT_DIR/queue.c",
-    "$CHECKPOLICY_ROOT_DIR/y.tab.c",
   ]
-  deps = [ ":libsepol" ]
+  sources += get_target_outputs(":check_md5_checkpolicy")
+  deps = [
+    ":libsepol",
+    ":check_md5_checkpolicy",
+  ]
   include_dirs = [
     "$LIBSEPOL_ROOT_DIR/cil/include",
     "$LIBSEPOL_ROOT_DIR/include",
