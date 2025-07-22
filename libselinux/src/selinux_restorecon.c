@@ -48,6 +48,10 @@ static bool selabel_no_digest;
 static char *rootpath = NULL;
 static size_t rootpathlen;
 
+#define SYSTEM_RESTORECON_CHECK_IGNORE_PATH "system/etc/selinux/restorecon_ignore_cfg"
+static char **g_restorecon_check_ignore = NULL;
+static size_t line_count = 0;
+
 /* Information on excluded fs and directories. */
 struct edir {
 	char *directory;
@@ -750,10 +754,92 @@ static bool is_shader_path(const char *path)
 		strlen(next_slash + 1) == strlen(SHADER_CACHE);
 }
 
+static bool insert_line_to_restorecon_check_ignore(char *line)
+{
+	if (!strlen(line)) {
+		return false;
+	}
+
+	char **new_list = (char **)malloc((line_count + 1) * sizeof(char *));
+	if (!new_list) {
+		selinux_log(SELINUX_ERROR, "Failed to malloc, line: %s\n", line);
+		return false;
+	}
+
+	if (g_restorecon_check_ignore) {
+		for (int i = 0; i < line_count; i++) {
+			new_list[i] = g_restorecon_check_ignore[i];
+		}
+		free(g_restorecon_check_ignore);
+	}
+
+	g_restorecon_check_ignore = new_list;
+	g_restorecon_check_ignore[line_count] = strdup(line);
+	if (!g_restorecon_check_ignore[line_count]) {
+		selinux_log(SELINUX_ERROR, "Failed to strdup, line: %s\n", line);
+		return false;
+	}
+
+	return true;
+}
+
+static bool read_restorecon_check_ignore_cfg()
+{
+	FILE *file = fopen(SYSTEM_RESTORECON_CHECK_IGNORE_PATH, "r");
+	if (!file) {
+		selinux_log(SELINUX_ERROR, "Failed to open file, %s\n", SYSTEM_RESTORECON_CHECK_IGNORE_PATH);
+		return false;
+	}
+
+	char *line = NULL;
+	size_t len = 0;
+	while (getline(&line, &len, file) != -1) {
+		len = trim_newline(line);
+		if (len > 0 && line[len -1] == '/') {
+			line[len - 1] = '\0';
+		}
+		bool ret = insert_line_to_restorecon_check_ignore(line);
+		if (!ret) {
+			selinux_log(SELINUX_ERROR, "Failed to insert restorecon_ignore_cfg line: %s\n", line);
+			continue;
+		}
+		line_count++;
+	}
+
+	free(line);
+	if (fclose(file)) {
+		selinux_log(SELINUX_ERROR, "Failed to close file restorecon_ignore_cfg, err: %s\n", strerror(errno));
+	}
+
+	if (!line_count) {
+		return false;
+	}
+	return true;
+}
+
+static bool is_in_check_ignore_config(const char *pathname)
+{
+	if (g_restorecon_check_ignore == NULL || line_count == 0) {
+		if (!read_restorecon_check_ignore_cfg()) {
+			return false;
+		}
+	}
+	
+	for (size_t i = 0; i < line_count; i++) {
+		if (strcmp(g_restorecon_check_ignore[i], pathname) == 0 ||
+			strstr(pathname, g_restorecon_check_ignore[i]) == NULL) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 static bool check_path_allow_restorecon(const char *pathname)
 {
 	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
-		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname))) ||
+		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname)) &&
+		(!is_in_check_ignore_config(pathname))) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
