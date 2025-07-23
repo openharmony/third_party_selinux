@@ -50,7 +50,7 @@ static size_t rootpathlen;
 
 #define SYSTEM_RESTORECON_CHECK_IGNORE_PATH "system/etc/selinux/restorecon_ignore_cfg"
 static char **g_restorecon_check_ignore = NULL;
-static size_t line_count = 0;
+static size_t g_line_count = 0;
 
 /* Information on excluded fs and directories. */
 struct edir {
@@ -760,22 +760,23 @@ static bool insert_line_to_restorecon_check_ignore(char *line)
 		return false;
 	}
 
-	char **new_list = (char **)malloc((line_count + 1) * sizeof(char *));
+	char **new_list = (char **)malloc((g_line_count + 1) * sizeof(char *));
 	if (!new_list) {
 		selinux_log(SELINUX_ERROR, "Failed to malloc, line: %s\n", line);
 		return false;
 	}
 
 	if (g_restorecon_check_ignore) {
-		for (int i = 0; i < line_count; i++) {
+		for (int i = 0; i < g_line_count; i++) {
 			new_list[i] = g_restorecon_check_ignore[i];
+			free(g_restorecon_check_ignore[i]);
 		}
-		free(g_restorecon_check_ignore);
 	}
 
 	g_restorecon_check_ignore = new_list;
-	g_restorecon_check_ignore[line_count] = strdup(line);
-	if (!g_restorecon_check_ignore[line_count]) {
+	g_restorecon_check_ignore[g_line_count] = strdup(line);
+	if (!g_restorecon_check_ignore[g_line_count]) {
+		free(new_list);
 		selinux_log(SELINUX_ERROR, "Failed to strdup, line: %s\n", line);
 		return false;
 	}
@@ -803,7 +804,7 @@ static bool read_restorecon_check_ignore_cfg()
 			selinux_log(SELINUX_ERROR, "Failed to insert restorecon_ignore_cfg line: %s\n", line);
 			continue;
 		}
-		line_count++;
+		g_line_count++;
 	}
 
 	free(line);
@@ -811,23 +812,20 @@ static bool read_restorecon_check_ignore_cfg()
 		selinux_log(SELINUX_ERROR, "Failed to close file restorecon_ignore_cfg, err: %s\n", strerror(errno));
 	}
 
-	if (!line_count) {
-		return false;
-	}
 	return true;
 }
 
 static bool is_in_check_ignore_config(const char *pathname)
 {
-	if (g_restorecon_check_ignore == NULL || line_count == 0) {
+	if (g_restorecon_check_ignore == NULL || g_line_count == 0) {
 		if (!read_restorecon_check_ignore_cfg()) {
 			return false;
 		}
 	}
 	
-	for (size_t i = 0; i < line_count; i++) {
+	for (size_t i = 0; i < g_line_count; i++) {
 		if (strcmp(g_restorecon_check_ignore[i], pathname) == 0 ||
-			strstr(pathname, g_restorecon_check_ignore[i]) == NULL) {
+			strstr(pathname, g_restorecon_check_ignore[i]) != NULL) {
 			return true;
 		}
 	}
