@@ -23,7 +23,7 @@
 #include "ignore_path.h"
 
 
-#define SYSTEM_APP_ALLOW_CONFIG_PATH "/system/etc/selinux/app_allow_config"
+#define SYSTEM_APP_ALLOW_CONFIG_PATH "/system/etc/selinux/app_allow_cfg"
 static char **g_app_allow_config = NULL;
 static size_t g_line_count = 0;
 
