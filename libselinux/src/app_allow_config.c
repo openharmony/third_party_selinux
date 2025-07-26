@@ -40,7 +40,7 @@ static bool insert_line_to_app_allow_config(const char *line)
 	}
 
 	if (g_app_allow_config != NULL) {
-		for (int i = 0; i < g_line_count; i++) {
+		for (size_t i = 0; i < g_line_count; i++) {
 			new_list[i] = g_app_allow_config[i];
 			free(g_app_allow_config[i]);
 		}
@@ -50,7 +50,7 @@ static bool insert_line_to_app_allow_config(const char *line)
 	g_app_allow_config = new_list;
 	g_app_allow_config[g_line_count] = strdup(line);
 	if (g_app_allow_config[g_line_count] == NULL) {
-		for (int i = 0; i < g_line_count; i++) {
+		for (size_t i = 0; i < g_line_count; i++) {
 			free(new_list[i]);
 		}
 		free(new_list);
