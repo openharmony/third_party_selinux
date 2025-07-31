@@ -35,6 +35,7 @@
 #include <selinux/restorecon.h>
 #include <selinux/skip_elx_constants.h>
 
+#include "app_allow_config.h"
 #include "ignore_path.h"
 #include "callbacks.h"
 #include "selinux_internal.h"
@@ -104,6 +105,8 @@ static void restorecon_init(void)
 	efile_count = 0;
 	if (!ignore_mounts)
 		efile_count = exclude_non_seclabel_mounts();
+
+	load_app_allow_config();
 }
 
 static pthread_once_t fc_once = PTHREAD_ONCE_INIT;
@@ -753,7 +756,8 @@ static bool is_shader_path(const char *path)
 static bool check_path_allow_restorecon(const char *pathname)
 {
 	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
-		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname))) ||
+		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname)) &&
+		(!is_in_app_allow_config(pathname))) ||
 		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||

@@ -156,6 +156,7 @@ ohos_executable("chkcon") {
 }
 
 selinux_sources = [
+  "$LIBSELINUX_ROOT_DIR/src/app_allow_config.c",
   "$LIBSELINUX_ROOT_DIR/src/avc.c",
   "$LIBSELINUX_ROOT_DIR/src/avc_internal.c",
   "$LIBSELINUX_ROOT_DIR/src/avc_sidtab.c",
