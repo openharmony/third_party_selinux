@@ -29,7 +29,7 @@ static size_t g_line_count = 0;
 
 static bool insert_line_to_app_allow_config(const char *line)
 {
-	if (strlen(line) == 0) {
+	if (line == NULL || strlen(line) == 0) {
 		return false;
 	}
 
@@ -42,7 +42,6 @@ static bool insert_line_to_app_allow_config(const char *line)
 	if (g_app_allow_config != NULL) {
 		for (size_t i = 0; i < g_line_count; i++) {
 			new_list[i] = g_app_allow_config[i];
-			free(g_app_allow_config[i]);
 		}
 		free(g_app_allow_config);
 	}
@@ -54,6 +53,7 @@ static bool insert_line_to_app_allow_config(const char *line)
 			free(new_list[i]);
 		}
 		free(new_list);
+        g_app_allow_config = NULL;
 		selinux_log(SELINUX_ERROR, "Failed to strdup, line: %s\n", line);
 		return false;
 	}
@@ -92,11 +92,18 @@ void load_app_allow_config()
 
 bool is_in_app_allow_config(const char *pathname)
 {
+    if (pathname == NULL || g_app_allow_config == NULL) {
+        return false;
+    }
+
 	for (size_t i = 0; i < g_line_count; i++) {
-		if (strcmp(g_app_allow_config[i], pathname) == 0 ||
-			strstr(pathname, g_app_allow_config[i]) != NULL) {
-			return true;
-		}
+        const char *allow_path = g_app_allow_config[i];
+        if (allow_path == NULL) {
+            continue;
+        }
+        if (strncmp(pathname, allow_path, strlen(allow_path)) == 0) {
+            return true;
+        }
 	}
 
 	return false;
