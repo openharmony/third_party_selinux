@@ -640,6 +640,7 @@ out:
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
 #define HNP_ROOT_PATH "/data/app/el1/bundle/"
 #define HNP_PUBLIC_DIR "/hnppublic"
+#define HNP_PRIVATE_DIR "/hnp"
 #define HNP_ROOT_PATH_LEN 21
 #define HNP_PUBLIC_DIR_LEN 10
 #define AOT_ARK_SUFIXX "aot_compiler"
@@ -657,7 +658,7 @@ static bool is_hnp_path(const char *path)
 {
 	size_t pathLen = strlen(path);
 	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
-		(strstr(path, HNP_PUBLIC_DIR) == NULL)) {
+		((strstr(path, HNP_PUBLIC_DIR) == NULL) && (strstr(path, HNP_PRIVATE_DIR) == NULL))) {
 		return false;
 	}
 
