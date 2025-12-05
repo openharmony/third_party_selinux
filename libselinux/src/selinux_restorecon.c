@@ -638,11 +638,6 @@ out:
 #define DATA_APP_EL4 "/data/app/el4/"
 #define DATA_APP_EL5 "/data/app/el5/"
 #define DATA_ACCOUNTS_ACCOUNT_0 "/data/accounts/account_0/"
-#define HNP_ROOT_PATH "/data/app/el1/bundle/"
-#define HNP_PUBLIC_DIR "/hnppublic"
-#define HNP_PRIVATE_DIR "/hnp"
-#define HNP_ROOT_PATH_LEN 21
-#define HNP_PUBLIC_DIR_LEN 10
 #define AOT_ARK_SUFIXX "aot_compiler"
 #define AOT_ARK_PUBLIC "public"
 #define DATA_APP_EL1_LEN 14
@@ -653,20 +648,11 @@ out:
 #define SYSTEM_OPTIMIZE_LEN 15
 #define USER_ID_LEN 2
 
-// Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
-static bool is_hnp_path(const char *path)
-{
-	size_t pathLen = strlen(path);
-	if ((pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PUBLIC_DIR_LEN + 1) ||
-		((strstr(path, HNP_PUBLIC_DIR) == NULL) && (strstr(path, HNP_PRIVATE_DIR) == NULL))) {
-		return false;
-	}
-
-	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
-		return false;
-	}
-	return true;
-}
+#define HNP_ROOT_PATH "/data/app/el1/bundle/"
+#define HNP_ROOT_PATH_LEN 21
+#define HNP_PUBLIC_DIR "/hnppublic"
+#define HNP_PRIVATE_DIR "/hnp"
+#define HNP_PRIVATE_LEN (4)
 
 static bool is_all_digits(const char *str, size_t len)
 {
@@ -676,6 +662,35 @@ static bool is_all_digits(const char *str, size_t len)
         }
     }
     return true;
+}
+
+// Allow the hnp process to refresh the labels of files in the HNP_ROOT_PATH directory
+static bool is_hnp_path(const char *path)
+{
+	size_t pathLen = strlen(path);
+	// HNP_ROOT_PATH "0" HNP_PRIVATE_DIR
+	if (pathLen < HNP_ROOT_PATH_LEN + 1 + HNP_PRIVATE_LEN) {
+		return false;
+	}
+	if (strncmp(path, HNP_ROOT_PATH, HNP_ROOT_PATH_LEN) != 0) {
+		return false;
+	}
+	path += HNP_ROOT_PATH_LEN - 1;
+	if (*path != '/') {
+		return false;
+	}
+	path++;
+	// find next '/'
+	const char *next_slash = strchr(path, '/');
+	if (next_slash == NULL) {
+		return false;
+	}
+	size_t len = next_slash - path;
+	if (len == 0 || !is_all_digits(path, len)) {
+		return false;
+	}
+	return strcmp(next_slash, HNP_PUBLIC_DIR) ||
+		strcmp(next_slash, HNP_PRIVATE_DIR);
 }
 
 static bool is_aot_path(const char *path)
