@@ -689,8 +689,8 @@ static bool is_hnp_path(const char *path)
 	if (len == 0 || !is_all_digits(path, len)) {
 		return false;
 	}
-	return strcmp(next_slash, HNP_PUBLIC_DIR) ||
-		strcmp(next_slash, HNP_PRIVATE_DIR);
+	return strcmp(next_slash, HNP_PUBLIC_DIR) == 0 ||
+		strcmp(next_slash, HNP_PRIVATE_DIR) == 0;
 }
 
 static bool is_aot_path(const char *path)
