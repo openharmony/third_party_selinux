@@ -235,8 +235,10 @@ ohos_shared_library("libselinux") {
   if (host_cpu == "arm64" && host_os == "linux") {
     cflags += [ "-DWITH_FREEBSD" ]
   }
-  external_deps = [ "pcre2:libpcre2" ]
-  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
+  external_deps = [
+    "FreeBSD:libfreebsd_static",
+    "pcre2:libpcre2",
+  ]
   install_enable = true
   install_images = [
     "system",
@@ -281,8 +283,10 @@ ohos_static_library("libselinux_static") {
     "-DAUDITD_LOG_TAG=1003",
     "-DPCRE2_CODE_UNIT_WIDTH=8",
   ]
-  external_deps = [ "pcre2:libpcre2_static" ]
-  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
+  external_deps = [
+    "FreeBSD:libfreebsd_static",
+    "pcre2:libpcre2_static",
+  ]
   license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
   part_name = "selinux"
   subsystem_name = "thirdparty"
