@@ -19,6 +19,15 @@ static void avc_init_once(void)
 	}
 }
 
+void selinux_check_reset(void)
+{
+	if (once == PTHREAD_ONCE_INIT) {
+		return;
+	}
+	avc_destroy();
+	once = PTHREAD_ONCE_INIT;
+}
+
 int selinux_check_access(const char *scon, const char *tcon, const char *class, const char *perm, void *aux) {
 	int rc;
 	security_id_t scon_id;

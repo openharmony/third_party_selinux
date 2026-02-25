@@ -643,6 +643,14 @@ extern const char *selinux_path(void);
  */
 extern int selinux_check_access(const char * scon, const char * tcon, const char *tclass, const char *perm, void *auditdata);
 
+/**
+ * selinux_check_reset - Reset the SELinux AVC state.
+ * 
+ * Destroy the current AVC and reset the once flag if the AVC was
+ * already initialized.
+ */
+extern void selinux_check_reset(void);
+
 /* Check a permission in the passwd class.
    Return 0 if granted or -1 otherwise. */
 extern int selinux_check_passwd_access(access_vector_t requested)
