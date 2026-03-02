@@ -647,6 +647,8 @@ out:
 #define SYSTEM_OPTIMIZE_SUFFIX "system_optimize"
 #define SYSTEM_OPTIMIZE_LEN 15
 #define USER_ID_LEN 2
+#define GROUP_FOLDER_NAME "group/"
+#define GROUP_FOLDER_LEN 6
 
 #define HNP_ROOT_PATH "/data/app/el1/bundle/"
 #define HNP_ROOT_PATH_LEN 21
@@ -769,15 +771,37 @@ static bool is_shader_path(const char *path)
 		strlen(next_slash + 1) == strlen(SHADER_CACHE);
 }
 
+static bool is_group_path(const char *path)
+{
+    // only /data/app/el[2-5]/{userid}/group/ will be true
+    // length is the length of '/data/app/el[2-5]/' +'{userid}/' + 'group/', The minimum length of the userid is 1
+    if (strlen(path) < DATA_APP_EL1_LEN + USER_ID_LEN + GROUP_FOLDER_LEN) {
+        return false;
+    }
+    path += strlen(DATA_APP_EL1) - 1;
+    if (*path != '/') {
+        return false;
+    }
+    path++;
+    // find next '/'
+    const char *next_slash = strchr(path, '/');
+    if (next_slash == NULL) {
+        return false;
+    }
+    // next is group/
+    return strncmp(next_slash + 1, GROUP_FOLDER_NAME, strlen(GROUP_FOLDER_NAME)) == 0 &&
+        strlen(next_slash + 1) >= strlen(GROUP_FOLDER_NAME);
+}
+
 static bool check_path_allow_restorecon(const char *pathname)
 {
 	if ((!strncmp(pathname, DATA_APP_EL1, sizeof(DATA_APP_EL1) - 1) && (!is_hnp_path(pathname)) &&
 		(!is_aot_path(pathname)) && (!is_shader_path(pathname)) && (!is_system_optimize_path(pathname)) &&
 		(!is_in_app_allow_config(pathname))) ||
-		!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
+		((!strncmp(pathname, DATA_APP_EL2, sizeof(DATA_APP_EL2) - 1) ||
 		!strncmp(pathname, DATA_APP_EL3, sizeof(DATA_APP_EL3) - 1) ||
 		!strncmp(pathname, DATA_APP_EL4, sizeof(DATA_APP_EL4) - 1) ||
-        !strncmp(pathname, DATA_APP_EL5, sizeof(DATA_APP_EL5) - 1) ||
+        !strncmp(pathname, DATA_APP_EL5, sizeof(DATA_APP_EL5) - 1)) && !is_group_path(pathname)) ||
 		!strncmp(pathname, DATA_ACCOUNTS_ACCOUNT_0, sizeof(DATA_ACCOUNTS_ACCOUNT_0) - 1)) {
 		return false;
 	}
