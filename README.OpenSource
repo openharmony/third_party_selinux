@@ -6,6 +6,7 @@
     "Version Number": "3.7",
     "Owner": "maliang34@huawei.com",
     "Upstream URL": "https://github.com/SELinuxProject/selinux",
-    "Description": "This is the upstream repository for the Security Enhanced Linux (SELinux) userland libraries and tools."
+    "Description": "This is the upstream repository for the Security Enhanced Linux (SELinux) userland libraries and tools.",
+    "Dependencies": ["pcre2", "FreeBSD"]
     }
 ]
