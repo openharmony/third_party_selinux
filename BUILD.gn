@@ -207,7 +207,7 @@ ohos_shared_library("libselinux") {
 
   sources = selinux_sources
 
-  if (current_toolchain == host_toolchain) {
+  if (is_linux) {
     # host build
     sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
   }
@@ -264,7 +264,7 @@ ohos_static_library("libselinux_static") {
 
   sources = selinux_sources
 
-  if (current_toolchain == host_toolchain) {
+  if (is_linux) {
     # host build
     sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
   }
