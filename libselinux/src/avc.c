@@ -10,6 +10,7 @@
 #include <selinux/avc.h>
 #include "selinux_internal.h"
 #include <assert.h>
+#include <limits.h>
 #include "avc_sidtab.h"
 #include "avc_internal.h"
 
@@ -391,6 +392,9 @@ static inline struct avc_node *avc_search_node(security_id_t ssid,
 	       (ssid != cur->ae.ssid ||
 		tclass != cur->ae.tclass || tsid != cur->ae.tsid)) {
 		tprobes++;
+		if (tprobes == INT_MAX) {
+			break;
+		}
 		cur = cur->next;
 	}
 
