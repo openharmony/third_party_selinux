@@ -38,6 +38,7 @@ action("check_md5_libsepol") {
 }
 
 ohos_shared_library("libsepol") {
+  branch_protector_ret = "pac_ret"
   output_name = "libsepol"
   version_script = "libsepol.map"
   sources = [
@@ -132,6 +133,7 @@ ohos_shared_library("libsepol") {
 }
 
 ohos_executable("chkcon") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSEPOL_ROOT_DIR/utils/chkcon.c" ]
   deps = [ ":libsepol" ]
@@ -260,6 +262,7 @@ ohos_shared_library("libselinux") {
 }
 
 ohos_static_library("libselinux_static") {
+  branch_protector_ret = "pac_ret"
   output_name = "libselinux_static"
 
   sources = selinux_sources
@@ -303,6 +306,7 @@ ohos_static_library("libselinux_static") {
 }
 
 ohos_executable("setenforce") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/setenforce.c" ]
   deps = [ ":libselinux" ]
@@ -322,6 +326,7 @@ ohos_executable("setenforce") {
 }
 
 ohos_executable("getenforce") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getenforce.c" ]
   deps = [ ":libselinux" ]
@@ -340,6 +345,7 @@ ohos_executable("getenforce") {
 }
 
 ohos_executable("getfilecon") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getfilecon.c" ]
   deps = [ ":libselinux" ]
@@ -358,6 +364,7 @@ ohos_executable("getfilecon") {
 }
 
 ohos_executable("setfilecon") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/setfilecon.c" ]
   deps = [ ":libselinux" ]
@@ -376,6 +383,7 @@ ohos_executable("setfilecon") {
 }
 
 ohos_executable("selinuxexeccon") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinuxexeccon.c" ]
   deps = [ ":libselinux" ]
@@ -394,6 +402,7 @@ ohos_executable("selinuxexeccon") {
 }
 
 ohos_executable("selinux_check_access") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinux_check_access.c" ]
   deps = [ ":libselinux" ]
@@ -412,6 +421,7 @@ ohos_executable("selinux_check_access") {
 }
 
 ohos_executable("getpidcon") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/getpidcon.c" ]
   deps = [ ":libselinux" ]
@@ -447,6 +457,7 @@ action("check_md5_checkpolicy") {
 }
 
 ohos_executable("checkpolicy") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [
     "$CHECKPOLICY_ROOT_DIR/checkpolicy.c",
@@ -476,6 +487,7 @@ ohos_executable("checkpolicy") {
 }
 
 ohos_executable("secilc") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$SECILC_ROOT_DIR/secilc.c" ]
   deps = [ ":libsepol" ]
@@ -494,6 +506,7 @@ ohos_executable("secilc") {
 }
 
 ohos_executable("sefcontext_compile") {
+  branch_protector_ret = "pac_ret"
   install_enable = true
   sources = [ "$LIBSELINUX_ROOT_DIR/utils/sefcontext_compile.c" ]
   deps = [
