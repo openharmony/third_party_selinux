@@ -5753,6 +5753,8 @@ static int define_genfs_context_helper(char *fstype, int has_type)
 		}
 		memset(newgenfs, 0, sizeof(struct genfs));
 		newgenfs->fstype = fstype;
+		/* ownership transferred into the genfs list; do not free on error */
+		fstype = NULL;
 		newgenfs->next = genfs;
 		if (genfs_p)
 			genfs_p->next = newgenfs;
