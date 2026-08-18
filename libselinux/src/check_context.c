@@ -35,7 +35,7 @@ int security_check_context_raw(const char * con)
 int security_check_context(const char * con)
 {
 	int ret;
-	char * rcon;
+	char * rcon = NULL;
 
 	if (selinux_trans_to_raw_context(con, &rcon))
 		return -1;
